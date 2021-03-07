@@ -1,0 +1,9 @@
+# IDE settings directories
+.idea
+.vscode
+
+# Dependency directories
+node_modules
+
+# Jest coverage report
+coverage

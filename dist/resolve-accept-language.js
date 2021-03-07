@@ -7,7 +7,7 @@ const locale_1 = __importDefault(require("./locale"));
 const locale_list_1 = __importDefault(require("./locale-list"));
 const locale_quality_list_1 = __importDefault(require("./locale-quality-list"));
 const language_quality_list_1 = __importDefault(require("./language-quality-list"));
-//todo: add readme
+//todo: improve readme (code coverage images)
 //todo: add exclusion list for 0 quality (verify RFC)
 /**
  * Resolve the preferred locale from an HTTP `Accept-Language` header.

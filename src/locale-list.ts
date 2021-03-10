@@ -18,7 +18,7 @@ export default class LocaleList {
    * @throws Will throw an error if one of the locales format is invalid.
    */
   constructor(locales: string[]) {
-    for (const locale of locales) {
+    locales.forEach((locale) => {
       const localeObject = new Locale(locale);
 
       if (!this.locales.includes(localeObject.code)) {
@@ -33,6 +33,6 @@ export default class LocaleList {
       if (!this.countries.includes(localeObject.countryCode)) {
         this.countries.push(localeObject.countryCode);
       }
-    }
+    });
   }
 }

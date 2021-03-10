@@ -28,5 +28,6 @@ export default class LanguageQualityList extends AbstractQualityList {
         return localeObject.code;
       }
     }
+    return '';
   }
 }

@@ -1,11 +1,10 @@
 {
   "compilerOptions": {
-    "esModuleInterop": true,
+    "target": "es5",
     "module": "CommonJS",
-    "moduleResolution": "node",
-    "outDir": "dist/",
-    "strict": false,
-    "target": "ES2018",
+    "declaration": true,
+    "outDir": "lib/",
+    "strict": true,
   },
   "include": ["src/*.ts"]
 }

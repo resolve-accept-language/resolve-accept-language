@@ -4,10 +4,13 @@
   "description": "Resolve the preferred locale based on the value of an `Accept-Language` HTTP header.",
   "main": "./dist/resolve-accept-language.js",
   "scripts": {
-    "build": "tsc",
+    "build": "rm -Rf ./lib && tsc",
     "test": "jest --coverage"
   },
   "license": "MIT",
+  "files": [
+    "lib"
+  ],
   "keywords": [
     "accept-language",
     "intl",

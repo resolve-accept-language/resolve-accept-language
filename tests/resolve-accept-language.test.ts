@@ -1,7 +1,9 @@
 import AbstractQualityList from '../src/abstract-quality-list';
+import LanguageQualityList from '../src/language-quality-list';
+import LocaleList from '../src/locale-list';
 import resolveAcceptLanguage from '../src/resolve-accept-language';
 
-describe('`AbstractQualitylist` exception handler', () => {
+describe('`AbstractQualityList` exception handler', () => {
   class QualityList extends AbstractQualityList {}
   const qualityList = new QualityList();
 
@@ -9,6 +11,16 @@ describe('`AbstractQualitylist` exception handler', () => {
     expect(() => {
       qualityList.add('1', '🐬');
     }).toThrowError('incorrect');
+  });
+});
+
+describe("`LanguageQualityList`'s `getTopFromLocaleList` method", () => {
+  const languageQualityList = new LanguageQualityList();
+  languageQualityList.add('1', 'jp');
+  const localeList = new LocaleList(['fr-FR']);
+
+  it('throws an error when an invalid value is used', () => {
+    expect(languageQualityList.getTopFromLocaleList(localeList)).toBe('');
   });
 });
 

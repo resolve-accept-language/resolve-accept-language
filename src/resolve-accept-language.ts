@@ -55,7 +55,7 @@ export default function resolveAcceptLanguage(
 
     if (directiveMatch) {
       const { locale, languageCode, quality } = getDirectiveDetails(
-        directiveMatch,
+        directiveMatch.groups as DirectiveMatchRegExpGroups,
         defaultLocaleObject
       );
 
@@ -84,13 +84,6 @@ export default function resolveAcceptLanguage(
     }
   }
 
-  // console.log('localesByQuality');
-  // console.dir(localesByQuality);
-  // console.log('languagesByQuality');
-  // console.dir(languagesByQuality);
-  // console.log('localeLanguagesByQuality');
-  // console.dir(localeLanguagesByQuality);
-
   if (!localesByQuality.isEmpty()) {
     // Return the matching locale with the highest quality.
     return localesByQuality.getTop();
@@ -106,12 +99,27 @@ export default function resolveAcceptLanguage(
 }
 
 /**
+ * RegExp matches from an HTTP `Accept-Language` header directive.
+ *
+ * @param matchedLanguageCode RegExp match for the ISO 639-1 alpha-2 language code.
+ * @param matchedCountryCode RegExp match for the BCP47 locale code locale using the `language`-`country` format.
+ * @param matchedQuality RegExp match for the quality factor (default is 1; values can range from 0 to 1 with up to 3 decimals)
+ */
+type DirectiveMatchRegExpGroups = {
+  matchedLanguageCode: string;
+  matchedCountryCode: string;
+  matchedQuality: string;
+};
+
+/**
+ * Details of an HTTP `Accept-Language` header directive.
+ *
  * @param locale The BCP47 locale code locale using the `language`-`country` format.
  * @param languageCode The ISO 639-1 alpha-2 language code.
  * @param quality The quality factor (default is 1; values can range from 0 to 1 with up to 3 decimals)
  */
 type DirectiveDetails = {
-  locale: string;
+  locale?: string;
   languageCode: string;
   quality: string;
 };
@@ -125,14 +133,14 @@ type DirectiveDetails = {
  * @returns Parsed results from a matched `Accept-Language` header directive.
  */
 function getDirectiveDetails(
-  directiveMatch: RegExpMatchArray,
+  directiveMatch: DirectiveMatchRegExpGroups,
   defaultLocaleObject: Locale
 ): DirectiveDetails {
   const {
     matchedLanguageCode,
     matchedCountryCode,
     matchedQuality,
-  } = directiveMatch.groups;
+  } = directiveMatch;
 
   const languageCode =
     matchedLanguageCode == '*'
@@ -148,5 +156,6 @@ function getDirectiveDetails(
     matchedQuality === undefined ? '1' : parseFloat(matchedQuality).toString(); // Remove trailing zeros.
 
   const locale = countryCode ? `${languageCode}-${countryCode}` : undefined;
+
   return { locale, languageCode, quality };
 }

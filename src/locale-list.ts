@@ -8,7 +8,7 @@ export default class LocaleList {
   /** A list of ISO 639-1 alpha-2 language codes. */
   public readonly languages: string[] = [];
   /** A list of ISO 3166-1 alpha-2 country codes. */
-  public readonly counties: string[] = [];
+  public readonly countries: string[] = [];
 
   /**
    * LocaleList constructor.
@@ -30,8 +30,8 @@ export default class LocaleList {
         this.languages.push(localeObject.languageCode);
       }
 
-      if (!this.counties.includes(localeObject.countryCode)) {
-        this.counties.push(localeObject.countryCode);
+      if (!this.countries.includes(localeObject.countryCode)) {
+        this.countries.push(localeObject.countryCode);
       }
     }
   }

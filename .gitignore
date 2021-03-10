@@ -6,7 +6,7 @@
 node_modules
 
 # Jest coverage report
-coverage
+/coverage
 
-# Javascript version
-lib
+# Javascript (compiled) version
+/lib

@@ -2,7 +2,8 @@
   "name": "resolve-accept-language",
   "version": "1.0.0",
   "description": "Resolve the preferred locale based on the value of an `Accept-Language` HTTP header.",
-  "main": "./dist/resolve-accept-language.js",
+  "main": "lib/resolve-accept-language.js",
+  "types": "lib/resolve-accept-language.d.ts",
   "scripts": {
     "build": "rm -Rf ./lib && tsc",
     "test": "jest --coverage"

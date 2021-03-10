@@ -19,7 +19,7 @@ describe("`LanguageQualityList`'s `getTopFromLocaleList` method", () => {
   languageQualityList.add('1', 'jp');
   const localeList = new LocaleList(['fr-FR']);
 
-  it('throws an error when an invalid value is used', () => {
+  it('returns an empty string when a language is not in the `LocaleList`', () => {
     expect(languageQualityList.getTopFromLocaleList(localeList)).toBe('');
   });
 });

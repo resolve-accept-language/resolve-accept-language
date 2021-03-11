@@ -20,7 +20,7 @@ export default abstract class AbstractQualityList {
    * Add a value in the data object matching its quality.
    *
    * @param quality The HTTP quality factor associated with a value.
-   * @param value A string value coming from an HTTP header directive.
+   * @param value A string value coming from an HTTP `Accept-Language` header directive.
    */
   public add(quality: string, value: string): void {
     if (!this.valueIsAccepted(value)) {

@@ -10,6 +10,8 @@ Add the package as a dependency:
 npm install resolve-accept-language
 ```
 
+Code example:
+
 ```ts
 import resolveAcceptLanguage from 'resolve-accept-language';
 
@@ -30,19 +32,26 @@ fr-CA
 
 ## Why another `Accept-Language` package?
 
-While there are several existing packages to detect language, this package has been designed with the following features in mind:
+The `Accept-Language` header has been around since 1999. Like many other standards that deal with languages, the headers is based
+on BCP 47 language tags. Language tags can be as simple as `fr` (non country specific French) or more complex, for example
+`sr-Latn-RS` would represent latin script Serbian.
 
-- Simple to use (single method: `resolveAcceptLanguage`)
-- Designed around a clear use case: automatically detect the BCP47 locale code on a multi-lingual site's homepage
-- Focuses on BCP47 locales codes, following the `language`-`country` (2 letter codes) pattern only:
-  - This is enforced on parameters only (`supportedLocales` & `defaultLocale`) - 2 letter language codes in the HTTP header are evaluated while performing the resolution
-  - Passing language codes in parameters is not permitted because:
-    - Without a country code it's impossible to display country-specific strings correctly (e.g. dates, numbers, units)
-    - Every language is specific to a country. While there might be small nuance, its important to know which "flavor" of a language is being displayed
-  - The most commons BCP47 locale codes are supported only since they cover most likely 99% of the world's market in term of Internet users
-- Based on RFC 2616, RFC 4647, RFC 5646 and RFC 7231.
-- Supported 4 different layers of detection:
-  - First: try exact BCP47 locale code match
-  - Second: try the language code match from the HTTP header, related to the BCP47 locale codes specified
-  - Third: as a last resort, extract the languages from the specified locales and check if there is a match with the header's locales
-  - Fourth: uses the specified default locale
+One of the main challenge is that BCP47 language tags can be either overly simple or too complex. This is one of the problem this
+library will try to address by focusing on locales identifier using the `language`-`country` format instead of trying to provide
+full BCP 47 language tags support. The main reasons for this:
+
+- Using 2 letter language codes is rarely sufficient. Without being explicit about the targeted country for a given language, it is
+  impossible to provide the right format for some content such as dates and numbers. Also, while languages are similar across countries,
+  there are different ways too say the same thing. Our hypothesis is that by better targeting the audience, the user experience will
+  improve.
+- About 99% of all cases can be covered using the `language`-`country` format. We could possibly extend script support in the future
+  but one the approach being this library is to keep it as simple as possible, while providing the best match.
+
+## How does the resolver work?
+
+There are currently 4 different layers of detection:
+
+1. Try exact BCP 47 locale code match.
+2. Try the language code match from the HTTP header, related to the BCP47 locale codes specified.
+3. As a last resort, extract the languages from the specified locales and check if there is a match with the header's locales.
+4. Uses the specified default locale.

@@ -30,7 +30,7 @@ describe('`resolveAcceptLanguage` exception handler', () => {
   it('throws an error when an invalid locale is used in the supported locales', () => {
     expect(() => {
       resolveAcceptLanguage('en-GB;q=0.8', ['invalidLocale'], 'en-GB');
-    }).toThrowError('BCP47');
+    }).toThrowError('invalid locale');
 
     for (const invalidLanguage of invalidLanguages) {
       expect(() => {
@@ -39,20 +39,20 @@ describe('`resolveAcceptLanguage` exception handler', () => {
           [`${invalidLanguage}-GB`],
           'en-GB'
         );
-      }).toThrowError('ISO 639');
+      }).toThrowError('invalid ISO 639');
     }
 
     for (const invalidCountry of invalidCountries) {
       expect(() => {
         resolveAcceptLanguage('en-GB;q=0.8', [`en-${invalidCountry}`], 'en-GB');
-      }).toThrowError('ISO 3166');
+      }).toThrowError('invalid ISO 3166');
     }
   });
 
   it('throws an error when an invalid locale is used in the default locale', () => {
     expect(() => {
       resolveAcceptLanguage('en-GB;q=0.8', ['en-GB'], 'invalidLocale');
-    }).toThrowError('BCP47');
+    }).toThrowError('invalid locale');
 
     for (const invalidLanguage of invalidLanguages) {
       expect(() => {
@@ -61,13 +61,13 @@ describe('`resolveAcceptLanguage` exception handler', () => {
           ['en-GB'],
           `${invalidLanguage}-GB`
         );
-      }).toThrowError('ISO 639');
+      }).toThrowError('invalid ISO 639');
     }
 
     for (const invalidCountry of invalidCountries) {
       expect(() => {
         resolveAcceptLanguage('en-GB;q=0.8', ['en-GB'], `en-${invalidCountry}`);
-      }).toThrowError('ISO 3166');
+      }).toThrowError('invalid ISO 3166');
     }
   });
 

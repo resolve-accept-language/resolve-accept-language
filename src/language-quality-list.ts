@@ -23,11 +23,10 @@ export default class LanguageQualityList extends AbstractQualityList {
   public getTopFromLocaleList(localeList: LocaleList): string {
     const topLanguage = this.getTop();
 
-    for (const localeObject of localeList.objects) {
-      if (localeObject.languageCode === topLanguage) {
-        return localeObject.code;
-      }
-    }
-    return '';
+    return (
+      localeList.objects.find(
+        ({ languageCode }) => languageCode === topLanguage
+      )?.identifier || ''
+    );
   }
 }

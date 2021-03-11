@@ -8,17 +8,20 @@ import LanguageQualityList from './language-quality-list';
 
 /**
  * Resolve the preferred locale from an HTTP `Accept-Language` header.
- *
- * The `Accept-Language` header has been around since 1999. While language codes can be used in the header, this library will
- * only resolve BCP47 (locales) codes. The main reason for this is that internationalization (i18n) requires country codes to
- * correctly format common variables types such as numbers and dates. Most major market can be represented by a BCP47 locale
- * code that consist of an ISO 639-1 alpha-2 language code and an ISO 3166-1 alpha-2 country code.
- *
+
  * @param acceptLanguageHeader The value coming from an HTTP request `Accept-Language` header.
- * @param supportedLocales An array of BCP47 locale codes (`language`-`country`). It must include the default locale.
- * @param defaultLocale The default BCP47 locale code (`language`-`country`) when no match is found.
+ * @param supportedLocales An array of locale identifiers (`language`-`country`). It must include the default locale.
+ * @param defaultLocale The default locale (`language`-`country`) when no match is found.
  *
- * @returns The preferred (case-normalized) BCP47 locale code.
+ * @returns The preferred locale identifier following the BCP 47 `language`-`country` (case-normalized) format.
+ * 
+ * @example
+ * // returns 'fr-CA'
+ * resolveAcceptLanguage(
+ *   'fr-CA;q=0.01,en-CA;q=0.1,en-US;q=0.001',
+ *   ['en-US', 'fr-CA'],
+ *   'en-US'
+ * )
  */
 export default function resolveAcceptLanguage(
   acceptLanguageHeader: string,
@@ -28,12 +31,12 @@ export default function resolveAcceptLanguage(
   const localeList = new LocaleList(supportedLocales);
   const defaultLocaleObject = new Locale(defaultLocale);
 
-  if (!localeList.locales.includes(defaultLocaleObject.code)) {
+  if (!localeList.locales.includes(defaultLocaleObject.identifier)) {
     throw new Error('default locale must be part of the supported locales');
   }
 
   if (!acceptLanguageHeader) {
-    return defaultLocaleObject.code;
+    return defaultLocaleObject.identifier;
   }
 
   // Locales sorted by quality.
@@ -95,14 +98,14 @@ export default function resolveAcceptLanguage(
     return localeLanguagesByQuality.getTopFromLocaleList(localeList);
   }
 
-  return defaultLocaleObject.code;
+  return defaultLocaleObject.identifier;
 }
 
 /**
  * RegExp matches from an HTTP `Accept-Language` header directive.
  *
  * @param matchedLanguageCode RegExp match for the ISO 639-1 alpha-2 language code.
- * @param matchedCountryCode RegExp match for the BCP47 locale code locale using the `language`-`country` format.
+ * @param matchedCountryCode RegExp match for the ISO 3166-1 alpha-2 country code.
  * @param matchedQuality RegExp match for the quality factor (default is 1; values can range from 0 to 1 with up to 3 decimals)
  */
 type DirectiveMatchRegExpGroups = {
@@ -114,7 +117,7 @@ type DirectiveMatchRegExpGroups = {
 /**
  * Details of an HTTP `Accept-Language` header directive.
  *
- * @param locale The BCP47 locale code locale using the `language`-`country` format.
+ * @param locale The locale identifier using the `language`-`country` format.
  * @param languageCode The ISO 639-1 alpha-2 language code.
  * @param quality The quality factor (default is 1; values can range from 0 to 1 with up to 3 decimals)
  */
@@ -143,11 +146,11 @@ function getDirectiveDetails(
   } = directiveMatch;
 
   const languageCode =
-    matchedLanguageCode == '*'
+    matchedLanguageCode === '*'
       ? defaultLocaleObject.languageCode
       : matchedLanguageCode.toLowerCase();
   const countryCode =
-    matchedLanguageCode == '*'
+    matchedLanguageCode === '*'
       ? defaultLocaleObject.countryCode
       : matchedCountryCode
       ? matchedCountryCode.toUpperCase()

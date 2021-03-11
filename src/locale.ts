@@ -1,39 +1,39 @@
 export default class Locale {
-  /** The BCP47 locale code locale using the `language`-`country` format. */
-  public readonly code: string;
+  /** The locale identifier using the `language`-`country` format. */
+  public readonly identifier: string;
   /** The ISO 639-1 alpha-2 language code. */
   public readonly languageCode: string;
   /** The ISO 3166-1 alpha-2 country code. */
   public readonly countryCode: string;
 
   /**
-   * Locale constructor.
+   * Class to manage a locale identifer using the `language`-`country` format.
    *
-   * @param code A BCP47 locale code using the `language`-`country` format.
+   * @param identifier A locale identifier using the `language`-`country` format.
    *
    * @throws Will throw an error if the locale format is invalid.
    */
-  constructor(code: string) {
-    if (!code.includes('-')) {
-      throw new Error(`invalid BCP47 locale '${code}'`);
+  constructor(identifier: string) {
+    if (!identifier.includes('-')) {
+      throw new Error(`invalid locale identifier '${identifier}'`);
     }
 
-    const [languageCode, countryCode] = code.split('-');
+    const [languageCode, countryCode] = identifier.split('-');
 
     if (!/^[a-z]{2}$/i.test(languageCode)) {
       throw new Error(
-        `invalid ISO 639-1 alpha-2 language code '${languageCode}' in ${code}`
+        `invalid ISO 639-1 alpha-2 language code '${languageCode}' in ${identifier}`
       );
     }
 
     if (!/^[a-z]{2}$/i.test(countryCode)) {
       throw new Error(
-        `invalid ISO 3166-1 alpha-2 country code '${countryCode}' in ${code}`
+        `invalid ISO 3166-1 alpha-2 country code '${countryCode}' in ${identifier}`
       );
     }
 
     this.languageCode = languageCode.toLowerCase();
     this.countryCode = countryCode.toUpperCase();
-    this.code = `${this.languageCode}-${this.countryCode}`;
+    this.identifier = `${this.languageCode}-${this.countryCode}`;
   }
 }

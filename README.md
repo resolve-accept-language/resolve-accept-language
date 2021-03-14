@@ -32,7 +32,7 @@ The `Accept-Language` header has been around since 1999. Like many other standar
 on BCP 47 language tags. Language tags can be as simple as `fr` (non country specific French) or more complex, for example
 `sr-Latn-RS` would represent latin script Serbian.
 
-One of the main challenge is that BCP47 language tags can be either overly simple or too complex. This is one of the problem this
+One of the main challenge is that BCP 47 language tags can be either overly simple or too complex. This is one of the problem this
 library will try to address by focusing on locales identifier using the `language`-`country` format instead of trying to provide
 full BCP 47 language tags support. The main reasons for this:
 
@@ -48,6 +48,6 @@ full BCP 47 language tags support. The main reasons for this:
 There are currently 4 different layers of detection:
 
 1. Try exact BCP 47 locale code match.
-2. Try the language code match from the HTTP header, related to the BCP47 locale codes specified.
+2. Try the language code match from the HTTP header, related to the BCP 47 locale codes specified.
 3. As a last resort, extract the languages from the specified locales and check if there is a match with the header's locales.
 4. Uses the specified default locale.

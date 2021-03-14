@@ -9,7 +9,7 @@ module.exports = {
   extends: ['eslint:recommended'],
   overrides: [
     {
-      files: ['**/*.ts'],
+      files: ['src/**/*.ts'],
       parser: '@typescript-eslint/parser',
       parserOptions: {
         tsconfigRootDir: __dirname,
@@ -43,8 +43,14 @@ module.exports = {
     },
     {
       files: ['tests/*.test.ts'],
-      plugins: ['jest'],
-      extends: ['plugin:jest/recommended', 'prettier'],
+      parser: '@typescript-eslint/parser',
+      plugins: ['@typescript-eslint', 'jest'],
+      extends: [
+        'eslint:recommended',
+        'plugin:@typescript-eslint/recommended',
+        'plugin:jest/recommended',
+        'prettier',
+      ],
     },
   ],
 };

@@ -9,7 +9,8 @@
     "test": "jest --coverage",
     "lint": "eslint . --fix",
     "prettier-check": "prettier --check .",
-    "prettier-fix": "prettier --write ."
+    "prettier-fix": "prettier --write .",
+    "patch-version": "npm run build && npm version patch"
   },
   "license": "MIT",
   "files": [

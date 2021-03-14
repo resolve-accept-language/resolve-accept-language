@@ -43,7 +43,7 @@ full BCP 47 language tags support. The main reasons for this:
 
 - Using 2 letter language codes is rarely sufficient. Without being explicit about the targeted country for a given language, it is
   impossible to provide the right format for some content such as dates and numbers. Also, while languages are similar across countries,
-  there are different ways too say the same thing. Our hypothesis is that by better targeting the audience, the user experience will
+  there are different ways to say the same thing. Our hypothesis is that by better targeting the audience, the user experience will
   improve.
 - About 99% of all cases can be covered using the `language`-`country` format. We could possibly extend script support in the future
   but one the approach being this library is to keep it as simple as possible, while providing the best match.

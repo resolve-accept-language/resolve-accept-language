@@ -16,11 +16,7 @@ Code example:
 import resolveAcceptLanguage from 'resolve-accept-language';
 
 console.log(
-  resolveAcceptLanguage(
-    'fr-CA;q=0.01,en-CA;q=0.1,en-US;q=0.001',
-    ['en-US', 'fr-CA'],
-    'en-US'
-  )
+  resolveAcceptLanguage('fr-CA;q=0.01,en-CA;q=0.1,en-US;q=0.001', ['en-US', 'fr-CA'], 'en-US')
 );
 ```
 

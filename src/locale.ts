@@ -21,15 +21,11 @@ export default class Locale {
     const [languageCode, countryCode] = identifier.split('-');
 
     if (!/^[a-z]{2}$/i.test(languageCode)) {
-      throw new Error(
-        `invalid ISO 639-1 alpha-2 language code '${languageCode}' in ${identifier}`
-      );
+      throw new Error(`invalid ISO 639-1 alpha-2 language code '${languageCode}' in ${identifier}`);
     }
 
     if (!/^[a-z]{2}$/i.test(countryCode)) {
-      throw new Error(
-        `invalid ISO 3166-1 alpha-2 country code '${countryCode}' in ${identifier}`
-      );
+      throw new Error(`invalid ISO 3166-1 alpha-2 country code '${countryCode}' in ${identifier}`);
     }
 
     this.languageCode = languageCode.toLowerCase();

@@ -7,7 +7,9 @@
   "scripts": {
     "build": "npm run lint && npm test && rm -Rf ./lib && tsc",
     "test": "jest --coverage",
-    "lint": "eslint ."
+    "lint": "eslint . --fix",
+    "prettier-check": "prettier --check .",
+    "prettier-fix": "prettier --write ."
   },
   "license": "MIT",
   "files": [

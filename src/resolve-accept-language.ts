@@ -46,9 +46,7 @@ export default function resolveAcceptLanguage(
   // Supported languages of unsupported locales sorted by quality.
   const localeLanguagesByQuality = new LanguageQualityList();
 
-  const directives = acceptLanguageHeader
-    .split(',')
-    .map((directive) => directive.trim());
+  const directives = acceptLanguageHeader.split(',').map((directive) => directive.trim());
 
   for (const directive of directives) {
     // Based on RFC 2616, RFC 4647, RFC 5646 and RFC 7231.
@@ -75,10 +73,7 @@ export default function resolveAcceptLanguage(
       }
 
       // If the locale is not supported, but the locale's language is, add to locale language preference.
-      if (
-        !localeList.locales.includes(locale) &&
-        localeList.languages.includes(languageCode)
-      ) {
+      if (!localeList.locales.includes(locale) && localeList.languages.includes(languageCode)) {
         localeLanguagesByQuality.add(quality, languageCode);
         continue;
       }
@@ -140,11 +135,7 @@ function getDirectiveDetails(
   directiveMatch: DirectiveMatchRegExpGroups,
   defaultLocaleObject: Locale
 ): DirectiveDetails {
-  const {
-    matchedLanguageCode,
-    matchedCountryCode,
-    matchedQuality,
-  } = directiveMatch;
+  const { matchedLanguageCode, matchedCountryCode, matchedQuality } = directiveMatch;
 
   const languageCode =
     matchedLanguageCode === '*'
@@ -156,8 +147,7 @@ function getDirectiveDetails(
       : matchedCountryCode
       ? matchedCountryCode.toUpperCase()
       : undefined;
-  const quality =
-    matchedQuality === undefined ? '1' : parseFloat(matchedQuality).toString(); // Remove trailing zeros.
+  const quality = matchedQuality === undefined ? '1' : parseFloat(matchedQuality).toString(); // Remove trailing zeros.
 
   const locale = countryCode ? `${languageCode}-${countryCode}` : undefined;
 

@@ -34,11 +34,7 @@ describe('`resolveAcceptLanguage` exception handler', () => {
 
     for (const invalidLanguage of invalidLanguages) {
       expect(() => {
-        resolveAcceptLanguage(
-          'en-GB;q=0.8',
-          [`${invalidLanguage}-GB`],
-          'en-GB'
-        );
+        resolveAcceptLanguage('en-GB;q=0.8', [`${invalidLanguage}-GB`], 'en-GB');
       }).toThrowError('invalid ISO 639');
     }
 
@@ -56,11 +52,7 @@ describe('`resolveAcceptLanguage` exception handler', () => {
 
     for (const invalidLanguage of invalidLanguages) {
       expect(() => {
-        resolveAcceptLanguage(
-          'en-GB;q=0.8',
-          ['en-GB'],
-          `${invalidLanguage}-GB`
-        );
+        resolveAcceptLanguage('en-GB;q=0.8', ['en-GB'], `${invalidLanguage}-GB`);
       }).toThrowError('invalid ISO 639');
     }
 
@@ -78,113 +70,63 @@ describe('`resolveAcceptLanguage` exception handler', () => {
   });
 
   it('ignores duplicate supported locales', () => {
-    expect(
-      resolveAcceptLanguage('en-GB;q=0.8', ['en-GB', 'en-GB'], 'en-GB')
-    ).toEqual('en-GB');
+    expect(resolveAcceptLanguage('en-GB;q=0.8', ['en-GB', 'en-GB'], 'en-GB')).toEqual('en-GB');
   });
 });
 
 describe('`resolveAcceptLanguage` BCP47 locale code resolver', () => {
   it('returns the default locale when the header does not contain any supported locale', () => {
-    expect(resolveAcceptLanguage('fr-CA,en-CA', ['it-IT'], 'it-IT')).toEqual(
-      'it-IT'
-    );
+    expect(resolveAcceptLanguage('fr-CA,en-CA', ['it-IT'], 'it-IT')).toEqual('it-IT');
 
-    expect(
-      resolveAcceptLanguage('fr-CA,en-CA', ['it-IT', 'pl-PL'], 'it-IT')
-    ).toEqual('it-IT');
+    expect(resolveAcceptLanguage('fr-CA,en-CA', ['it-IT', 'pl-PL'], 'it-IT')).toEqual('it-IT');
   });
 
   it('returns a case normalized locale when passing the denormalized case in parameters', () => {
-    expect(resolveAcceptLanguage('fr-CA,en-CA', ['IT-IT'], 'IT-IT')).toEqual(
-      'it-IT'
-    );
-    expect(resolveAcceptLanguage('fr-CA,en-CA', ['it-it'], 'it-it')).toEqual(
-      'it-IT'
-    );
+    expect(resolveAcceptLanguage('fr-CA,en-CA', ['IT-IT'], 'IT-IT')).toEqual('it-IT');
+    expect(resolveAcceptLanguage('fr-CA,en-CA', ['it-it'], 'it-it')).toEqual('it-IT');
   });
 
   it("ignores the locale's case from the header", () => {
-    expect(resolveAcceptLanguage('FR-CA,en-CA', ['fr-CA'], 'fr-CA')).toEqual(
-      'fr-CA'
-    );
-    expect(resolveAcceptLanguage('fr-CA,en-ca', ['en-CA'], 'en-CA')).toEqual(
-      'en-CA'
-    );
+    expect(resolveAcceptLanguage('FR-CA,en-CA', ['fr-CA'], 'fr-CA')).toEqual('fr-CA');
+    expect(resolveAcceptLanguage('fr-CA,en-ca', ['en-CA'], 'en-CA')).toEqual('en-CA');
   });
 
   it('ignores invalid locales from the header', () => {
     expect(resolveAcceptLanguage('', ['fr-CA'], 'fr-CA')).toEqual('fr-CA');
-    expect(resolveAcceptLanguage('f-CA,en-CA', ['fr-CA'], 'fr-CA')).toEqual(
-      'fr-CA'
+    expect(resolveAcceptLanguage('f-CA,en-CA', ['fr-CA'], 'fr-CA')).toEqual('fr-CA');
+    expect(resolveAcceptLanguage('f-CA,en-CA', ['fr-CA', 'en-CA'], 'fr-CA')).toEqual('en-CA');
+    expect(resolveAcceptLanguage('fr-C,en-CA', ['fr-CA'], 'fr-CA')).toEqual('fr-CA');
+    expect(resolveAcceptLanguage('fr-CA;q=2,en-CA;q=0', ['fr-CA', 'en-CA'], 'fr-CA')).toEqual(
+      'en-CA'
     );
-    expect(
-      resolveAcceptLanguage('f-CA,en-CA', ['fr-CA', 'en-CA'], 'fr-CA')
-    ).toEqual('en-CA');
-    expect(resolveAcceptLanguage('fr-C,en-CA', ['fr-CA'], 'fr-CA')).toEqual(
-      'fr-CA'
+    expect(resolveAcceptLanguage('fr-CA;q=1.1,en-CA;q=0', ['fr-CA', 'en-CA'], 'fr-CA')).toEqual(
+      'en-CA'
     );
-    expect(
-      resolveAcceptLanguage('fr-CA;q=2,en-CA;q=0', ['fr-CA', 'en-CA'], 'fr-CA')
-    ).toEqual('en-CA');
-    expect(
-      resolveAcceptLanguage(
-        'fr-CA;q=1.1,en-CA;q=0',
-        ['fr-CA', 'en-CA'],
-        'fr-CA'
-      )
-    ).toEqual('en-CA');
-    expect(
-      resolveAcceptLanguage(
-        'TEST,en-CA;q=0,INVALID',
-        ['fr-CA', 'en-CA'],
-        'fr-CA'
-      )
-    ).toEqual('en-CA');
+    expect(resolveAcceptLanguage('TEST,en-CA;q=0,INVALID', ['fr-CA', 'en-CA'], 'fr-CA')).toEqual(
+      'en-CA'
+    );
   });
 
   it('ignores white spaces between locales from the header', () => {
-    expect(
-      resolveAcceptLanguage('  fr-CA,  en-CA  ', ['fr-CA'], 'fr-CA')
-    ).toEqual('fr-CA');
-    expect(
-      resolveAcceptLanguage('    fr-CA,    en-CA  ', ['en-CA'], 'en-CA')
-    ).toEqual('en-CA');
+    expect(resolveAcceptLanguage('  fr-CA,  en-CA  ', ['fr-CA'], 'fr-CA')).toEqual('fr-CA');
+    expect(resolveAcceptLanguage('    fr-CA,    en-CA  ', ['en-CA'], 'en-CA')).toEqual('en-CA');
   });
 
   it('returns the correct locale based on its position from the header', () => {
-    expect(
-      resolveAcceptLanguage('fr-CA,en-CA,it-IT', ['fr-CA'], 'fr-CA')
-    ).toEqual('fr-CA');
-    expect(
-      resolveAcceptLanguage('fr-CA,en-CA,it-IT', ['en-CA'], 'en-CA')
-    ).toEqual('en-CA');
-    expect(
-      resolveAcceptLanguage('fr-CA,en-CA,it-IT', ['it-IT'], 'it-IT')
-    ).toEqual('it-IT');
+    expect(resolveAcceptLanguage('fr-CA,en-CA,it-IT', ['fr-CA'], 'fr-CA')).toEqual('fr-CA');
+    expect(resolveAcceptLanguage('fr-CA,en-CA,it-IT', ['en-CA'], 'en-CA')).toEqual('en-CA');
+    expect(resolveAcceptLanguage('fr-CA,en-CA,it-IT', ['it-IT'], 'it-IT')).toEqual('it-IT');
 
     expect(
-      resolveAcceptLanguage(
-        'fr-CA,en-CA,it-IT',
-        ['fr-CA', 'en-CA', 'it-IT', 'pl-PL'],
-        'pl-PL'
-      )
+      resolveAcceptLanguage('fr-CA,en-CA,it-IT', ['fr-CA', 'en-CA', 'it-IT', 'pl-PL'], 'pl-PL')
     ).toEqual('fr-CA');
 
     expect(
-      resolveAcceptLanguage(
-        'en-CA,fr-CA,it-IT',
-        ['fr-CA', 'en-CA', 'it-IT', 'pl-PL'],
-        'pl-PL'
-      )
+      resolveAcceptLanguage('en-CA,fr-CA,it-IT', ['fr-CA', 'en-CA', 'it-IT', 'pl-PL'], 'pl-PL')
     ).toEqual('en-CA');
 
     expect(
-      resolveAcceptLanguage(
-        'it-IT,en-CA,fr-CA',
-        ['fr-CA', 'en-CA', 'it-IT', 'pl-PL'],
-        'pl-PL'
-      )
+      resolveAcceptLanguage('it-IT,en-CA,fr-CA', ['fr-CA', 'en-CA', 'it-IT', 'pl-PL'], 'pl-PL')
     ).toEqual('it-IT');
   });
 
@@ -198,11 +140,7 @@ describe('`resolveAcceptLanguage` BCP47 locale code resolver', () => {
     ).toEqual('fr-CA');
 
     expect(
-      resolveAcceptLanguage(
-        'fr-CA,en-CA;q=0.2,en-US;q=0.6,*;q=1',
-        ['en-US', 'fr-CA'],
-        'en-US'
-      )
+      resolveAcceptLanguage('fr-CA,en-CA;q=0.2,en-US;q=0.6,*;q=1', ['en-US', 'fr-CA'], 'en-US')
     ).toEqual('fr-CA');
 
     expect(
@@ -224,25 +162,15 @@ describe('`resolveAcceptLanguage` BCP47 locale code resolver', () => {
 
   it('returns the correct locale based on language code quality', () => {
     expect(
-      resolveAcceptLanguage(
-        'it-IT,fr;q=0.2,pl-PL;q=0.6,en;q=0.4',
-        ['en-US', 'fr-CA'],
-        'fr-CA'
-      )
+      resolveAcceptLanguage('it-IT,fr;q=0.2,pl-PL;q=0.6,en;q=0.4', ['en-US', 'fr-CA'], 'fr-CA')
     ).toEqual('en-US');
 
     expect(
-      resolveAcceptLanguage(
-        'it-IT,fr;q=0.31,pl-PL;q=0.6,en;q=0.3',
-        ['en-US', 'fr-CA'],
-        'en-US'
-      )
+      resolveAcceptLanguage('it-IT,fr;q=0.31,pl-PL;q=0.6,en;q=0.3', ['en-US', 'fr-CA'], 'en-US')
     ).toEqual('fr-CA');
   });
 
   it('returns the correct locale based on unsupported locale languages quality', () => {
-    expect(
-      resolveAcceptLanguage('en-GB,it-IT', ['en-US', 'fr-CA'], 'fr-CA')
-    ).toEqual('en-US');
+    expect(resolveAcceptLanguage('en-GB,it-IT', ['en-US', 'fr-CA'], 'fr-CA')).toEqual('en-US');
   });
 });

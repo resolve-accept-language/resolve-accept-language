@@ -24,9 +24,7 @@ export default class LanguageQualityList extends AbstractQualityList {
     const topLanguage = this.getTop();
 
     return (
-      localeList.objects.find(
-        ({ languageCode }) => languageCode === topLanguage
-      )?.identifier || ''
+      localeList.objects.find(({ languageCode }) => languageCode === topLanguage)?.identifier || ''
     );
   }
 }

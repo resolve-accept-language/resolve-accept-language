@@ -52,9 +52,10 @@ export default function resolveAcceptLanguage(
 
   for (const directive of directives) {
     // Based on RFC 2616, RFC 4647, RFC 5646 and RFC 7231.
-    const directiveMatch = directive.match(
+    const directiveRegex = RegExp(
       /^((?<matchedLanguageCode>\*|([A-Z]{2}))((?<!\*)-(?<matchedCountryCode>[A-Z]{2}))?)(;q=(?<matchedQuality>1|0|0.[0-9]{1,3}))?$/i
     );
+    const directiveMatch = directiveRegex.exec(directive);
 
     if (directiveMatch) {
       const { locale, languageCode, quality } = getDirectiveDetails(

@@ -10,7 +10,7 @@
     "lint": "eslint . --fix",
     "prettier-check": "prettier --check .",
     "prettier-fix": "prettier --write .",
-    "patch-version": "npm run build && npm version patch"
+    "patch-version": "npm run build && npm version patch && git push"
   },
   "license": "MIT",
   "files": [
@@ -23,6 +23,7 @@
     "locale",
     "internationalization",
     "RFC 4647",
+    "RFC 4646",
     "BCP 47",
     "resolve",
     "detect"

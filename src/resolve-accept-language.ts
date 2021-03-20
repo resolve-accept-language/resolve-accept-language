@@ -3,13 +3,12 @@ import LocaleList from './locale-list';
 import LocaleQualityList from './locale-quality-list';
 import LanguageQualityList from './language-quality-list';
 
-//todo: improve readme (code coverage images)
 //todo: add exclusion list for 0 quality (verify RFC)
 
 /**
  * Resolve the preferred locale from an HTTP `Accept-Language` header.
 
- * @param acceptLanguageHeader The value coming from an HTTP request `Accept-Language` header.
+ * @param acceptLanguageHeader The value of an HTTP request `Accept-Language` header (also known as a "language priority list").
  * @param supportedLocales An array of locale identifiers (`language`-`country`). It must include the default locale.
  * @param defaultLocale The default locale (`language`-`country`) when no match is found.
  *

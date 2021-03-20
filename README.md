@@ -41,12 +41,8 @@ One of the main challenge is that BCP 47 language tags can be either overly simp
 library will try to address by focusing on locales identifier using the `language`-`country` format instead of trying to provide
 full BCP 47 language tags support. The main reasons for this:
 
-- Using 2 letter language codes is rarely sufficient. Without being explicit about the targeted country for a given language, it is
-  impossible to provide the right format for some content such as dates and numbers. Also, while languages are similar across countries,
-  there are different ways to say the same thing. Our hypothesis is that by better targeting the audience, the user experience will
-  improve.
-- About 99% of all cases can be covered using the `language`-`country` format. We could possibly extend script support in the future
-  but one the approach being this library is to keep it as simple as possible, while providing the best match.
+- Using 2 letter language codes is rarely sufficient. Without being explicit about the targeted country for a given language, it is impossible to provide the right format for some content such as dates and numbers. Also, while languages are similar across countries, there are different ways to say the same thing. Our hypothesis is that by better targeting the audience, the user experience will improve.
+- About 99% of all cases can be covered using the `language`-`country` format. We could possibly extend script support in the future but one the approach being this library is to keep it as simple as possible, while providing the best match.
 
 ## How does the resolver work?
 
@@ -56,3 +52,11 @@ There are currently 4 different layers of detection:
 2. Try the language code match from the HTTP header, related to the BCP 47 locale codes specified.
 3. As a last resort, extract the languages from the specified locales and check if there is a match with the header's locales.
 4. Uses the specified default locale.
+
+## Additional references
+
+- Matching of Language Tags ([RFC 4647](https://tools.ietf.org/html/rfc4647))
+- Tags for Identifying Languages ([RFC 4646](https://tools.ietf.org/html/rfc4646))
+- The Accept-Language request-header field ([RFC 2616 section 14.4](https://tools.ietf.org/html/rfc2616#section-14.4))
+
+

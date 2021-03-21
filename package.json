@@ -1,6 +1,6 @@
 {
   "name": "resolve-accept-language",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Resolve the preferred locale based on the value of an `Accept-Language` HTTP header.",
   "main": "lib/resolve-accept-language.js",
   "types": "lib/resolve-accept-language.d.ts",

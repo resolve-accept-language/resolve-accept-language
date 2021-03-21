@@ -3,12 +3,12 @@ import Locale from './locale';
 export default class LocaleList {
   /** A list of locale objects. */
   public readonly objects: Locale[] = [];
-  /** A list of locale identifiers using the `language`-`country` format. */
-  public readonly locales: string[] = [];
-  /** A list of ISO 639-1 alpha-2 language codes. */
-  public readonly languages: string[] = [];
-  /** A list of ISO 3166-1 alpha-2 country codes. */
-  public readonly countries: string[] = [];
+  /** A set of locale identifiers using the `language`-`country` format. */
+  public readonly locales: Set<string> = new Set();
+  /** A set of ISO 639-1 alpha-2 language codes. */
+  public readonly languages: Set<string> = new Set();
+  /** A set of ISO 3166-1 alpha-2 country codes. */
+  public readonly countries: Set<string> = new Set();
 
   /**
    * Create a list of locale identifiers.
@@ -20,19 +20,10 @@ export default class LocaleList {
   constructor(locales: string[]) {
     locales.forEach((locale) => {
       const localeObject = new Locale(locale);
-
-      if (!this.locales.includes(localeObject.identifier)) {
-        this.locales.push(localeObject.identifier);
-        this.objects.push(localeObject);
-      }
-
-      if (!this.languages.includes(localeObject.languageCode)) {
-        this.languages.push(localeObject.languageCode);
-      }
-
-      if (!this.countries.includes(localeObject.countryCode)) {
-        this.countries.push(localeObject.countryCode);
-      }
+      this.objects.push(localeObject);
+      this.locales.add(localeObject.identifier);
+      this.languages.add(localeObject.languageCode);
+      this.countries.add(localeObject.countryCode);
     });
   }
 }

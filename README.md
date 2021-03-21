@@ -46,17 +46,22 @@ full BCP 47 language tags support. The main reasons for this:
 
 ## How does the resolver work?
 
-There are currently 4 different layers of detection:
+As per RFC 4647, this solution uses the "lookup" matching scheme. This means that it will always produce exactly one match for a
+given request.
 
-1. Try exact BCP 47 locale code match.
-2. Try the language code match from the HTTP header, related to the BCP 47 locale codes specified.
-3. As a last resort, extract the languages from the specified locales and check if there is a match with the header's locales.
-4. Uses the specified default locale.
+The matching strategy will use the following rules:
+
+1. Extract all **supported** locales and languages and sort them by quality factor.
+2. If the first result with the highest quality is a locale, return this as the best match.
+3. Otherwise, if that result is a language, find the first supported locale with that language (the default locale is always checked first).
+4. Otherwise, if no locale or language as direct matches, check if there is a match with an unsupported locales that had a supported language (the default locale is always checked first).
+5. When all fails, return the default locale.
 
 ## Additional references
 
 - Matching of Language Tags ([RFC 4647](https://tools.ietf.org/html/rfc4647))
 - Tags for Identifying Languages ([RFC 4646](https://tools.ietf.org/html/rfc4646))
 - The Accept-Language request-header field ([RFC 2616 section 14.4](https://tools.ietf.org/html/rfc2616#section-14.4))
+- Quality values ([RFC 2516 section 3.9](https://tools.ietf.org/html/rfc2616#section-3.9))
 
 

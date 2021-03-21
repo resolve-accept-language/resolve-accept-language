@@ -18,15 +18,17 @@
   ],
   "keywords": [
     "accept-language",
-    "intl",
-    "i18n",
-    "locale",
-    "internationalization",
     "RFC 4647",
+    "locale",
+    "language tags",
     "RFC 4646",
     "BCP 47",
+    "RFC 2616",
     "resolve",
-    "detect"
+    "detect",
+    "intl",
+    "i18n",
+    "internationalization"
   ],
   "author": {
     "name": "Avansai",

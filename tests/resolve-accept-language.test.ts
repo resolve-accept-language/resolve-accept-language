@@ -1,30 +1,75 @@
-import AbstractQualityList from '../src/abstract-quality-list';
-import LanguageQualityList from '../src/language-quality-list';
+import Locale from '../src/locale';
 import LocaleList from '../src/locale-list';
+import LookupList from '../src/lookup-list';
 import resolveAcceptLanguage from '../src/resolve-accept-language';
 
-describe('`AbstractQualityList` exception handler', () => {
-  class QualityList extends AbstractQualityList {}
-  const qualityList = new QualityList();
+describe('The `Locale` class', () => {
+  it('correctly validates locale identifiers using `isLocale`', () => {
+    expect(Locale.isLocale('not a locale')).toBe(false);
+    expect(Locale.isLocale('en')).toBe(false);
+    expect(Locale.isLocale('US')).toBe(false);
+    expect(Locale.isLocale('en-us')).toBe(false);
+    expect(Locale.isLocale('en-us', false)).toBe(true);
+    expect(Locale.isLocale('en-US')).toBe(true);
+  });
 
-  it('throws an error when an invalid value is used', () => {
+  it('correctly validates ISO 639-1 alpha-2 language codes using `isLanguageCode`', () => {
+    expect(Locale.isLanguageCode('not a language code')).toBe(false);
+    expect(Locale.isLanguageCode('1')).toBe(false);
+    expect(Locale.isLanguageCode('EN')).toBe(false);
+    expect(Locale.isLanguageCode('EN', false)).toBe(true);
+    expect(Locale.isLanguageCode('en')).toBe(true);
+  });
+
+  it('correctly validates ISO 3166-1 alpha-2 country codes using `isCountryCode`', () => {
+    expect(Locale.isCountryCode('not a country code')).toBe(false);
+    expect(Locale.isCountryCode('1')).toBe(false);
+    expect(Locale.isCountryCode('us')).toBe(false);
+    expect(Locale.isCountryCode('us', false)).toBe(true);
+    expect(Locale.isCountryCode('US')).toBe(true);
+  });
+});
+
+describe('The `LookupList` class', () => {
+  it('throws an error when the `addLocale` is called with an invalid locale', () => {
     expect(() => {
-      qualityList.add('1', '🐬');
-    }).toThrowError('incorrect');
+      const lookupList = new LookupList();
+      lookupList.addLocale('1', 'not valid');
+    }).toThrowError('invalid locale');
+  });
+
+  it('throws an error when the `addLanguage` is called with an invalid language code', () => {
+    expect(() => {
+      const lookupList = new LookupList();
+      lookupList.addLanguage('1', 'not valid');
+    }).toThrowError('invalid ISO 639-1');
+  });
+
+  it('throws an error when the `addUnsupportedLocaleLanguage` is called with an invalid language code', () => {
+    expect(() => {
+      const lookupList = new LookupList();
+      lookupList.addUnsupportedLocaleLanguage('1', 'not valid');
+    }).toThrowError('invalid ISO 639-1');
+  });
+
+  it('returns the default locale when calling `getBestMatch` when injecting an invalid language', () => {
+    const lookupList = new LookupList();
+    const localeList = new LocaleList(['en-CA', 'fr-CA']);
+    const defaultLocale = new Locale('fr-CA');
+    lookupList.addLanguage('1', 'es');
+    expect(lookupList.getBestMatch(localeList, defaultLocale)).toEqual('fr-CA');
+  });
+
+  it('returns the default locale when calling `getBestMatch` when injecting an invalid unsupported locale language', () => {
+    const lookupList = new LookupList();
+    const localeList = new LocaleList(['en-CA', 'fr-CA']);
+    const defaultLocale = new Locale('fr-CA');
+    lookupList.addUnsupportedLocaleLanguage('1', 'es');
+    expect(lookupList.getBestMatch(localeList, defaultLocale)).toEqual('fr-CA');
   });
 });
 
-describe("`LanguageQualityList`'s `getTopFromLocaleList` method", () => {
-  const languageQualityList = new LanguageQualityList();
-  languageQualityList.add('1', 'jp');
-  const localeList = new LocaleList(['fr-FR']);
-
-  it('returns an empty string when a language is not in the `LocaleList`', () => {
-    expect(languageQualityList.getTopFromLocaleList(localeList)).toBe('');
-  });
-});
-
-describe('`resolveAcceptLanguage` exception handler', () => {
+describe("`resolveAcceptLanguage`'s exception handler", () => {
   const invalidLanguages = ['e', 'eng', 'e1'];
   const invalidCountries = ['G', 'GBR', 'G1'];
   it('throws an error when an invalid locale is used in the supported locales', () => {
@@ -35,13 +80,13 @@ describe('`resolveAcceptLanguage` exception handler', () => {
     for (const invalidLanguage of invalidLanguages) {
       expect(() => {
         resolveAcceptLanguage('en-GB;q=0.8', [`${invalidLanguage}-GB`], 'en-GB');
-      }).toThrowError('invalid ISO 639');
+      }).toThrowError('invalid locale');
     }
 
     for (const invalidCountry of invalidCountries) {
       expect(() => {
         resolveAcceptLanguage('en-GB;q=0.8', [`en-${invalidCountry}`], 'en-GB');
-      }).toThrowError('invalid ISO 3166');
+      }).toThrowError('invalid locale');
     }
   });
 
@@ -53,13 +98,13 @@ describe('`resolveAcceptLanguage` exception handler', () => {
     for (const invalidLanguage of invalidLanguages) {
       expect(() => {
         resolveAcceptLanguage('en-GB;q=0.8', ['en-GB'], `${invalidLanguage}-GB`);
-      }).toThrowError('invalid ISO 639');
+      }).toThrowError('invalid locale');
     }
 
     for (const invalidCountry of invalidCountries) {
       expect(() => {
         resolveAcceptLanguage('en-GB;q=0.8', ['en-GB'], `en-${invalidCountry}`);
-      }).toThrowError('invalid ISO 3166');
+      }).toThrowError('invalid locale');
     }
   });
 
@@ -74,7 +119,7 @@ describe('`resolveAcceptLanguage` exception handler', () => {
   });
 });
 
-describe('`resolveAcceptLanguage` BCP47 locale code resolver', () => {
+describe("`resolveAcceptLanguage`'s lookup mechanism", () => {
   it('returns the default locale when the header does not contain any supported locale', () => {
     expect(resolveAcceptLanguage('fr-CA,en-CA', ['it-IT'], 'it-IT')).toEqual('it-IT');
 
@@ -96,13 +141,13 @@ describe('`resolveAcceptLanguage` BCP47 locale code resolver', () => {
     expect(resolveAcceptLanguage('f-CA,en-CA', ['fr-CA'], 'fr-CA')).toEqual('fr-CA');
     expect(resolveAcceptLanguage('f-CA,en-CA', ['fr-CA', 'en-CA'], 'fr-CA')).toEqual('en-CA');
     expect(resolveAcceptLanguage('fr-C,en-CA', ['fr-CA'], 'fr-CA')).toEqual('fr-CA');
-    expect(resolveAcceptLanguage('fr-CA;q=2,en-CA;q=0', ['fr-CA', 'en-CA'], 'fr-CA')).toEqual(
+    expect(resolveAcceptLanguage('fr-CA;q=2,en-CA;q=0.001', ['fr-CA', 'en-CA'], 'fr-CA')).toEqual(
       'en-CA'
     );
-    expect(resolveAcceptLanguage('fr-CA;q=1.1,en-CA;q=0', ['fr-CA', 'en-CA'], 'fr-CA')).toEqual(
+    expect(resolveAcceptLanguage('fr-CA;q=1.1,en-CA;q=0.1', ['fr-CA', 'en-CA'], 'fr-CA')).toEqual(
       'en-CA'
     );
-    expect(resolveAcceptLanguage('TEST,en-CA;q=0,INVALID', ['fr-CA', 'en-CA'], 'fr-CA')).toEqual(
+    expect(resolveAcceptLanguage('TEST,en-CA;q=0.01,INVALID', ['fr-CA', 'en-CA'], 'fr-CA')).toEqual(
       'en-CA'
     );
   });
@@ -172,5 +217,24 @@ describe('`resolveAcceptLanguage` BCP47 locale code resolver', () => {
 
   it('returns the correct locale based on unsupported locale languages quality', () => {
     expect(resolveAcceptLanguage('en-GB,it-IT', ['en-US', 'fr-CA'], 'fr-CA')).toEqual('en-US');
+    expect(resolveAcceptLanguage('fr,en,en-GB,it-IT', ['en-US', 'fr-CA'], 'fr-CA')).toEqual(
+      'fr-CA'
+    );
+    expect(resolveAcceptLanguage('en-GB,fr,it-IT', ['en-US', 'fr-CA'], 'fr-CA')).toEqual('fr-CA');
+    expect(
+      resolveAcceptLanguage('fr-HT,en-GB,it-IT', ['fr-BE', 'en-US', 'fr-CA'], 'en-US')
+    ).toEqual('fr-BE');
+    // Put the default locale first instead of picking 'fr-BE' (we presume that the default locale is better).
+    expect(
+      resolveAcceptLanguage('fr-FR,en-GB,it-IT', ['fr-BE', 'en-US', 'fr-CA'], 'fr-CA')
+    ).toEqual('fr-CA');
+
+    expect(
+      resolveAcceptLanguage(
+        'pt,fr;q=0.9,en-CA;q=0.8,en;q=0.7,fr-CA;q=0.6,en-US;q=0.5',
+        ['en-CA', 'fr-CA'],
+        'en-CA'
+      )
+    ).toEqual('fr-CA');
   });
 });

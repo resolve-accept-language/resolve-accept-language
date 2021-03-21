@@ -20,10 +20,12 @@ export default class LocaleList {
   constructor(locales: string[]) {
     locales.forEach((locale) => {
       const localeObject = new Locale(locale);
-      this.objects.push(localeObject);
-      this.locales.add(localeObject.identifier);
-      this.languages.add(localeObject.languageCode);
-      this.countries.add(localeObject.countryCode);
+      if (!this.locales.has(localeObject.identifier)) {
+        this.objects.push(localeObject);
+        this.locales.add(localeObject.identifier);
+        this.languages.add(localeObject.languageCode);
+        this.countries.add(localeObject.countryCode);
+      }
     });
   }
 }

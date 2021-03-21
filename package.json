@@ -10,7 +10,8 @@
     "lint": "eslint . --fix",
     "prettier-check": "prettier --check .",
     "prettier-fix": "prettier --write .",
-    "patch-version": "npm run build && npm version patch && git push"
+    "patch-version": "npm run build && npm version patch && git push",
+    "publish-npm": "npm patch-version && npm publish"
   },
   "license": "MIT",
   "files": [

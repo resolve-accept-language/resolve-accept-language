@@ -91,7 +91,6 @@ export default class LookupList {
       }
     } else if (Object.entries(this.unsupportedLocaleLanguagesByQuality).length) {
       // Before using the default locale, check if one of the unsupported locale's language can be found.
-
       const unsupportedLocaleLanguage = Object.entries(this.unsupportedLocaleLanguagesByQuality)
         .sort()
         .reverse()[0][1]

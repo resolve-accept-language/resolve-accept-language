@@ -54,7 +54,7 @@ The matching strategy will use the following rules:
 1. Extract all **supported** locales and languages and sort them by quality factor.
 2. If the first result with the highest quality is a locale, return this as the best match.
 3. Otherwise, if that result is a language, find the first supported locale with that language (the default locale is always checked first).
-4. Otherwise, if no locale or language as direct matches, check if there is a match with an unsupported locales that had a supported language (the default locale is always checked first).
+4. Otherwise, if no locale or language matches, check if there is a match with an unsupported locale that had a supported language (the default locale is always checked first).
 5. When all fails, return the default locale.
 
 ## Additional references

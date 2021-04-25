@@ -13,7 +13,7 @@ export default class LocaleList {
   /**
    * Create a list of locale identifiers.
    *
-   * @param locales An array of locale identifiers using the `language`-`country` format.
+   * @param locales - An array of locale identifiers using the `language`-`country` format.
    *
    * @throws Will throw an error if one of the locale's format is invalid.
    */

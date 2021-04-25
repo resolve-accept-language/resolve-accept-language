@@ -5,9 +5,9 @@ import LookupList from './lookup-list';
 /**
  * Resolve the preferred locale from an HTTP `Accept-Language` header.
  *
- * @param acceptLanguageHeader The value of an HTTP request `Accept-Language` header (also known as a "language priority list").
- * @param supportedLocales An array of locale identifiers (`language`-`country`). It must include the default locale.
- * @param defaultLocale The default locale (`language`-`country`) when no match is found.
+ * @param acceptLanguageHeader - The value of an HTTP request `Accept-Language` header (also known as a "language priority list").
+ * @param supportedLocales - An array of locale identifiers (`language`-`country`). It must include the default locale.
+ * @param defaultLocale - The default locale (`language`-`country`) when no match is found.
  *
  * @returns The preferred locale identifier following the BCP 47 `language`-`country` (case-normalized) format.
  *
@@ -85,9 +85,9 @@ export default function resolveAcceptLanguage(
 /**
  * RegExp matches from an HTTP `Accept-Language` header directive.
  *
- * @param matchedLanguageCode RegExp match for the ISO 639-1 alpha-2 language code.
- * @param matchedCountryCode RegExp match for the ISO 3166-1 alpha-2 country code.
- * @param matchedQuality RegExp match for the quality factor (default is 1; values can range from 0 to 1 with up to 3 decimals)
+ * @param matchedLanguageCode - RegExp match for the ISO 639-1 alpha-2 language code.
+ * @param matchedCountryCode - RegExp match for the ISO 3166-1 alpha-2 country code.
+ * @param matchedQuality - RegExp match for the quality factor (default is 1; values can range from 0 to 1 with up to 3 decimals)
  */
 type DirectiveMatchRegExpGroups = {
   matchedLanguageCode: string;
@@ -98,9 +98,9 @@ type DirectiveMatchRegExpGroups = {
 /**
  * Details of an HTTP `Accept-Language` header directive.
  *
- * @param locale The locale identifier using the `language`-`country` format.
- * @param languageCode The ISO 639-1 alpha-2 language code.
- * @param quality The quality factor (default is 1; values can range from 0 to 1 with up to 3 decimals)
+ * @param locale - The locale identifier using the `language`-`country` format.
+ * @param languageCode - The ISO 639-1 alpha-2 language code.
+ * @param quality - The quality factor (default is 1; values can range from 0 to 1 with up to 3 decimals)
  */
 type DirectiveDetails = {
   locale?: string;
@@ -111,8 +111,8 @@ type DirectiveDetails = {
 /**
  * Get directive details from a regex match.
  *
- * @param directiveMatch Regex match result for an `Accept-Language` header directive.
- * @param defaultLocaleObject The default locale object used to normalize the result.
+ * @param directiveMatch - Regex match result for an `Accept-Language` header directive.
+ * @param defaultLocaleObject - The default locale object used to normalize the result.
  *
  * @returns Parsed results from a matched `Accept-Language` header directive or `null` when there is no match.
  */

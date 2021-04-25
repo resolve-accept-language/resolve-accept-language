@@ -15,8 +15,8 @@ export default class LookupList {
   /**
    * Add a locale in the data object matching its quality.
    *
-   * @param quality The HTTP quality factor associated with a locale.
-   * @param identifier A locale identifier using the `language`-`country` format.
+   * @param quality - The HTTP quality factor associated with a locale.
+   * @param identifier - A locale identifier using the `language`-`country` format.
    */
   public addLocale(quality: string, identifier: string): void {
     if (!Locale.isLocale(identifier)) {
@@ -31,8 +31,8 @@ export default class LookupList {
   /**
    * Add a language in the data object matching its quality.
    *
-   * @param quality The HTTP quality factor associated with a language.
-   * @param languageCode An ISO 639-1 alpha-2 language code.
+   * @param quality - The HTTP quality factor associated with a language.
+   * @param languageCode - An ISO 639-1 alpha-2 language code.
    */
   public addLanguage(quality: string, languageCode: string): void {
     if (!Locale.isLanguageCode(languageCode)) {
@@ -47,8 +47,8 @@ export default class LookupList {
   /**
    * Add an unsupported locale's language in the data object matching its quality.
    *
-   * @param quality The HTTP quality factor associated with an unsupported locale's language.
-   * @param languageCode An ISO 639-1 alpha-2 language code.
+   * @param quality - The HTTP quality factor associated with an unsupported locale's language.
+   * @param languageCode - An ISO 639-1 alpha-2 language code.
    */
   public addUnsupportedLocaleLanguage(quality: string, languageCode: string): void {
     if (!Locale.isLanguageCode(languageCode)) {
@@ -63,8 +63,8 @@ export default class LookupList {
   /**
    * Get the best locale match from the lookup list.
    *
-   * @param localeList The list of locale from which the top language can be selected.
-   * @param defaultLocale The default locale object when no match is found.
+   * @param localeList - The list of locale from which the top language can be selected.
+   * @param defaultLocale - The default locale object when no match is found.
    *
    * @returns The best match when found, otherwise the default locale identifier.
    */

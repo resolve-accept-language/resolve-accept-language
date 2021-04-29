@@ -63,4 +63,3 @@ The matching strategy will use the following rules:
 - Tags for Identifying Languages ([RFC 4646](https://tools.ietf.org/html/rfc4646))
 - The Accept-Language request-header field ([RFC 2616 section 14.4](https://tools.ietf.org/html/rfc2616#section-14.4))
 - Quality values ([RFC 2616 section 3.9](https://tools.ietf.org/html/rfc2616#section-3.9))
-

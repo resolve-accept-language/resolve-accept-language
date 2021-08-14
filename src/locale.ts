@@ -58,3 +58,4 @@ export default class Locale {
     this.identifier = `${this.languageCode}-${this.countryCode}`;
   }
 }
+//

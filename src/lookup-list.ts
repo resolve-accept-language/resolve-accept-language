@@ -109,3 +109,4 @@ export default class LookupList {
     return bestMatch ? bestMatch : defaultLocale.identifier;
   }
 }
+//

@@ -12,7 +12,7 @@
     "prettier-fix": "prettier --write .",
     "patch-version": "npm run build && npm version patch && git push",
     "publish-npm": "npm run patch-version && npm publish",
-    "release": "release-it"
+    "release": "dotenv release-it"
   },
   "license": "MIT",
   "files": [

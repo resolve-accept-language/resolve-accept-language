@@ -15,7 +15,7 @@
     "lint": "eslint . --fix",
     "prettier-check": "prettier --check .",
     "prettier-fix": "prettier --write .",
-    "release": "dotenv release-it -- --only-version"
+    "release": "dotenv -- release-it --only-version"
   },
   "license": "MIT",
   "files": [

@@ -2,6 +2,11 @@
   "name": "resolve-accept-language",
   "version": "1.0.28",
   "description": "Resolve the preferred locale based on the value of an `Accept-Language` HTTP header.",
+  "author": "Avansai (https://avansai.com)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Avansai/resolve-accept-language.git"
+  },
   "main": "lib/resolve-accept-language.js",
   "types": "lib/resolve-accept-language.d.ts",
   "scripts": {
@@ -10,7 +15,7 @@
     "lint": "eslint . --fix",
     "prettier-check": "prettier --check .",
     "prettier-fix": "prettier --write .",
-    "release": "dotenv release-it --only-version"
+    "release": "dotenv -- release-it --only-version"
   },
   "license": "MIT",
   "files": [
@@ -30,14 +35,6 @@
     "i18n",
     "internationalization"
   ],
-  "author": {
-    "name": "Avansai",
-    "url": "https://avansai.com"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Avansai/resolve-accept-language.git"
-  },
   "devDependencies": {
     "@release-it/conventional-changelog": "^3.3.0",
     "@types/jest": "^27.0.1",

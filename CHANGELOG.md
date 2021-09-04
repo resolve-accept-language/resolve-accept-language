@@ -52,11 +52,11 @@
 
 ## [1.0.5](https://github.com/Avansai/resolve-accept-language/compare/v1.0.4...v1.0.5) (2021-03-21)
 
-## [1.0.4](https://github.com/Avansai/resolve-accept-language/compare/v1.0.3...v1.0.3) (2021-03-14)
+## [1.0.4](https://github.com/Avansai/resolve-accept-language/compare/v1.0.3...v1.0.4) (2021-03-14)
 
-## [1.0.3](https://github.com/Avansai/resolve-accept-language/compare/v1.0.2...v1.0.2) (2021-03-14)
+## [1.0.3](https://github.com/Avansai/resolve-accept-language/compare/v1.0.2...v1.0.3) (2021-03-14)
 
-## [1.0.2](https://github.com/Avansai/resolve-accept-language/compare/v1.0.1...v1.0.1) (2021-03-14)
+## [1.0.2](https://github.com/Avansai/resolve-accept-language/compare/v1.0.1...v1.0.2) (2021-03-14)
 
 ## 1.0.1 Initial release (2021-03-14)
 

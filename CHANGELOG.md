@@ -1,3 +1,5 @@
+## [1.0.38](https://github.com/Avansai/resolve-accept-language/compare/v1.0.37...v1.0.38) (2021-11-15)
+
 ## [1.0.37](https://github.com/Avansai/resolve-accept-language/compare/v1.0.36...v1.0.37) (2021-10-24)
 
 ## [1.0.36](https://github.com/Avansai/resolve-accept-language/compare/v1.0.35...v1.0.36) (2021-10-18)

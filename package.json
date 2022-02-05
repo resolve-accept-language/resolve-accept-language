@@ -1,6 +1,6 @@
 {
   "name": "resolve-accept-language",
-  "version": "1.0.48",
+  "version": "1.0.49",
   "description": "Resolve the preferred locale based on the value of an `Accept-Language` HTTP header.",
   "author": "Avansai (https://avansai.com)",
   "repository": {

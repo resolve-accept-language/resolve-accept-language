@@ -1,15 +1,121 @@
 import Locale from './locale';
-import LocaleList from './locale-list';
 import LookupList from './lookup-list';
+
+/** Resolve the preferred locale from an HTTP `Accept-Language` header. */
+export class ResolveAcceptLanguage {
+  /** The locale-based match, if applicable. */
+  private localeBasedMatch: string | undefined;
+  /** The language-based match, if applicable. */
+  private languageBasedMatch: string | undefined;
+  /** The related-locale-based match, if applicable. */
+  private relatedLocaleBasedMatch: string | undefined;
+
+  /**
+   * Create a new `ResolveAcceptLanguage` object.
+   *
+   * All locale identifiers provided as parameters must following the BCP 47 `language`-`country` (case insensitive).
+   *
+   * @param acceptLanguageHeader - The value of an HTTP request `Accept-Language` header (also known as a "language priority list").
+   * @param locales - An array of locale identifiers. The order will be used for matching where the first identifier will be more
+   * likely to be matched than the last identifier.
+   */
+  constructor(acceptLanguageHeader: string, locales: string[]) {
+    const lookupList = new LookupList(acceptLanguageHeader, locales);
+
+    const topLocaleOrLanguage = lookupList.getTopLocaleOrLanguage();
+
+    if (topLocaleOrLanguage !== undefined) {
+      if (Locale.isLocale(topLocaleOrLanguage)) {
+        this.localeBasedMatch = topLocaleOrLanguage;
+      } else {
+        this.languageBasedMatch = lookupList.getTopByLanguage(topLocaleOrLanguage);
+      }
+    } else {
+      this.relatedLocaleBasedMatch = lookupList.getTopRelatedLocale();
+    }
+  }
+
+  /**
+   * Was a match found when resolving the preferred locale?
+   *
+   * @returns True when a match is found, otherwise false.
+   */
+  public hasMatch(): boolean {
+    if (
+      this.localeBasedMatch !== undefined ||
+      this.languageBasedMatch !== undefined ||
+      this.relatedLocaleBasedMatch !== undefined
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Did the resolution of the preferred locale find no match?
+   *
+   * @returns True when there is no match, otherwise false.
+   */
+  public hasNoMatch(): boolean {
+    return !this.hasMatch();
+  }
+
+  /**
+   * Is the best match locale-based?
+   *
+   * @returns True if the best match locale-based, otherwise false.
+   */
+  public bestMatchIsLocaleBased(): boolean {
+    return this.localeBasedMatch !== undefined;
+  }
+
+  /**
+   * Is the best match language-based?
+   *
+   * @returns True if the best match language-based, otherwise false.
+   */
+  public bestMatchIsLanguageBased(): boolean {
+    return this.languageBasedMatch !== undefined;
+  }
+
+  /**
+   * Is the best match related-locale-based?
+   *
+   * @returns True if the best match related-locale-based, otherwise false.
+   */
+  public bestMatchIsRelatedLocaleBased(): boolean {
+    return this.relatedLocaleBasedMatch !== undefined;
+  }
+
+  /**
+   * Get the locale which was the best match.
+   *
+   * @returns The locale which was the best match.
+   */
+  public getBestMatch(): string | undefined {
+    if (this.localeBasedMatch !== undefined) {
+      return this.localeBasedMatch;
+    } else if (this.languageBasedMatch !== undefined) {
+      return this.languageBasedMatch;
+    } else if (this.relatedLocaleBasedMatch !== undefined) {
+      return this.relatedLocaleBasedMatch;
+    }
+
+    return undefined;
+  }
+}
 
 /**
  * Resolve the preferred locale from an HTTP `Accept-Language` header.
  *
- * @param acceptLanguageHeader - The value of an HTTP request `Accept-Language` header (also known as a "language priority list").
- * @param supportedLocales - An array of locale identifiers (`language`-`country`). It must include the default locale.
- * @param defaultLocale - The default locale (`language`-`country`) when no match is found.
+ * All locale identifiers provided as parameters must following the BCP 47 `language`-`country` (case insensitive).
  *
- * @returns The preferred locale identifier following the BCP 47 `language`-`country` (case-normalized) format.
+ * @param acceptLanguageHeader - The value of an HTTP request `Accept-Language` header (also known as a "language priority list").
+ * @param locales - An array of locale identifiers that must include the default locale. The order will be used for matching where
+ * the first identifier will be more likely to be matched than the last identifier.
+ * @param defaultLocale - The default locale identifier when no match is found.
+ *
+ * @returns The locale identifier which was the best match, in case-normalized format.
  *
  * @example
  * // returns 'fr-CA'
@@ -21,115 +127,33 @@ import LookupList from './lookup-list';
  */
 export default function resolveAcceptLanguage(
   acceptLanguageHeader: string,
-  supportedLocales: string[],
+  locales: string[],
   defaultLocale: string
 ): string {
-  const localeList = new LocaleList(supportedLocales);
-  const defaultLocaleObject = new Locale(defaultLocale);
+  let localesIncludeDefault = false;
 
-  if (!localeList.locales.has(defaultLocaleObject.identifier)) {
-    throw new Error('default locale must be part of the supported locales');
-  }
-
-  if (!acceptLanguageHeader) {
-    return defaultLocaleObject.identifier;
-  }
-
-  const lookupList = new LookupList();
-  const directives = acceptLanguageHeader.split(',').map((directive) => directive.trim());
-
-  for (const directive of directives) {
-    /**
-     * The regular expression is excluding certain directives due to the inability to configure those options in modern
-     * browsers today (also those options seem unpractical):
-     *
-     * - The wildcard character "*", as per RFC 2616 (section 14.4), should match any unmatched language tag.
-     * - Language tags that starts with a wildcard (e.g. "*-CA") should match the first supported locale of a country.
-     * - A quality value equivalent to "0", as per RFC 2616 (section 3.9), should be considered as "not acceptable".
-     */
-    const directiveRegex = RegExp(
-      /^((?<matchedLanguageCode>([A-Z]{2}))(-(?<matchedCountryCode>[A-Z]{2}))?)(;q=(?<matchedQuality>1|0.(\d*[1-9]\d*){1,3}))?$/i
-    );
-    const directiveDetails = getDirectiveDetails(
-      directiveRegex.exec(directive)?.groups as DirectiveMatchRegExpGroups
-    );
-
-    if (directiveDetails) {
-      const { locale, languageCode, quality } = directiveDetails;
-
-      // If the language is not supported, skip to the next match.
-      if (!localeList.languages.has(languageCode)) {
-        continue;
-      }
-
-      // If there is no country code (while the language is supported), add the language preference.
-      if (!locale) {
-        lookupList.addLanguage(quality, languageCode);
-        continue;
-      }
-
-      // If the locale is not supported, but the locale's language is, add to locale language preference.
-      if (!localeList.locales.has(locale) && localeList.languages.has(languageCode)) {
-        lookupList.addUnsupportedLocaleLanguage(quality, languageCode);
-        continue;
-      }
-
-      // If the locale is supported, add the locale preference.
-      lookupList.addLocale(quality, locale);
+  locales.forEach((locale) => {
+    if (!Locale.isLocale(locale, false)) {
+      throw new Error(`invalid locale identifier '${locale}'`);
     }
+    if (locale.toLowerCase() === defaultLocale.toLocaleLowerCase()) {
+      localesIncludeDefault = true;
+    }
+  });
+  if (!Locale.isLocale(defaultLocale, false)) {
+    throw new Error(`invalid default locale identifier '${defaultLocale}'`);
+  }
+  if (!localesIncludeDefault) {
+    throw new Error('the default locale must be included in the locales');
   }
 
-  return lookupList.getBestMatch(localeList, defaultLocaleObject);
-}
+  const rankedLocales = [defaultLocale, ...locales.filter((locale) => locale !== defaultLocale)];
 
-/**
- * RegExp matches from an HTTP `Accept-Language` header directive.
- *
- * @param matchedLanguageCode - RegExp match for the ISO 639-1 alpha-2 language code.
- * @param matchedCountryCode - RegExp match for the ISO 3166-1 alpha-2 country code.
- * @param matchedQuality - RegExp match for the quality factor (default is 1; values can range from 0 to 1 with up to 3 decimals)
- */
-type DirectiveMatchRegExpGroups = {
-  matchedLanguageCode: string;
-  matchedCountryCode?: string;
-  matchedQuality?: string;
-};
+  const resolveAcceptLanguage = new ResolveAcceptLanguage(acceptLanguageHeader, rankedLocales);
 
-/**
- * Details of an HTTP `Accept-Language` header directive.
- *
- * @param locale - The locale identifier using the `language`-`country` format.
- * @param languageCode - The ISO 639-1 alpha-2 language code.
- * @param quality - The quality factor (default is 1; values can range from 0 to 1 with up to 3 decimals)
- */
-type DirectiveDetails = {
-  locale?: string;
-  languageCode: string;
-  quality: string;
-};
-
-/**
- * Get directive details from a regex match.
- *
- * @param directiveMatch - Regex match result for an `Accept-Language` header directive.
- * @param defaultLocaleObject - The default locale object used to normalize the result.
- *
- * @returns Parsed results from a matched `Accept-Language` header directive or `null` when there is no match.
- */
-function getDirectiveDetails(
-  directiveMatch: DirectiveMatchRegExpGroups | null
-): DirectiveDetails | null {
-  if (!directiveMatch) {
-    return null; // No regular expression match.
+  if (resolveAcceptLanguage.hasMatch()) {
+    return resolveAcceptLanguage.getBestMatch() as string;
   }
 
-  const { matchedLanguageCode, matchedCountryCode, matchedQuality } = directiveMatch;
-
-  const languageCode = matchedLanguageCode.toLowerCase();
-  const countryCode = matchedCountryCode ? matchedCountryCode.toUpperCase() : undefined;
-  const quality = matchedQuality === undefined ? '1' : parseFloat(matchedQuality).toString(); // Remove trailing zeros.
-
-  const locale = countryCode ? `${languageCode}-${countryCode}` : undefined;
-
-  return { locale, languageCode, quality };
+  return new Locale(defaultLocale).identifier;
 }

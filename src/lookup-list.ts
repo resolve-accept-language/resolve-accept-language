@@ -1,27 +1,115 @@
-import Locale from './locale';
-import type LocaleList from './locale-list';
+import LocaleList from './locale-list';
 
 /** An object where the properties are quality (in string format) and their value a set of strings. */
 type DataObject = Record<string, Set<string>>;
 
+/**
+ * An object representing an HTTP `Accept-Language` header directive.
+ *
+ * @param locale - The locale identifier using the BCP 47 `language`-`country` case-normalized format.
+ * @param languageCode - The ISO 639-1 alpha-2 language code.
+ * @param quality - The quality factor (default is 1; values can range from 0 to 1 with up to 3 decimals)
+ */
+type Directive = {
+  locale?: string;
+  languageCode: string;
+  quality: string;
+};
+
+/** Lookup list used to match the preferred locale based on the value of an `Accept-Language` HTTP header. */
 export default class LookupList {
+  /** The list of locales used to get the match during the lookup. */
+  private localeList: LocaleList;
   /** Data object where the properties are quality (in string format) and their values a set containing locale
    * identifiers using the `language`-`country` format and ISO 639-1 alpha-2 language code. */
   private localesAndLanguagesByQuality: DataObject = {};
   /** Data object where the properties are quality (in string format) and their value a set of ISO 639-1 alpha-2
    * language code. */
-  private unsupportedLocaleLanguagesByQuality: DataObject = {};
+  private relatedLocaleLanguagesByQuality: DataObject = {};
+
+  /**
+   * Create a new `LookupList` object.
+   *
+   * @param acceptLanguageHeader - The value of an HTTP request `Accept-Language` header (also known as a "language priority list").
+   * @param locales - An array of locale identifiers. The order will be used for matching where the first identifier will be more
+   * likely to be matched than the last identifier.
+   */
+  constructor(acceptLanguageHeader: string, locales: string[]) {
+    this.localeList = new LocaleList(locales);
+
+    const directiveStrings = acceptLanguageHeader
+      .split(',')
+      .map((directiveString) => directiveString.trim());
+
+    for (const directiveString of directiveStrings) {
+      const directive = this.getDirective(directiveString);
+
+      if (directive === undefined) continue; // No match for this directive.
+
+      const { locale, languageCode, quality } = directive;
+
+      // If the language is not supported, skip to the next match.
+      if (!this.localeList.languages.has(languageCode)) {
+        continue;
+      }
+
+      // If there is no country code (while the language is supported), add the language preference.
+      if (!locale) {
+        this.addLanguage(quality, languageCode);
+        continue;
+      }
+
+      // If the locale is not supported, but the locale's language is, add to locale language preference.
+      if (!this.localeList.locales.has(locale) && this.localeList.languages.has(languageCode)) {
+        this.addRelatedLocaleLanguage(quality, languageCode);
+        continue;
+      }
+
+      // If the locale is supported, add the locale preference.
+      this.addLocale(quality, locale);
+    }
+  }
+
+  /**
+   * Get a directive object from a directive string.
+   *
+   * @param directiveString - The string representing a directive, extracted from the HTTP header.
+   *
+   * @returns A `Directive` object or `undefined` if the string's format is invalid.
+   */
+  private getDirective(directiveString: string): Directive | undefined {
+    /**
+     * The regular expression is excluding certain directives due to the inability to configure those options in modern
+     * browsers today (also those options seem unpractical):
+     *
+     * - The wildcard character "*", as per RFC 2616 (section 14.4), should match any unmatched language tag.
+     * - Language tags that starts with a wildcard (e.g. "*-CA") should match the first supported locale of a country.
+     * - A quality value equivalent to "0", as per RFC 2616 (section 3.9), should be considered as "not acceptable".
+     */
+    const directiveMatch = directiveString.match(
+      /^((?<matchedLanguageCode>([A-Z]{2}))(-(?<matchedCountryCode>[A-Z]{2}))?)(;q=(?<matchedQuality>1|0.(\d*[1-9]\d*){1,3}))?$/i
+    );
+
+    if (!directiveMatch?.groups) return undefined; // No regular expression match.
+
+    const { matchedLanguageCode, matchedCountryCode, matchedQuality } = directiveMatch.groups;
+
+    const languageCode = matchedLanguageCode.toLowerCase();
+    const countryCode = matchedCountryCode ? matchedCountryCode.toUpperCase() : undefined;
+    const quality = matchedQuality === undefined ? '1' : parseFloat(matchedQuality).toString(); // Remove trailing zeros.
+
+    const locale = countryCode ? `${languageCode}-${countryCode}` : undefined;
+
+    return { locale, languageCode, quality };
+  }
 
   /**
    * Add a locale in the data object matching its quality.
    *
-   * @param quality - The HTTP quality factor associated with a locale.
-   * @param identifier - A locale identifier using the `language`-`country` format.
+   * @param quality - The HTTP header's quality factor associated with a locale.
+   * @param identifier - A locale identifier using the BCP 47 `language`-`country` case-normalized format.
    */
-  public addLocale(quality: string, identifier: string): void {
-    if (!Locale.isLocale(identifier)) {
-      throw new Error(`invalid locale identifier '${identifier}'`);
-    }
+  private addLocale(quality: string, identifier: string): void {
     if (!this.localesAndLanguagesByQuality[quality]) {
       this.localesAndLanguagesByQuality[quality] = new Set();
     }
@@ -31,13 +119,10 @@ export default class LookupList {
   /**
    * Add a language in the data object matching its quality.
    *
-   * @param quality - The HTTP quality factor associated with a language.
+   * @param quality - The HTTP header's quality factor associated with a language.
    * @param languageCode - An ISO 639-1 alpha-2 language code.
    */
-  public addLanguage(quality: string, languageCode: string): void {
-    if (!Locale.isLanguageCode(languageCode)) {
-      throw new Error(`invalid ISO 639-1 alpha-2 language code '${languageCode}'`);
-    }
+  private addLanguage(quality: string, languageCode: string): void {
     if (!this.localesAndLanguagesByQuality[quality]) {
       this.localesAndLanguagesByQuality[quality] = new Set();
     }
@@ -45,67 +130,70 @@ export default class LookupList {
   }
 
   /**
-   * Add an unsupported locale's language in the data object matching its quality.
+   * Add a related locale's language in the data object matching its quality.
    *
-   * @param quality - The HTTP quality factor associated with an unsupported locale's language.
+   * @param quality - The HTTP header's quality factor associated with a related locale's language.
    * @param languageCode - An ISO 639-1 alpha-2 language code.
    */
-  public addUnsupportedLocaleLanguage(quality: string, languageCode: string): void {
-    if (!Locale.isLanguageCode(languageCode)) {
-      throw new Error(`invalid ISO 639-1 alpha-2 language code '${languageCode}'`);
+  private addRelatedLocaleLanguage(quality: string, languageCode: string): void {
+    if (!this.relatedLocaleLanguagesByQuality[quality]) {
+      this.relatedLocaleLanguagesByQuality[quality] = new Set();
     }
-    if (!this.unsupportedLocaleLanguagesByQuality[quality]) {
-      this.unsupportedLocaleLanguagesByQuality[quality] = new Set();
-    }
-    this.unsupportedLocaleLanguagesByQuality[quality].add(languageCode);
+    this.relatedLocaleLanguagesByQuality[quality].add(languageCode);
   }
 
   /**
-   * Get the best locale match from the lookup list.
+   * Get the top (highest-ranked) entry from a dataset object entries.
    *
-   * @param localeList - The list of locale from which the top language can be selected.
-   * @param defaultLocale - The default locale object when no match is found.
+   * @param dataObjectEntries - The object entries of a dataset object.
    *
-   * @returns The best match when found, otherwise the default locale identifier.
+   * @returns The top entry from a dataset object entries.
    */
-  public getBestMatch(localeList: LocaleList, defaultLocale: Locale): string {
-    let bestMatch: string | undefined;
+  private getTop(dataObjectEntries: [string, Set<string>][]): string {
+    return dataObjectEntries.sort().reverse()[0][1].values().next().value as string;
+  }
 
-    // Check if there is any matching locale identifiers or language code.
-    if (Object.entries(this.localesAndLanguagesByQuality).length) {
-      const localeOrLanguage = Object.entries(this.localesAndLanguagesByQuality)
-        .sort()
-        .reverse()[0][1]
-        .values()
-        .next().value as string;
-      if (Locale.isLocale(localeOrLanguage)) {
-        bestMatch = localeOrLanguage;
-      } else {
-        // The value is a language code.
-        if (localeOrLanguage !== defaultLocale.languageCode) {
-          // Only search for a match if the language does not match the default locale's.
-          bestMatch = localeList.objects.find(
-            ({ languageCode }) => languageCode === localeOrLanguage
-          )?.identifier;
-        }
-      }
-    } else if (Object.entries(this.unsupportedLocaleLanguagesByQuality).length) {
-      // Before using the default locale, check if one of the unsupported locale's language can be found.
-      const unsupportedLocaleLanguage = Object.entries(this.unsupportedLocaleLanguagesByQuality)
-        .sort()
-        .reverse()[0][1]
-        .values()
-        .next().value as string;
+  /**
+   * Get the top (highest-ranked) locale or language.
+   *
+   * @returns The top match, which can either be a locale or a language.
+   */
+  public getTopLocaleOrLanguage(): string | undefined {
+    const localesAndLanguagesByQuality = Object.entries(this.localesAndLanguagesByQuality);
 
-      if (unsupportedLocaleLanguage !== defaultLocale.languageCode) {
-        // Only search for a match if the language does not match the default locale's.
-        bestMatch = localeList.objects.find(
-          ({ languageCode }) => languageCode === unsupportedLocaleLanguage
-        )?.identifier;
-      }
+    if (!localesAndLanguagesByQuality.length) {
+      return undefined;
     }
 
-    // Return the best match or the default locale.
-    return bestMatch ? bestMatch : defaultLocale.identifier;
+    return this.getTop(localesAndLanguagesByQuality);
+  }
+
+  /**
+   * Get the top (highest-ranked) locale by language.
+   *
+   * @param languageCode - An ISO 639-1 alpha-2 language code.
+   *
+   * @returns The top locale with the specified language.
+   */
+  public getTopByLanguage(languageCode: string): string | undefined {
+    return this.localeList.objects.find((locale) => locale.languageCode === languageCode)
+      ?.identifier;
+  }
+
+  /**
+   * Get the top (highest-ranked) related locale.
+   *
+   * @returns The top related locale.
+   */
+  public getTopRelatedLocale(): string | undefined {
+    const relatedLocaleLanguagesByQuality = Object.entries(this.relatedLocaleLanguagesByQuality);
+
+    if (!relatedLocaleLanguagesByQuality.length) {
+      return undefined;
+    }
+
+    const topRelatedLocaleLanguage = this.getTop(relatedLocaleLanguagesByQuality);
+
+    return this.getTopByLanguage(topRelatedLocaleLanguage);
   }
 }

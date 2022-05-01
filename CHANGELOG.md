@@ -1,5 +1,12 @@
 
 
+# [1.1.0](https://github.com/Avansai/resolve-accept-language/compare/v1.0.59...v1.1.0) (2022-05-01)
+
+
+### Features
+
+* allow to control exactly the behavior depending on the type of match ([dee6429](https://github.com/Avansai/resolve-accept-language/commit/dee64298e28e921f7e4e491e50948200f5030b1b))
+
 ## [1.0.59](https://github.com/Avansai/resolve-accept-language/compare/v1.0.58...v1.0.59) (2022-04-24)
 
 ## [1.0.58](https://github.com/Avansai/resolve-accept-language/compare/v1.0.57...v1.0.58) (2022-04-15)

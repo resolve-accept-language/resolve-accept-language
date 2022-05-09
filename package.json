@@ -10,7 +10,7 @@
   "main": "lib/resolve-accept-language.js",
   "types": "lib/resolve-accept-language.d.ts",
   "scripts": {
-    "build": "npm run lint && npm test && rm -Rf ./lib && tsc",
+    "build": "rm -Rf ./lib && tsc && npm run lint && npm test",
     "test": "jest --coverage",
     "lint": "eslint . --fix",
     "prettier-check": "prettier --check .",

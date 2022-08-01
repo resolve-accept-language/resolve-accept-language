@@ -1,11 +1,11 @@
 /** Class to manage a locale identifier using the BCP 47 `language`-`country` format. */
 export default class Locale {
   /** The locale identifier using the BCP 47 `language`-`country` case-normalized format. */
-  public readonly identifier: string;
+  public readonly identifier: string
   /** The ISO 639-1 alpha-2 language code. */
-  public readonly languageCode: string;
+  public readonly languageCode: string
   /** The ISO 3166-1 alpha-2 country code. */
-  public readonly countryCode: string;
+  public readonly countryCode: string
 
   /**
    * Is a given string a locale identifier following the BCP 47 `language`-`country` format.
@@ -14,8 +14,8 @@ export default class Locale {
    * @param caseNormalized - Should we verify if the identifier is using the case-normalized format?
    */
   public static isLocale(identifier: string, caseNormalized = true): boolean {
-    const regExp = new RegExp(/^[a-z]{2}-[A-Z]{2}$/, caseNormalized ? undefined : 'i');
-    return regExp.test(identifier);
+    const regExp = new RegExp(/^[a-z]{2}-[A-Z]{2}$/, caseNormalized ? undefined : 'i')
+    return regExp.test(identifier)
   }
 
   /**
@@ -25,8 +25,8 @@ export default class Locale {
    * @param caseNormalized - Should we verify if the identifier is using the case-normalized format?
    */
   public static isLanguageCode(languageCode: string, caseNormalized = true): boolean {
-    const regExp = new RegExp(/^[a-z]{2}$/, caseNormalized ? undefined : 'i');
-    return regExp.test(languageCode);
+    const regExp = new RegExp(/^[a-z]{2}$/, caseNormalized ? undefined : 'i')
+    return regExp.test(languageCode)
   }
 
   /**
@@ -36,8 +36,8 @@ export default class Locale {
    * @param caseNormalized - Should we verify if the identifier is using the case-normalized format?
    */
   public static isCountryCode(countryCode: string, caseNormalized = true): boolean {
-    const regExp = new RegExp(/^[A-Z]{2}$/, caseNormalized ? undefined : 'i');
-    return regExp.test(countryCode);
+    const regExp = new RegExp(/^[A-Z]{2}$/, caseNormalized ? undefined : 'i')
+    return regExp.test(countryCode)
   }
 
   /**
@@ -49,13 +49,13 @@ export default class Locale {
    */
   constructor(identifier: string) {
     if (!Locale.isLocale(identifier, false)) {
-      throw new Error(`invalid locale identifier '${identifier}'`);
+      throw new Error(`invalid locale identifier '${identifier}'`)
     }
 
-    const [languageCode, countryCode] = identifier.split('-');
+    const [languageCode, countryCode] = identifier.split('-')
 
-    this.languageCode = languageCode.toLowerCase();
-    this.countryCode = countryCode.toUpperCase();
-    this.identifier = `${this.languageCode}-${this.countryCode}`;
+    this.languageCode = languageCode.toLowerCase()
+    this.countryCode = countryCode.toUpperCase()
+    this.identifier = `${this.languageCode}-${this.countryCode}`
   }
 }

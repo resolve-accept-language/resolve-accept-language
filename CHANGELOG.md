@@ -1,5 +1,3 @@
-
-
 ## [1.1.13](https://github.com/Avansai/resolve-accept-language/compare/v1.1.12...v1.1.13) (2022-07-25)
 
 ## [1.1.12](https://github.com/Avansai/resolve-accept-language/compare/v1.1.11...v1.1.12) (2022-07-23)
@@ -24,10 +22,9 @@
 
 ## [1.1.2](https://github.com/Avansai/resolve-accept-language/compare/v1.1.1...v1.1.2) (2022-05-14)
 
-
 ### Bug Fixes
 
-* update the build script with the correct logical sequence ([ddd61e6](https://github.com/Avansai/resolve-accept-language/commit/ddd61e642c0468ddd07d0f07ed705a680bb089a9))
+- update the build script with the correct logical sequence ([ddd61e6](https://github.com/Avansai/resolve-accept-language/commit/ddd61e642c0468ddd07d0f07ed705a680bb089a9))
 
 ## [1.1.1](https://github.com/Avansai/resolve-accept-language/compare/v1.1.0...v1.1.1) (2022-05-06)
 

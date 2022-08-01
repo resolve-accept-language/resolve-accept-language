@@ -1,7 +1,7 @@
-import LocaleList from './locale-list';
+import LocaleList from './locale-list'
 
 /** An object where the properties are quality (in string format) and their value a set of strings. */
-type DataObject = Record<string, Set<string>>;
+type DataObject = Record<string, Set<string>>
 
 /**
  * An object representing an HTTP `Accept-Language` header directive.
@@ -11,21 +11,21 @@ type DataObject = Record<string, Set<string>>;
  * @param quality - The quality factor (default is 1; values can range from 0 to 1 with up to 3 decimals)
  */
 type Directive = {
-  locale?: string;
-  languageCode: string;
-  quality: string;
-};
+  locale?: string
+  languageCode: string
+  quality: string
+}
 
 /** Lookup list used to match the preferred locale based on the value of an `Accept-Language` HTTP header. */
 export default class LookupList {
   /** The list of locales used to get the match during the lookup. */
-  private localeList: LocaleList;
+  private localeList: LocaleList
   /** Data object where the properties are quality (in string format) and their values a set containing locale
    * identifiers using the `language`-`country` format and ISO 639-1 alpha-2 language code. */
-  private localesAndLanguagesByQuality: DataObject = {};
+  private localesAndLanguagesByQuality: DataObject = {}
   /** Data object where the properties are quality (in string format) and their value a set of ISO 639-1 alpha-2
    * language code. */
-  private relatedLocaleLanguagesByQuality: DataObject = {};
+  private relatedLocaleLanguagesByQuality: DataObject = {}
 
   /**
    * Create a new `LookupList` object.
@@ -35,38 +35,38 @@ export default class LookupList {
    * likely to be matched than the last identifier.
    */
   constructor(acceptLanguageHeader: string, locales: string[]) {
-    this.localeList = new LocaleList(locales);
+    this.localeList = new LocaleList(locales)
 
     const directiveStrings = acceptLanguageHeader
       .split(',')
-      .map((directiveString) => directiveString.trim());
+      .map((directiveString) => directiveString.trim())
 
     for (const directiveString of directiveStrings) {
-      const directive = this.getDirective(directiveString);
+      const directive = this.getDirective(directiveString)
 
-      if (directive === undefined) continue; // No match for this directive.
+      if (directive === undefined) continue // No match for this directive.
 
-      const { locale, languageCode, quality } = directive;
+      const { locale, languageCode, quality } = directive
 
       // If the language is not supported, skip to the next match.
       if (!this.localeList.languages.has(languageCode)) {
-        continue;
+        continue
       }
 
       // If there is no country code (while the language is supported), add the language preference.
       if (!locale) {
-        this.addLanguage(quality, languageCode);
-        continue;
+        this.addLanguage(quality, languageCode)
+        continue
       }
 
       // If the locale is not supported, but the locale's language is, add to locale language preference.
       if (!this.localeList.locales.has(locale) && this.localeList.languages.has(languageCode)) {
-        this.addRelatedLocaleLanguage(quality, languageCode);
-        continue;
+        this.addRelatedLocaleLanguage(quality, languageCode)
+        continue
       }
 
       // If the locale is supported, add the locale preference.
-      this.addLocale(quality, locale);
+      this.addLocale(quality, locale)
     }
   }
 
@@ -88,19 +88,19 @@ export default class LookupList {
      */
     const directiveMatch = directiveString.match(
       /^((?<matchedLanguageCode>([A-Z]{2}))(-(?<matchedCountryCode>[A-Z]{2}))?)(;q=(?<matchedQuality>1|0.(\d*[1-9]\d*){1,3}))?$/i
-    );
+    )
 
-    if (!directiveMatch?.groups) return undefined; // No regular expression match.
+    if (!directiveMatch?.groups) return undefined // No regular expression match.
 
-    const { matchedLanguageCode, matchedCountryCode, matchedQuality } = directiveMatch.groups;
+    const { matchedLanguageCode, matchedCountryCode, matchedQuality } = directiveMatch.groups
 
-    const languageCode = matchedLanguageCode.toLowerCase();
-    const countryCode = matchedCountryCode ? matchedCountryCode.toUpperCase() : undefined;
-    const quality = matchedQuality === undefined ? '1' : parseFloat(matchedQuality).toString(); // Remove trailing zeros.
+    const languageCode = matchedLanguageCode.toLowerCase()
+    const countryCode = matchedCountryCode ? matchedCountryCode.toUpperCase() : undefined
+    const quality = matchedQuality === undefined ? '1' : parseFloat(matchedQuality).toString() // Remove trailing zeros.
 
-    const locale = countryCode ? `${languageCode}-${countryCode}` : undefined;
+    const locale = countryCode ? `${languageCode}-${countryCode}` : undefined
 
-    return { locale, languageCode, quality };
+    return { locale, languageCode, quality }
   }
 
   /**
@@ -111,9 +111,9 @@ export default class LookupList {
    */
   private addLocale(quality: string, identifier: string): void {
     if (!this.localesAndLanguagesByQuality[quality]) {
-      this.localesAndLanguagesByQuality[quality] = new Set();
+      this.localesAndLanguagesByQuality[quality] = new Set()
     }
-    this.localesAndLanguagesByQuality[quality].add(identifier);
+    this.localesAndLanguagesByQuality[quality].add(identifier)
   }
 
   /**
@@ -124,9 +124,9 @@ export default class LookupList {
    */
   private addLanguage(quality: string, languageCode: string): void {
     if (!this.localesAndLanguagesByQuality[quality]) {
-      this.localesAndLanguagesByQuality[quality] = new Set();
+      this.localesAndLanguagesByQuality[quality] = new Set()
     }
-    this.localesAndLanguagesByQuality[quality].add(languageCode);
+    this.localesAndLanguagesByQuality[quality].add(languageCode)
   }
 
   /**
@@ -137,9 +137,9 @@ export default class LookupList {
    */
   private addRelatedLocaleLanguage(quality: string, languageCode: string): void {
     if (!this.relatedLocaleLanguagesByQuality[quality]) {
-      this.relatedLocaleLanguagesByQuality[quality] = new Set();
+      this.relatedLocaleLanguagesByQuality[quality] = new Set()
     }
-    this.relatedLocaleLanguagesByQuality[quality].add(languageCode);
+    this.relatedLocaleLanguagesByQuality[quality].add(languageCode)
   }
 
   /**
@@ -150,7 +150,7 @@ export default class LookupList {
    * @returns The top entry from a dataset object entries.
    */
   private getTop(dataObjectEntries: [string, Set<string>][]): string {
-    return dataObjectEntries.sort().reverse()[0][1].values().next().value as string;
+    return dataObjectEntries.sort().reverse()[0][1].values().next().value as string
   }
 
   /**
@@ -159,13 +159,13 @@ export default class LookupList {
    * @returns The top match, which can either be a locale or a language.
    */
   public getTopLocaleOrLanguage(): string | undefined {
-    const localesAndLanguagesByQuality = Object.entries(this.localesAndLanguagesByQuality);
+    const localesAndLanguagesByQuality = Object.entries(this.localesAndLanguagesByQuality)
 
     if (!localesAndLanguagesByQuality.length) {
-      return undefined;
+      return undefined
     }
 
-    return this.getTop(localesAndLanguagesByQuality);
+    return this.getTop(localesAndLanguagesByQuality)
   }
 
   /**
@@ -177,7 +177,7 @@ export default class LookupList {
    */
   public getTopByLanguage(languageCode: string): string | undefined {
     return this.localeList.objects.find((locale) => locale.languageCode === languageCode)
-      ?.identifier;
+      ?.identifier
   }
 
   /**
@@ -186,14 +186,14 @@ export default class LookupList {
    * @returns The top related locale.
    */
   public getTopRelatedLocale(): string | undefined {
-    const relatedLocaleLanguagesByQuality = Object.entries(this.relatedLocaleLanguagesByQuality);
+    const relatedLocaleLanguagesByQuality = Object.entries(this.relatedLocaleLanguagesByQuality)
 
     if (!relatedLocaleLanguagesByQuality.length) {
-      return undefined;
+      return undefined
     }
 
-    const topRelatedLocaleLanguage = this.getTop(relatedLocaleLanguagesByQuality);
+    const topRelatedLocaleLanguage = this.getTop(relatedLocaleLanguagesByQuality)
 
-    return this.getTopByLanguage(topRelatedLocaleLanguage);
+    return this.getTopByLanguage(topRelatedLocaleLanguage)
   }
 }

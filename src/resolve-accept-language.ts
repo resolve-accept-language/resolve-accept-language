@@ -1,14 +1,14 @@
-import Locale from './locale';
-import LookupList from './lookup-list';
+import Locale from './locale'
+import LookupList from './lookup-list'
 
 /** Resolve the preferred locale from an HTTP `Accept-Language` header. */
 export class ResolveAcceptLanguage {
   /** The locale-based match, if applicable. */
-  private localeBasedMatch: string | undefined;
+  private localeBasedMatch: string | undefined
   /** The language-based match, if applicable. */
-  private languageBasedMatch: string | undefined;
+  private languageBasedMatch: string | undefined
   /** The related-locale-based match, if applicable. */
-  private relatedLocaleBasedMatch: string | undefined;
+  private relatedLocaleBasedMatch: string | undefined
 
   /**
    * Create a new `ResolveAcceptLanguage` object.
@@ -20,18 +20,18 @@ export class ResolveAcceptLanguage {
    * likely to be matched than the last identifier.
    */
   constructor(acceptLanguageHeader: string, locales: string[]) {
-    const lookupList = new LookupList(acceptLanguageHeader, locales);
+    const lookupList = new LookupList(acceptLanguageHeader, locales)
 
-    const topLocaleOrLanguage = lookupList.getTopLocaleOrLanguage();
+    const topLocaleOrLanguage = lookupList.getTopLocaleOrLanguage()
 
     if (topLocaleOrLanguage !== undefined) {
       if (Locale.isLocale(topLocaleOrLanguage)) {
-        this.localeBasedMatch = topLocaleOrLanguage;
+        this.localeBasedMatch = topLocaleOrLanguage
       } else {
-        this.languageBasedMatch = lookupList.getTopByLanguage(topLocaleOrLanguage);
+        this.languageBasedMatch = lookupList.getTopByLanguage(topLocaleOrLanguage)
       }
     } else {
-      this.relatedLocaleBasedMatch = lookupList.getTopRelatedLocale();
+      this.relatedLocaleBasedMatch = lookupList.getTopRelatedLocale()
     }
   }
 
@@ -46,9 +46,9 @@ export class ResolveAcceptLanguage {
       this.languageBasedMatch !== undefined ||
       this.relatedLocaleBasedMatch !== undefined
     ) {
-      return true;
+      return true
     }
-    return false;
+    return false
   }
 
   /**
@@ -57,7 +57,7 @@ export class ResolveAcceptLanguage {
    * @returns True when there is no match, otherwise false.
    */
   public hasNoMatch(): boolean {
-    return !this.hasMatch();
+    return !this.hasMatch()
   }
 
   /**
@@ -66,7 +66,7 @@ export class ResolveAcceptLanguage {
    * @returns True if the best match locale-based, otherwise false.
    */
   public bestMatchIsLocaleBased(): boolean {
-    return this.localeBasedMatch !== undefined;
+    return this.localeBasedMatch !== undefined
   }
 
   /**
@@ -75,7 +75,7 @@ export class ResolveAcceptLanguage {
    * @returns True if the best match language-based, otherwise false.
    */
   public bestMatchIsLanguageBased(): boolean {
-    return this.languageBasedMatch !== undefined;
+    return this.languageBasedMatch !== undefined
   }
 
   /**
@@ -84,7 +84,7 @@ export class ResolveAcceptLanguage {
    * @returns True if the best match related-locale-based, otherwise false.
    */
   public bestMatchIsRelatedLocaleBased(): boolean {
-    return this.relatedLocaleBasedMatch !== undefined;
+    return this.relatedLocaleBasedMatch !== undefined
   }
 
   /**
@@ -94,14 +94,14 @@ export class ResolveAcceptLanguage {
    */
   public getBestMatch(): string | undefined {
     if (this.localeBasedMatch !== undefined) {
-      return this.localeBasedMatch;
+      return this.localeBasedMatch
     } else if (this.languageBasedMatch !== undefined) {
-      return this.languageBasedMatch;
+      return this.languageBasedMatch
     } else if (this.relatedLocaleBasedMatch !== undefined) {
-      return this.relatedLocaleBasedMatch;
+      return this.relatedLocaleBasedMatch
     }
 
-    return undefined;
+    return undefined
   }
 }
 
@@ -130,30 +130,30 @@ export default function resolveAcceptLanguage(
   locales: string[],
   defaultLocale: string
 ): string {
-  let localesIncludeDefault = false;
+  let localesIncludeDefault = false
 
   locales.forEach((locale) => {
     if (!Locale.isLocale(locale, false)) {
-      throw new Error(`invalid locale identifier '${locale}'`);
+      throw new Error(`invalid locale identifier '${locale}'`)
     }
     if (locale.toLowerCase() === defaultLocale.toLocaleLowerCase()) {
-      localesIncludeDefault = true;
+      localesIncludeDefault = true
     }
-  });
+  })
   if (!Locale.isLocale(defaultLocale, false)) {
-    throw new Error(`invalid default locale identifier '${defaultLocale}'`);
+    throw new Error(`invalid default locale identifier '${defaultLocale}'`)
   }
   if (!localesIncludeDefault) {
-    throw new Error('the default locale must be included in the locales');
+    throw new Error('the default locale must be included in the locales')
   }
 
-  const rankedLocales = [defaultLocale, ...locales.filter((locale) => locale !== defaultLocale)];
+  const rankedLocales = [defaultLocale, ...locales.filter((locale) => locale !== defaultLocale)]
 
-  const resolveAcceptLanguage = new ResolveAcceptLanguage(acceptLanguageHeader, rankedLocales);
+  const resolveAcceptLanguage = new ResolveAcceptLanguage(acceptLanguageHeader, rankedLocales)
 
   if (resolveAcceptLanguage.hasMatch()) {
-    return resolveAcceptLanguage.getBestMatch() as string;
+    return resolveAcceptLanguage.getBestMatch() as string
   }
 
-  return new Locale(defaultLocale).identifier;
+  return new Locale(defaultLocale).identifier
 }

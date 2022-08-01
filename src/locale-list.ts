@@ -1,14 +1,14 @@
-import Locale from './locale';
+import Locale from './locale'
 
 export default class LocaleList {
   /** A list of locale objects. */
-  public readonly objects: Locale[] = [];
+  public readonly objects: Locale[] = []
   /** A set of locale identifiers using the BCP 47 `language`-`country` case-normalized format. */
-  public readonly locales: Set<string> = new Set();
+  public readonly locales: Set<string> = new Set()
   /** A set of ISO 639-1 alpha-2 language codes. */
-  public readonly languages: Set<string> = new Set();
+  public readonly languages: Set<string> = new Set()
   /** A set of ISO 3166-1 alpha-2 country codes. */
-  public readonly countries: Set<string> = new Set();
+  public readonly countries: Set<string> = new Set()
 
   /**
    * Create a list of locale identifiers.
@@ -19,13 +19,13 @@ export default class LocaleList {
    */
   constructor(locales: string[]) {
     locales.forEach((locale) => {
-      const localeObject = new Locale(locale);
+      const localeObject = new Locale(locale)
       if (!this.locales.has(localeObject.identifier)) {
-        this.objects.push(localeObject);
-        this.locales.add(localeObject.identifier);
-        this.languages.add(localeObject.languageCode);
-        this.countries.add(localeObject.countryCode);
+        this.objects.push(localeObject)
+        this.locales.add(localeObject.identifier)
+        this.languages.add(localeObject.languageCode)
+        this.countries.add(localeObject.countryCode)
       }
-    });
+    })
   }
 }

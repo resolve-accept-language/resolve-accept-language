@@ -19,11 +19,11 @@ npm install resolve-accept-language
 Code example:
 
 ```ts
-import resolveAcceptLanguage from 'resolve-accept-language';
+import resolveAcceptLanguage from 'resolve-accept-language'
 
 console.log(
   resolveAcceptLanguage('fr-CA;q=0.01,en-CA;q=0.1,en-US;q=0.001', ['en-US', 'fr-CA'], 'en-US')
-);
+)
 ```
 
 Output:
@@ -37,7 +37,7 @@ fr-CA
 You may want to control exactly the behavior depending on the type of match. For example, you could want to display a language picker on your home page if the match is not satisfactory. In those cases, you will need to use the `ResolveAcceptLanguage` class instead. It offers more visibility into the selection process while matching a locale:
 
 ```ts
-import { ResolveAcceptLanguage } from 'resolve-accept-language';
+import { ResolveAcceptLanguage } from 'resolve-accept-language'
 
 /**
  * If you are planning to have a "default locale", make sure to add it first in the provided locale list.
@@ -47,23 +47,23 @@ import { ResolveAcceptLanguage } from 'resolve-accept-language';
 const resolveAcceptLanguage = new ResolveAcceptLanguage('fr-CA;q=0.01,en-CA;q=0.1,en-US;q=0.001', [
   'en-US',
   'fr-CA',
-]);
+])
 
 if (resolveAcceptLanguage.hasMatch()) {
-  const locale = resolveAcceptLanguage.getBestMatch() as string;
-  console.log(`A locale was matched: ${locale}`);
+  const locale = resolveAcceptLanguage.getBestMatch() as string
+  console.log(`A locale was matched: ${locale}`)
 
   if (resolveAcceptLanguage.bestMatchIsLocaleBased()) {
-    console.log('The match is locale-based');
+    console.log('The match is locale-based')
   } else if (resolveAcceptLanguage.bestMatchIsLanguageBased()) {
-    console.log('The match is language-based');
+    console.log('The match is language-based')
   } else if (resolveAcceptLanguage.bestMatchIsRelatedLocaleBased()) {
-    console.log('The match is related-locale-based');
+    console.log('The match is related-locale-based')
   }
 }
 
 if (resolveAcceptLanguage.hasNoMatch()) {
-  console.log('No match found :(');
+  console.log('No match found :(')
 }
 ```
 

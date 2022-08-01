@@ -4,16 +4,9 @@ env:
   browser: true
   node: true
   es6: true
-parser: '@typescript-eslint/parser'
-parserOptions:
-  project:
-    - 'tsconfig.json'
-    - 'tests/jest.json'
 extends:
   - eslint:recommended
   - plugin:import/recommended
-  - plugin:@typescript-eslint/recommended
-  - plugin:@typescript-eslint/recommended-requiring-type-checking
   - plugin:prettier/recommended
 settings:
   import/resolver:
@@ -46,6 +39,14 @@ overrides:
       - '*.mts'
       - '*.cts'
       - '*.tsx'
+    parser: '@typescript-eslint/parser'
+    parserOptions:
+      project:
+        - 'tsconfig.json'
+        - 'tests/jest.json'
+    extends:
+      - plugin:@typescript-eslint/recommended
+      - plugin:@typescript-eslint/recommended-requiring-type-checking
     rules:
       # Show errors when missing return types are missing on relevant functions
       '@typescript-eslint/explicit-function-return-type':
@@ -55,7 +56,5 @@ overrides:
   # Jest configurations
   - files:
       - tests/**
-    plugins:
-      - jest
     extends:
       - plugin:jest/recommended

@@ -4,8 +4,7 @@
     "module": "CommonJS",
     "declaration": true,
     "outDir": "lib/",
-    "strict": true,
-    "newLine": "LF"
+    "strict": true
   },
   "include": ["src/*.ts"]
 }

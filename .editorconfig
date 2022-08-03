@@ -5,6 +5,23 @@
 root = true
 
 [*]
-charset = utf-8             # Use UTF-8 encoding for everything
-end_of_line = lf            # Universal end of line sequence
-insert_final_newline = true # Newline ending for every file
+# Use UTF-8 encoding for everything
+charset = utf-8
+# Newline ending for every file
+insert_final_newline = true
+
+# -----------------------------
+#  Prettier-compatible options
+# -----------------------------
+
+# ⚠ do not use `end_of_line` - let the operating system deal with it.
+# `.gitattributes` will be used to normalize end of lines instead.
+
+# This will automatically map to Prettier's `useTabs: false` option.
+indent_style = space
+
+# This will automatically map to Prettier's `tabWidth: 2` option.
+tab_width = 2
+
+# This will automatically map to Prettier's `printWidth: 100` option.
+max_line_length = 100

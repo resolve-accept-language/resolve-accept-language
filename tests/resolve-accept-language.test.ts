@@ -68,7 +68,7 @@ describe('The `LookupList` class', () => {
       new LookupList('fr-CA;q=0.01,en-CA;q=0.1,en-US;q=0.001', ['fr-CA', 'en-CA']).getTopByLanguage(
         'es'
       )
-    ).toStrictEqual(undefined)
+    ).toBeUndefined()
   })
 
   it('returns the correct values using `getTopRelatedLocale`', () => {
@@ -80,12 +80,10 @@ describe('The `LookupList` class', () => {
       new LookupList('fr-FR;q=0.001,en-US', ['fr-CA', 'en-CA']).getTopRelatedLocale()
     ).toStrictEqual('en-CA')
 
-    expect(new LookupList('es-ES;q=0.01', ['fr-CA', 'en-CA']).getTopRelatedLocale()).toStrictEqual(
-      undefined
-    )
+    expect(new LookupList('es-ES;q=0.01', ['fr-CA', 'en-CA']).getTopRelatedLocale()).toBeUndefined()
 
-    expect(new LookupList('', ['fr-CA']).getTopRelatedLocale()).toStrictEqual(undefined)
-    expect(new LookupList('', []).getTopRelatedLocale()).toStrictEqual(undefined)
+    expect(new LookupList('', ['fr-CA']).getTopRelatedLocale()).toBeUndefined()
+    expect(new LookupList('', []).getTopRelatedLocale()).toBeUndefined()
   })
 })
 
@@ -107,7 +105,7 @@ describe('The `ResolveAcceptLanguage` class', () => {
     expect(resolveAcceptLanguage.bestMatchIsLocaleBased()).toStrictEqual(false)
     expect(resolveAcceptLanguage.bestMatchIsLanguageBased()).toStrictEqual(false)
     expect(resolveAcceptLanguage.bestMatchIsRelatedLocaleBased()).toStrictEqual(false)
-    expect(resolveAcceptLanguage.getBestMatch()).toStrictEqual(undefined)
+    expect(resolveAcceptLanguage.getBestMatch()).toBeUndefined()
   })
 
   it('methods returns the correct values when a match is "locale-based"', () => {

@@ -7,6 +7,7 @@ env:
 extends:
   - eslint:recommended
   - plugin:import/recommended
+  - plugin:unicorn/recommended
   - plugin:prettier/recommended
 settings:
   import/resolver:
@@ -22,12 +23,32 @@ settings:
       alwaysTryTypes: true
 rules:
   # Increase the level to 'error' for unused variables (the default is set to 'warning')
-  # @see https://typescript-eslint.io/rules/no-unused-vars/
-  '@typescript-eslint/no-unused-vars':
+  # @see https://eslint.org/docs/latest/rules/no-unused-vars
+  no-unused-vars:
     - error
-  # This check will only be enabled for TypeScript (the real configuration is in the 'overrides')
-  # @see https://typescript-eslint.io/rules/explicit-function-return-type/#configuring-in-a-mixed-jsts-codebase
-  '@typescript-eslint/explicit-function-return-type': 'off'
+    - args: all
+  # Checks all variable declaration blocks and verifies that all variables are sorted.
+  # @see https://eslint.org/docs/latest/rules/sort-vars
+  sort-vars:
+    - error
+    - ignoreCase: true
+  # Checks all property definitions of object expressions and verifies that all variables are sorted.
+  # @see https://eslint.org/docs/latest/rules/sort-keys
+  sort-keys:
+    - error
+    - asc
+    - caseSensitive: false
+      natural: true
+  # The Unicorn plugin comes with opinionated checks, including some that we prefer disabling.
+  'unicorn/no-array-for-each':
+    # Performance is no longer an issue - we prefer `forEach` for readability.
+    - off
+  'unicorn/numeric-separators-style':
+    # Doesn't add a lot of value and makes numbers look odd.
+    - off
+  'unicorn/prefer-type-error':
+    # Not really applicable when using TypeScript (mostly triggers false positives).
+    - off
 overrides:
   # TypeScript configurations
   - files:
@@ -44,11 +65,111 @@ overrides:
       - plugin:@typescript-eslint/recommended
       - plugin:@typescript-eslint/recommended-requiring-type-checking
     rules:
+      # Increase the level to 'error' for unused variables (the default is set to 'warning')
+      # @see https://typescript-eslint.io/rules/no-unused-vars/
+      no-unused-vars: off
+      '@typescript-eslint/no-unused-vars':
+        - error
       # Show errors when missing return types are missing on relevant functions
       '@typescript-eslint/explicit-function-return-type':
         - error
         - allowExpressions: true
           allowConciseArrowFunctionExpressionsStartingWithVoid: true
+      # Checks members (classes, interfaces, types) and applies consistent ordering.
+      # @see https://typescript-eslint.io/rules/member-ordering/
+      '@typescript-eslint/member-ordering':
+        - error
+        - default:
+            # There is no way to use the default configuration without copy/pasting it.
+            # @see https://github.com/typescript-eslint/typescript-eslint/issues/5452
+            memberTypes:
+              - signature
+              - public-static-field
+              - protected-static-field
+              - private-static-field
+              - public-decorated-field
+              - protected-decorated-field
+              - private-decorated-field
+              - public-instance-field
+              - protected-instance-field
+              - private-instance-field
+              - public-abstract-field
+              - protected-abstract-field
+              - private-abstract-field
+              - public-field
+              - protected-field
+              - private-field
+              - static-field
+              - instance-field
+              - abstract-field
+              - decorated-field
+              - field
+              - static-initialization
+              - public-constructor
+              - protected-constructor
+              - private-constructor
+              - constructor
+              - public-static-get
+              - protected-static-get
+              - private-static-get
+              - public-decorated-get
+              - protected-decorated-get
+              - private-decorated-get
+              - public-instance-get
+              - protected-instance-get
+              - private-instance-get
+              - public-abstract-get
+              - protected-abstract-get
+              - private-abstract-get
+              - public-get
+              - protected-get
+              - private-get
+              - static-get
+              - instance-get
+              - abstract-get
+              - decorated-get
+              - get
+              - public-static-set
+              - protected-static-set
+              - private-static-set
+              - public-decorated-set
+              - protected-decorated-set
+              - private-decorated-set
+              - public-instance-set
+              - protected-instance-set
+              - private-instance-set
+              - public-abstract-set
+              - protected-abstract-set
+              - private-abstract-set
+              - public-set
+              - protected-set
+              - private-set
+              - static-set
+              - instance-set
+              - abstract-set
+              - decorated-set
+              - set
+              - public-static-method
+              - protected-static-method
+              - private-static-method
+              - public-decorated-method
+              - protected-decorated-method
+              - private-decorated-method
+              - public-instance-method
+              - protected-instance-method
+              - private-instance-method
+              - public-abstract-method
+              - protected-abstract-method
+              - private-abstract-method
+              - public-method
+              - protected-method
+              - private-method
+              - static-method
+              - instance-method
+              - abstract-method
+              - decorated-method
+              - method
+            order: alphabetically-case-insensitive
   # Jest configurations
   - files:
       - tests/**

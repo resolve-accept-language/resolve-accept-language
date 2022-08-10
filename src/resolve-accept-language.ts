@@ -3,10 +3,10 @@ import LookupList from './lookup-list'
 
 /** Resolve the preferred locale from an HTTP `Accept-Language` header. */
 export class ResolveAcceptLanguage {
-  /** The locale-based match, if applicable. */
-  private localeBasedMatch: string | undefined
   /** The language-based match, if applicable. */
   private languageBasedMatch: string | undefined
+  /** The locale-based match, if applicable. */
+  private localeBasedMatch: string | undefined
   /** The related-locale-based match, if applicable. */
   private relatedLocaleBasedMatch: string | undefined
 
@@ -36,28 +36,12 @@ export class ResolveAcceptLanguage {
   }
 
   /**
-   * Was a match found when resolving the preferred locale?
+   * Is the best match language-based?
    *
-   * @returns True when a match is found, otherwise false.
+   * @returns True if the best match language-based, otherwise false.
    */
-  public hasMatch(): boolean {
-    if (
-      this.localeBasedMatch !== undefined ||
-      this.languageBasedMatch !== undefined ||
-      this.relatedLocaleBasedMatch !== undefined
-    ) {
-      return true
-    }
-    return false
-  }
-
-  /**
-   * Did the resolution of the preferred locale find no match?
-   *
-   * @returns True when there is no match, otherwise false.
-   */
-  public hasNoMatch(): boolean {
-    return !this.hasMatch()
+  public bestMatchIsLanguageBased(): boolean {
+    return this.languageBasedMatch !== undefined
   }
 
   /**
@@ -67,15 +51,6 @@ export class ResolveAcceptLanguage {
    */
   public bestMatchIsLocaleBased(): boolean {
     return this.localeBasedMatch !== undefined
-  }
-
-  /**
-   * Is the best match language-based?
-   *
-   * @returns True if the best match language-based, otherwise false.
-   */
-  public bestMatchIsLanguageBased(): boolean {
-    return this.languageBasedMatch !== undefined
   }
 
   /**
@@ -93,15 +68,25 @@ export class ResolveAcceptLanguage {
    * @returns The locale which was the best match.
    */
   public getBestMatch(): string | undefined {
-    if (this.localeBasedMatch !== undefined) {
-      return this.localeBasedMatch
-    } else if (this.languageBasedMatch !== undefined) {
-      return this.languageBasedMatch
-    } else if (this.relatedLocaleBasedMatch !== undefined) {
-      return this.relatedLocaleBasedMatch
-    }
+    return this.localeBasedMatch ?? this.languageBasedMatch ?? this.relatedLocaleBasedMatch
+  }
 
-    return undefined
+  /**
+   * Was a match found when resolving the preferred locale?
+   *
+   * @returns True when a match is found, otherwise false.
+   */
+  public hasMatch(): boolean {
+    return this.getBestMatch() !== undefined ? true : false
+  }
+
+  /**
+   * Did the resolution of the preferred locale find no match?
+   *
+   * @returns True when there is no match, otherwise false.
+   */
+  public hasNoMatch(): boolean {
+    return !this.hasMatch()
   }
 }
 

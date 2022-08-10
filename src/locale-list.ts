@@ -1,14 +1,14 @@
 import Locale from './locale'
 
 export default class LocaleList {
-  /** A list of locale objects. */
-  public readonly objects: Locale[] = []
-  /** A set of locale identifiers using the BCP 47 `language`-`country` case-normalized format. */
-  public readonly locales: Set<string> = new Set()
-  /** A set of ISO 639-1 alpha-2 language codes. */
-  public readonly languages: Set<string> = new Set()
   /** A set of ISO 3166-1 alpha-2 country codes. */
   public readonly countries: Set<string> = new Set()
+  /** A set of ISO 639-1 alpha-2 language codes. */
+  public readonly languages: Set<string> = new Set()
+  /** A set of locale identifiers using the BCP 47 `language`-`country` case-normalized format. */
+  public readonly locales: Set<string> = new Set()
+  /** A list of locale objects. */
+  public readonly objects: Locale[] = []
 
   /**
    * Create a list of locale identifiers.

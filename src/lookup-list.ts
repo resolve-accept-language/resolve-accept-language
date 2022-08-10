@@ -6,13 +6,13 @@ type DataObject = Record<string, Set<string>>
 /**
  * An object representing an HTTP `Accept-Language` header directive.
  *
- * @param locale - The locale identifier using the BCP 47 `language`-`country` case-normalized format.
  * @param languageCode - The ISO 639-1 alpha-2 language code.
+ * @param locale - The locale identifier using the BCP 47 `language`-`country` case-normalized format.
  * @param quality - The quality factor (default is 1; values can range from 0 to 1 with up to 3 decimals)
  */
 type Directive = {
-  locale?: string
   languageCode: string
+  locale?: string
   quality: string
 }
 
@@ -71,49 +71,47 @@ export default class LookupList {
   }
 
   /**
-   * Get a directive object from a directive string.
+   * Get the top (highest-ranked) locale by language.
    *
-   * @param directiveString - The string representing a directive, extracted from the HTTP header.
+   * @param languageCode - An ISO 639-1 alpha-2 language code.
    *
-   * @returns A `Directive` object or `undefined` if the string's format is invalid.
+   * @returns The top locale with the specified language.
    */
-  private getDirective(directiveString: string): Directive | undefined {
-    /**
-     * The regular expression is excluding certain directives due to the inability to configure those options in modern
-     * browsers today (also those options seem unpractical):
-     *
-     * - The wildcard character "*", as per RFC 2616 (section 14.4), should match any unmatched language tag.
-     * - Language tags that starts with a wildcard (e.g. "*-CA") should match the first supported locale of a country.
-     * - A quality value equivalent to "0", as per RFC 2616 (section 3.9), should be considered as "not acceptable".
-     */
-    const directiveMatch = directiveString.match(
-      /^((?<matchedLanguageCode>([A-Z]{2}))(-(?<matchedCountryCode>[A-Z]{2}))?)(;q=(?<matchedQuality>1|0.(\d*[1-9]\d*){1,3}))?$/i
-    )
-
-    if (!directiveMatch?.groups) return undefined // No regular expression match.
-
-    const { matchedLanguageCode, matchedCountryCode, matchedQuality } = directiveMatch.groups
-
-    const languageCode = matchedLanguageCode.toLowerCase()
-    const countryCode = matchedCountryCode ? matchedCountryCode.toUpperCase() : undefined
-    const quality = matchedQuality === undefined ? '1' : parseFloat(matchedQuality).toString() // Remove trailing zeros.
-
-    const locale = countryCode ? `${languageCode}-${countryCode}` : undefined
-
-    return { locale, languageCode, quality }
+  public getTopByLanguage(languageCode: string): string | undefined {
+    return this.localeList.objects.find((locale) => locale.languageCode === languageCode)
+      ?.identifier
   }
 
   /**
-   * Add a locale in the data object matching its quality.
+   * Get the top (highest-ranked) locale or language.
    *
-   * @param quality - The HTTP header's quality factor associated with a locale.
-   * @param identifier - A locale identifier using the BCP 47 `language`-`country` case-normalized format.
+   * @returns The top match, which can either be a locale or a language.
    */
-  private addLocale(quality: string, identifier: string): void {
-    if (!this.localesAndLanguagesByQuality[quality]) {
-      this.localesAndLanguagesByQuality[quality] = new Set()
+  public getTopLocaleOrLanguage(): string | undefined {
+    const localesAndLanguagesByQuality = Object.entries(this.localesAndLanguagesByQuality)
+
+    if (localesAndLanguagesByQuality.length === 0) {
+      return undefined
     }
-    this.localesAndLanguagesByQuality[quality].add(identifier)
+
+    return this.getTop(localesAndLanguagesByQuality)
+  }
+
+  /**
+   * Get the top (highest-ranked) related locale.
+   *
+   * @returns The top related locale.
+   */
+  public getTopRelatedLocale(): string | undefined {
+    const relatedLocaleLanguagesByQuality = Object.entries(this.relatedLocaleLanguagesByQuality)
+
+    if (relatedLocaleLanguagesByQuality.length === 0) {
+      return undefined
+    }
+
+    const topRelatedLocaleLanguage = this.getTop(relatedLocaleLanguagesByQuality)
+
+    return this.getTopByLanguage(topRelatedLocaleLanguage)
   }
 
   /**
@@ -130,6 +128,19 @@ export default class LookupList {
   }
 
   /**
+   * Add a locale in the data object matching its quality.
+   *
+   * @param quality - The HTTP header's quality factor associated with a locale.
+   * @param identifier - A locale identifier using the BCP 47 `language`-`country` case-normalized format.
+   */
+  private addLocale(quality: string, identifier: string): void {
+    if (!this.localesAndLanguagesByQuality[quality]) {
+      this.localesAndLanguagesByQuality[quality] = new Set()
+    }
+    this.localesAndLanguagesByQuality[quality].add(identifier)
+  }
+
+  /**
    * Add a related locale's language in the data object matching its quality.
    *
    * @param quality - The HTTP header's quality factor associated with a related locale's language.
@@ -143,6 +154,40 @@ export default class LookupList {
   }
 
   /**
+   * Get a directive object from a directive string.
+   *
+   * @param directiveString - The string representing a directive, extracted from the HTTP header.
+   *
+   * @returns A `Directive` object or `undefined` if the string's format is invalid.
+   */
+  private getDirective(directiveString: string): Directive | undefined {
+    /**
+     * The regular expression is excluding certain directives due to the inability to configure those options in modern
+     * browsers today (also those options seem unpractical):
+     *
+     * - The wildcard character "*", as per RFC 2616 (section 14.4), should match any unmatched language tag.
+     * - Language tags that starts with a wildcard (e.g. "*-CA") should match the first supported locale of a country.
+     * - A quality value equivalent to "0", as per RFC 2616 (section 3.9), should be considered as "not acceptable".
+     */
+    const directiveMatch = directiveString.match(
+      /^((?<matchedLanguageCode>([a-z]{2}))(-(?<matchedCountryCode>[a-z]{2}))?)(;q=(?<matchedQuality>1|0.(\d*[1-9]\d*){1,3}))?$/i
+    )
+
+    if (!directiveMatch?.groups) return undefined // No regular expression match.
+
+    const { matchedLanguageCode, matchedCountryCode, matchedQuality } = directiveMatch.groups
+
+    const languageCode = matchedLanguageCode.toLowerCase()
+    const countryCode = matchedCountryCode ? matchedCountryCode.toUpperCase() : undefined
+    const quality =
+      matchedQuality === undefined ? '1' : Number.parseFloat(matchedQuality).toString() // Remove trailing zeros.
+
+    const locale = countryCode ? `${languageCode}-${countryCode}` : undefined
+
+    return { languageCode, locale, quality }
+  }
+
+  /**
    * Get the top (highest-ranked) entry from a dataset object entries.
    *
    * @param dataObjectEntries - The object entries of a dataset object.
@@ -151,49 +196,5 @@ export default class LookupList {
    */
   private getTop(dataObjectEntries: [string, Set<string>][]): string {
     return dataObjectEntries.sort().reverse()[0][1].values().next().value as string
-  }
-
-  /**
-   * Get the top (highest-ranked) locale or language.
-   *
-   * @returns The top match, which can either be a locale or a language.
-   */
-  public getTopLocaleOrLanguage(): string | undefined {
-    const localesAndLanguagesByQuality = Object.entries(this.localesAndLanguagesByQuality)
-
-    if (!localesAndLanguagesByQuality.length) {
-      return undefined
-    }
-
-    return this.getTop(localesAndLanguagesByQuality)
-  }
-
-  /**
-   * Get the top (highest-ranked) locale by language.
-   *
-   * @param languageCode - An ISO 639-1 alpha-2 language code.
-   *
-   * @returns The top locale with the specified language.
-   */
-  public getTopByLanguage(languageCode: string): string | undefined {
-    return this.localeList.objects.find((locale) => locale.languageCode === languageCode)
-      ?.identifier
-  }
-
-  /**
-   * Get the top (highest-ranked) related locale.
-   *
-   * @returns The top related locale.
-   */
-  public getTopRelatedLocale(): string | undefined {
-    const relatedLocaleLanguagesByQuality = Object.entries(this.relatedLocaleLanguagesByQuality)
-
-    if (!relatedLocaleLanguagesByQuality.length) {
-      return undefined
-    }
-
-    const topRelatedLocaleLanguage = this.getTop(relatedLocaleLanguagesByQuality)
-
-    return this.getTopByLanguage(topRelatedLocaleLanguage)
   }
 }

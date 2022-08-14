@@ -1,12 +1,9 @@
-
-
 ## [1.1.15](https://github.com/Avansai/resolve-accept-language/compare/v1.1.14...v1.1.15) (2022-08-10)
-
 
 ### Bug Fixes
 
-* add end of line config for `tsc` ([85a76d7](https://github.com/Avansai/resolve-accept-language/commit/85a76d7ce925568bd1f795e09628af27c5b864d0))
-* associate the TypeScript ESLint config with its correct file types ([98c3cfb](https://github.com/Avansai/resolve-accept-language/commit/98c3cfb06b8bc9b6c6ed0167b4fcdcf6dd9a81c1))
+- add end of line config for `tsc` ([85a76d7](https://github.com/Avansai/resolve-accept-language/commit/85a76d7ce925568bd1f795e09628af27c5b864d0))
+- associate the TypeScript ESLint config with its correct file types ([98c3cfb](https://github.com/Avansai/resolve-accept-language/commit/98c3cfb06b8bc9b6c6ed0167b4fcdcf6dd9a81c1))
 
 ## [1.1.14](https://github.com/Avansai/resolve-accept-language/compare/v1.1.13...v1.1.14) (2022-08-01)
 

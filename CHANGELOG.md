@@ -1,12 +1,9 @@
-
-
 ## [1.1.16](https://github.com/Avansai/resolve-accept-language/compare/v1.1.15...v1.1.16) (2022-08-14)
-
 
 ### Bug Fixes
 
-* add missing ESLint `plugin:import/typescript` ([3ffb35f](https://github.com/Avansai/resolve-accept-language/commit/3ffb35fed43cbed6cf60378b4434291ec9c4ca18))
-* remove overly intrusive ESLint rules ([86815d0](https://github.com/Avansai/resolve-accept-language/commit/86815d0b7a6c4b6582f527a41d70db67f3e95416))
+- add missing ESLint `plugin:import/typescript` ([3ffb35f](https://github.com/Avansai/resolve-accept-language/commit/3ffb35fed43cbed6cf60378b4434291ec9c4ca18))
+- remove overly intrusive ESLint rules ([86815d0](https://github.com/Avansai/resolve-accept-language/commit/86815d0b7a6c4b6582f527a41d70db67f3e95416))
 
 ## [1.1.15](https://github.com/Avansai/resolve-accept-language/compare/v1.1.14...v1.1.15) (2022-08-10)
 

@@ -6,7 +6,7 @@ describe('The `Locale` class', () => {
   it('throws an error when an invalid locale is used', () => {
     expect(() => {
       new Locale('invalid')
-    }).toThrowError('invalid locale')
+    }).toThrow('invalid locale')
   })
 
   it('correctly validates locale identifiers using `isLocale`', () => {
@@ -39,7 +39,7 @@ describe('The `LookupList` class', () => {
   it('throws an error when is called with an invalid locale', () => {
     expect(() => {
       new LookupList('en-GB;q=0.8', ['invalid', 'en-CA'])
-    }).toThrowError('invalid locale')
+    }).toThrow('invalid locale')
   })
 
   it('returns the correct values using `getTopLocaleOrLanguage`', () => {
@@ -157,43 +157,43 @@ describe("`resolveAcceptLanguage`'s exception handler", () => {
   it('throws an error when an invalid locale is used in the supported locales', () => {
     expect(() => {
       resolveAcceptLanguage('en-GB;q=0.8', ['invalidLocale'], 'en-GB')
-    }).toThrowError('invalid locale')
+    }).toThrow('invalid locale')
 
     for (const invalidLanguage of invalidLanguages) {
       expect(() => {
         resolveAcceptLanguage('en-GB;q=0.8', [`${invalidLanguage}-GB`], 'en-GB')
-      }).toThrowError('invalid locale')
+      }).toThrow('invalid locale')
     }
 
     for (const invalidCountry of invalidCountries) {
       expect(() => {
         resolveAcceptLanguage('en-GB;q=0.8', [`en-${invalidCountry}`], 'en-GB')
-      }).toThrowError('invalid locale')
+      }).toThrow('invalid locale')
     }
   })
 
   it('throws an error when an invalid locale is used in the default locale', () => {
     expect(() => {
       resolveAcceptLanguage('en-GB;q=0.8', ['en-GB'], 'invalidLocale')
-    }).toThrowError('invalid default locale')
+    }).toThrow('invalid default locale')
 
     for (const invalidLanguage of invalidLanguages) {
       expect(() => {
         resolveAcceptLanguage('en-GB;q=0.8', ['en-GB'], `${invalidLanguage}-GB`)
-      }).toThrowError('invalid default locale')
+      }).toThrow('invalid default locale')
     }
 
     for (const invalidCountry of invalidCountries) {
       expect(() => {
         resolveAcceptLanguage('en-GB;q=0.8', ['en-GB'], `en-${invalidCountry}`)
-      }).toThrowError('invalid default locale')
+      }).toThrow('invalid default locale')
     }
   })
 
   it('throws an error when the default locale is not included in the supported locales', () => {
     expect(() => {
       resolveAcceptLanguage('en-GB;q=0.8', ['en-GB'], 'en-US')
-    }).toThrowError('default locale must')
+    }).toThrow('default locale must')
   })
 
   it('ignores duplicate supported locales', () => {

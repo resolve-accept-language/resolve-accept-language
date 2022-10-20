@@ -110,11 +110,11 @@ export class ResolveAcceptLanguage {
  *   'en-US'
  * )
  */
-export default function resolveAcceptLanguage(
+const resolveAcceptLanguage = (
   acceptLanguageHeader: string,
   locales: string[],
   defaultLocale: string
-): string {
+): string => {
   let localesIncludeDefault = false
 
   locales.forEach((locale) => {
@@ -142,3 +142,5 @@ export default function resolveAcceptLanguage(
 
   return new Locale(defaultLocale).identifier
 }
+
+export default resolveAcceptLanguage

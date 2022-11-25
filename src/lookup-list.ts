@@ -170,7 +170,7 @@ export default class LookupList {
      * - A quality value equivalent to "0", as per RFC 2616 (section 3.9), should be considered as "not acceptable".
      */
     const directiveMatch = directiveString.match(
-      /^((?<matchedLanguageCode>([a-z]{2}))(-(?<matchedCountryCode>[a-z]{2}))?)(;q=(?<matchedQuality>1|0.(\d*[1-9]\d*){1,3}))?$/i
+      /^((?<matchedLanguageCode>([a-z]{2}))(-(?<matchedCountryCode>[a-z]{2}))?)(;q=(?<matchedQuality>(1(\.0{0,3})?)|(0(\.\d{0,3})?)))?$/i
     )
 
     if (!directiveMatch?.groups) return undefined // No regular expression match.

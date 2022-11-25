@@ -285,6 +285,10 @@ describe("`resolveAcceptLanguage`'s lookup mechanism", () => {
         'en-US'
       )
     ).toEqual('en-CA')
+
+    expect(resolveAcceptLanguage('fr-CA;q=1.0,en-US;q=0.9', ['en-US', 'fr-CA'], 'en-US')).toEqual(
+      'fr-CA'
+    )
   })
 
   it('returns the correct locale based on language code quality', () => {

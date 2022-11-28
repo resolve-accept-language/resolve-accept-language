@@ -24,14 +24,14 @@ export class ResolveAcceptLanguage {
 
     const topLocaleOrLanguage = lookupList.getTopLocaleOrLanguage()
 
-    if (topLocaleOrLanguage !== undefined) {
+    if (topLocaleOrLanguage === undefined) {
+      this.relatedLocaleBasedMatch = lookupList.getTopRelatedLocale()
+    } else {
       if (Locale.isLocale(topLocaleOrLanguage)) {
         this.localeBasedMatch = topLocaleOrLanguage
       } else {
         this.languageBasedMatch = lookupList.getTopByLanguage(topLocaleOrLanguage)
       }
-    } else {
-      this.relatedLocaleBasedMatch = lookupList.getTopRelatedLocale()
     }
   }
 
@@ -77,7 +77,7 @@ export class ResolveAcceptLanguage {
    * @returns True when a match is found, otherwise false.
    */
   public hasMatch(): boolean {
-    return this.getBestMatch() !== undefined ? true : false
+    return this.getBestMatch() === undefined ? false : true
   }
 
   /**

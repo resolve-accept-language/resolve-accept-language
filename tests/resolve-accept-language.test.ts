@@ -229,6 +229,9 @@ describe("`resolveAcceptLanguage`'s lookup mechanism", () => {
     expect(resolveAcceptLanguage('fr-CA;q=1.1,en-CA;q=0.1', ['fr-CA', 'en-CA'], 'fr-CA')).toEqual(
       'en-CA'
     )
+    expect(
+      resolveAcceptLanguage('fr-CA;q=1.0000,en-CA;q=0.1', ['fr-CA', 'en-CA'], 'fr-CA')
+    ).toEqual('en-CA')
     expect(resolveAcceptLanguage('TEST,en-CA;q=0.01,INVALID', ['fr-CA', 'en-CA'], 'fr-CA')).toEqual(
       'en-CA'
     )
@@ -241,8 +244,26 @@ describe("`resolveAcceptLanguage`'s lookup mechanism", () => {
 
   it('returns the correct locale based on its position from the header', () => {
     expect(resolveAcceptLanguage('fr-CA,en-CA,it-IT', ['fr-CA'], 'fr-CA')).toEqual('fr-CA')
+    expect(resolveAcceptLanguage('fr-CA;q=1,en-CA;q=1.0,it-IT;q=1.00', ['fr-CA'], 'fr-CA')).toEqual(
+      'fr-CA'
+    )
+    expect(resolveAcceptLanguage('fr-CA;q=0,en-CA;q=0.0,it-IT;q=0.00', ['fr-CA'], 'fr-CA')).toEqual(
+      'fr-CA'
+    )
     expect(resolveAcceptLanguage('fr-CA,en-CA,it-IT', ['en-CA'], 'en-CA')).toEqual('en-CA')
+    expect(resolveAcceptLanguage('fr-CA;q=1,en-CA;q=1.0,it-IT;q=1.00', ['en-CA'], 'en-CA')).toEqual(
+      'en-CA'
+    )
+    expect(resolveAcceptLanguage('fr-CA;q=0,en-CA;q=0.0,it-IT;q=0.00', ['en-CA'], 'en-CA')).toEqual(
+      'en-CA'
+    )
     expect(resolveAcceptLanguage('fr-CA,en-CA,it-IT', ['it-IT'], 'it-IT')).toEqual('it-IT')
+    expect(resolveAcceptLanguage('fr-CA;q=1,en-CA;q=1.0,it-IT;q=1.00', ['it-IT'], 'it-IT')).toEqual(
+      'it-IT'
+    )
+    expect(resolveAcceptLanguage('fr-CA;q=0,en-CA;q=0.0,it-IT;q=0.00', ['it-IT'], 'it-IT')).toEqual(
+      'it-IT'
+    )
 
     expect(
       resolveAcceptLanguage('fr-CA,en-CA,it-IT', ['fr-CA', 'en-CA', 'it-IT', 'pl-PL'], 'pl-PL')

@@ -1,3 +1,9 @@
+## [1.1.34](https://github.com/Avansai/resolve-accept-language/compare/v1.1.33...v1.1.34) (2022-12-19)
+
+### Bug Fixes
+
+- correctly parse quality values of 1 as short floating points ([2439a06](https://github.com/Avansai/resolve-accept-language/commit/2439a06d7c117630fcfc7d61b43b01dba919a81c))
+
 ## [1.1.33](https://github.com/Avansai/resolve-accept-language/compare/v1.1.32...v1.1.33) (2022-12-19)
 
 ## [1.1.32](https://github.com/Avansai/resolve-accept-language/compare/v1.1.31...v1.1.32) (2022-12-11)

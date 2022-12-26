@@ -1,3 +1,5 @@
+## [1.1.35](https://github.com/Avansai/resolve-accept-language/compare/v1.1.34...v1.1.35) (2022-12-26)
+
 ## [1.1.34](https://github.com/Avansai/resolve-accept-language/compare/v1.1.33...v1.1.34) (2022-12-19)
 
 ### Bug Fixes

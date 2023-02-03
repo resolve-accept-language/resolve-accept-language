@@ -20,11 +20,15 @@ type Directive = {
 export default class LookupList {
   /** The list of locales used to get the match during the lookup. */
   private localeList: LocaleList
-  /** Data object where the properties are quality (in string format) and their values a set containing locale
-   * identifiers using the `language`-`country` format and ISO 639-1 alpha-2 language code. */
+  /**
+   * Data object where the properties are quality (in string format) and their values a set containing locale
+   * identifiers using the `language`-`country` format and ISO 639-1 alpha-2 language code.
+   */
   private localesAndLanguagesByQuality: DataObject = {}
-  /** Data object where the properties are quality (in string format) and their value a set of ISO 639-1 alpha-2
-   * language code. */
+  /**
+   * Data object where the properties are quality (in string format) and their value a set of ISO 639-1 alpha-2
+   * language code.
+   */
   private relatedLocaleLanguagesByQuality: DataObject = {}
 
   /**

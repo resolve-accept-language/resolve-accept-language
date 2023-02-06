@@ -2,26 +2,6 @@
   "name": "resolve-accept-language",
   "version": "1.1.41",
   "description": "Resolve the preferred locale based on the value of an `Accept-Language` HTTP header.",
-  "author": "Avansai (https://avansai.com)",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Avansai/resolve-accept-language.git"
-  },
-  "main": "lib/resolve-accept-language.js",
-  "types": "lib/resolve-accept-language.d.ts",
-  "scripts": {
-    "build": "npm run prettier && npm run lint-fix && rm -Rf ./lib && tsc && npm run test",
-    "lint-fix": "eslint --ext .js --ext .jsx --ext .ts --ext .tsx --fix .",
-    "lint-check": "eslint --ext .js --ext .jsx --ext .ts --ext .tsx .",
-    "lint-print-config": "eslint --print-config ./eslintrc.yaml",
-    "prettier": "prettier --write .",
-    "test": "jest --coverage",
-    "release": "dotenv -- release-it --only-version"
-  },
-  "license": "MIT",
-  "files": [
-    "lib"
-  ],
   "keywords": [
     "accept-language",
     "RFC 4647",
@@ -36,6 +16,26 @@
     "i18n",
     "internationalization"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Avansai/resolve-accept-language.git"
+  },
+  "license": "MIT",
+  "author": "Avansai (https://avansai.com)",
+  "main": "lib/resolve-accept-language.js",
+  "types": "lib/resolve-accept-language.d.ts",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "npm run prettier && npm run lint-fix && rm -Rf ./lib && tsc && npm run test",
+    "lint-check": "eslint --ext .js --ext .jsx --ext .ts --ext .tsx --ext .json .",
+    "lint-fix": "eslint --ext .js --ext .jsx --ext .ts --ext .tsx --ext .json --fix .",
+    "lint-print-config": "eslint --print-config ./eslintrc.yaml",
+    "prettier": "prettier --write .",
+    "release": "dotenv -- release-it --only-version",
+    "test": "jest --coverage"
+  },
   "devDependencies": {
     "@release-it/conventional-changelog": "^5.1.1",
     "@types/jest": "^29.4.0",
@@ -48,6 +48,7 @@
     "eslint-import-resolver-typescript": "^3.5.3",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-jest": "^27.2.1",
+    "eslint-plugin-json-files": "^2.1.0",
     "eslint-plugin-prefer-arrow-functions": "^3.1.4",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-tsdoc": "^0.2.17",

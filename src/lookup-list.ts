@@ -48,7 +48,9 @@ export default class LookupList {
     for (const directiveString of directiveStrings) {
       const directive = this.getDirective(directiveString)
 
-      if (directive === undefined) continue // No match for this directive.
+      if (directive === undefined) {
+        continue // No match for this directive.
+      }
 
       const { locale, languageCode, quality } = directive
 
@@ -177,7 +179,9 @@ export default class LookupList {
       /^((?<matchedLanguageCode>([a-z]{2}))(-(?<matchedCountryCode>[a-z]{2}))?)(;q=(?<matchedQuality>(1(\.0{0,3})?)|(0(\.\d{0,3})?)))?$/i
     )
 
-    if (!directiveMatch?.groups) return undefined // No regular expression match.
+    if (!directiveMatch?.groups) {
+      return undefined // No regular expression match.
+    }
 
     const { matchedLanguageCode, matchedCountryCode, matchedQuality } = directiveMatch.groups
 

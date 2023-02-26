@@ -34,6 +34,7 @@
     "lint-fix": "eslint --ext .js --ext .jsx --ext .ts --ext .tsx --ext .json --fix .",
     "lint-print-config": "eslint --print-config ./eslintrc.yaml",
     "prettier": "prettier --write .",
+    "pre-release": "dotenv -- release-it --only-version --preRelease",
     "release": "dotenv -- release-it --only-version",
     "test": "jest --coverage"
   },

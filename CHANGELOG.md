@@ -1,3 +1,9 @@
+## [1.1.45-0](https://github.com/Avansai/resolve-accept-language/compare/v1.1.44...v1.1.45-0) (2023-02-26)
+
+### Features
+
+- move package to esm ([3e3e94c](https://github.com/Avansai/resolve-accept-language/commit/3e3e94c80938a390fa251a720d7b52838f236f6c))
+
 ## [1.1.44](https://github.com/Avansai/resolve-accept-language/compare/v1.1.43...v1.1.44) (2023-02-25)
 
 ## [1.1.43](https://github.com/Avansai/resolve-accept-language/compare/v1.1.42...v1.1.43) (2023-02-18)

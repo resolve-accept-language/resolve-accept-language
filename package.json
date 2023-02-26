@@ -22,6 +22,7 @@
   },
   "license": "MIT",
   "author": "Avansai (https://avansai.com)",
+  "type": "module",
   "main": "lib/resolve-accept-language.js",
   "types": "lib/resolve-accept-language.d.ts",
   "files": [
@@ -42,7 +43,7 @@
     "@typescript-eslint/eslint-plugin": "^5.53.0",
     "@typescript-eslint/parser": "^5.53.0",
     "dotenv-cli": "^7.0.0",
-    "eslint": "^8.34.0",
+    "eslint": "^8.35.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-import-resolver-node": "^0.3.7",
     "eslint-import-resolver-typescript": "^3.5.3",

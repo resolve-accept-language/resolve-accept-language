@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "module": "CommonJS",
+    "target": "ES2015",
+    "module": "NodeNext",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
     "declaration": true,
     "outDir": "lib/",
     "strict": true

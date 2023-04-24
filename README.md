@@ -69,22 +69,17 @@ if (resolveAcceptLanguage.hasNoMatch()) {
 
 ## How does the resolver work?
 
-As per RFC 4647, this package uses the "lookup" matching scheme. This means that it will always produce exactly one match for a
-given request.
+As per RFC 4647, this package uses the "lookup" matching scheme. This means that it will always produce exactly one match for a given request.
 
 The matching strategy will use the following logic:
 
 1. The default locale (when provided) will always be put as the first locale being evaluated since it is considered the highest quality content available. Otherwise, the locales will be evaluated in the order provided, where the first is the highest quality and the last the lowest.
 2. All locales and languages are extracted from the HTTP header and sorted by quality factor. Locales and languages that are in the HTTP header but not in scope are discarded.
 3. Three different matching patterns (based on the HTTP header's quality factor and order of the provided locales):
-
    1. If there were any matches, get the highest-ranked (quality factor) locale or language code:
-
       1. **Locale-based match**: Is the highest-ranked a locale? If yes, this is the best match.
       2. **Language-based match**: Otherwise, find the first locale that matches the highest-ranked language.
-
    2. **Related-locale-based match**: If there is no match, find the first locale with a language that matches the highest-ranked language of locales that were not in scope. This is a bit of a "fuzzy match", but the presumption is that it's better to show content in a language that can be understood even if the country is wrong.
-
 4. When using `resolveAcceptLanguage` return the default locale as a last resort option.
 
 ## Why another `Accept-Language` package?

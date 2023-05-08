@@ -110,10 +110,10 @@ export class ResolveAcceptLanguage {
  *   'en-US'
  * )
  */
-const resolveAcceptLanguage = (
+const resolveAcceptLanguage = <TLocales extends readonly string[]>(
   acceptLanguageHeader: string,
-  locales: string[],
-  defaultLocale: string
+  locales: TLocales extends string[] ? TLocales[number][] : TLocales,
+  defaultLocale: TLocales[number]
 ): string => {
   let localesIncludeDefault = false
 

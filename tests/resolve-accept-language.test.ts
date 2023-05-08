@@ -265,9 +265,9 @@ describe("`resolveAcceptLanguage`'s lookup mechanism", () => {
       'it-IT'
     )
 
-    expect(
-      resolveAcceptLanguage('fr-CA,en-CA,it-IT', ['fr-CA', 'en-CA', 'it-IT', 'pl-PL'], 'pl-PL')
-    ).toEqual('fr-CA')
+    const locales = ['fr-CA', 'en-CA', 'it-IT', 'pl-PL'] as const
+
+    expect(resolveAcceptLanguage('fr-CA,en-CA,it-IT', locales, locales[0])).toEqual(locales[0])
 
     expect(
       resolveAcceptLanguage('en-CA,fr-CA,it-IT', ['fr-CA', 'en-CA', 'it-IT', 'pl-PL'], 'pl-PL')

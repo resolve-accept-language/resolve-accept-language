@@ -1,3 +1,9 @@
+## [1.1.55](https://github.com/Avansai/resolve-accept-language/compare/v1.1.54...v1.1.55) (2023-05-08)
+
+### Features
+
+- improve type inference (issue [#7](https://github.com/Avansai/resolve-accept-language/issues/7)) ([d40083f](https://github.com/Avansai/resolve-accept-language/commit/d40083fcafdb962e236aaf30388177148c90f61d))
+
 ## [1.1.54](https://github.com/Avansai/resolve-accept-language/compare/v1.1.53...v1.1.54) (2023-05-06)
 
 ## [1.1.53](https://github.com/Avansai/resolve-accept-language/compare/v1.1.52...v1.1.53) (2023-04-30)

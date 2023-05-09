@@ -1,3 +1,9 @@
+## [1.1.56](https://github.com/Avansai/resolve-accept-language/compare/v1.1.55...v1.1.56) (2023-05-09)
+
+### Bug Fixes
+
+- fix inferred return type related to [#7](https://github.com/Avansai/resolve-accept-language/issues/7) ([0f50fc6](https://github.com/Avansai/resolve-accept-language/commit/0f50fc650842f942cb2d4db0e356a7d11d46e082))
+
 ## [1.1.55](https://github.com/Avansai/resolve-accept-language/compare/v1.1.54...v1.1.55) (2023-05-08)
 
 ### Features

@@ -269,12 +269,10 @@ describe("`resolveAcceptLanguage`'s lookup mechanism", () => {
 
     expect(resolveAcceptLanguage('fr-CA,en-CA,it-IT', locales, locales[0])).toEqual(locales[0])
 
-    expect(
-      resolveAcceptLanguage('en-CA,fr-CA,it-IT', ['fr-CA', 'en-CA', 'it-IT', 'pl-PL'], 'pl-PL')
-    ).toEqual('en-CA')
+    expect(resolveAcceptLanguage('en-CA,fr-CA,it-IT', locales, 'pl-PL')).toEqual('en-CA')
 
     expect(
-      resolveAcceptLanguage('it-IT,en-CA,fr-CA', ['fr-CA', 'en-CA', 'it-IT', 'pl-PL'], 'pl-PL')
+      resolveAcceptLanguage('it-IT,en-CA,fr-CA', ['fr-CA', 'en-CA', 'it-IT', 'pl-PL'], locales[3])
     ).toEqual('it-IT')
   })
 

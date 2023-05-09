@@ -114,7 +114,7 @@ const resolveAcceptLanguage = <TLocales extends readonly string[]>(
   acceptLanguageHeader: string,
   locales: TLocales extends string[] ? TLocales[number][] : TLocales,
   defaultLocale: TLocales[number]
-): string => {
+): TLocales[number] => {
   let localesIncludeDefault = false
 
   locales.forEach((locale) => {

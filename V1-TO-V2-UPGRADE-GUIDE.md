@@ -1,16 +1,16 @@
-# V1 to V2 update guide
+# V1 to V2 upgrade guide
 
 ## Overview
 
 If you are only using the `resolveAcceptLanguage` API (not the class), you can skip this guide.
 
-If you are using the `ResolveAcceptLanguage` class, then we introduced breaking changes in version 2. This guide will help you migrate your code to the new APIs.
+If you are using the `ResolveAcceptLanguage` class, then we introduced breaking changes in version 2. This guide will help you upgrade your code to the new APIs.
 
 To improve typing and simplify the APIs, we have made the following changes:
 
 1. The constructor now requires to pass in a `defaultLocale` instead of relying on the order of the `locales`.
 2. The `getBestMatch` API has been renamed to `getMatch`.
-3. All other methods (e.g., `hasMatch`,`bestMatchIsLocaleBased`) were replaced by `getMatchType` which returns a `MATCH_TYPES` enum.
+3. All other methods (e.g., `hasMatch`, `bestMatchIsLocaleBased`) were replaced by `getMatchType` which returns a `MATCH_TYPES` enum.
 
 Here is a before/after comparison that will explain the changes:
 

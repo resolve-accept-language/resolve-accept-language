@@ -6,7 +6,7 @@
 
 ### BREAKING CHANGES
 
-- The class constructor now requires a default locale and all methods have been changed.
+- The class constructor now requires a default locale and all methods have been changed (see the [upgrade guide](./V1-TO-V2-UPGRADE-GUIDE.md)).
 
 ## [1.1.56](https://github.com/Avansai/resolve-accept-language/compare/v1.1.55...v1.1.56) (2023-05-09)
 

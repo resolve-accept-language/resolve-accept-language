@@ -2,7 +2,7 @@
 
 ## Overview
 
-If you are only using the `resolveAcceptLanguage` API (not the class), you can skip this guide.
+If you are only using the `resolveAcceptLanguage` API (not the class) you can skip this guide.
 
 If you are using the `ResolveAcceptLanguage` class, then we introduced breaking changes in version 2. This guide will help you upgrade your code to the new APIs.
 

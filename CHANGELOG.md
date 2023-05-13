@@ -1,3 +1,13 @@
+# [2.0.0](https://github.com/Avansai/resolve-accept-language/compare/v1.1.56...v2.0.0) (2023-05-13)
+
+### Features
+
+- improved typing on the `ResolveAcceptLanguage` class ([d033696](https://github.com/Avansai/resolve-accept-language/commit/d0336969c557cde80811841b4697ea368f42fb84)), closes [#7](https://github.com/Avansai/resolve-accept-language/issues/7) [#8](https://github.com/Avansai/resolve-accept-language/issues/8)
+
+### BREAKING CHANGES
+
+- The class constructor now requires a default locale and all methods have been changed.
+
 ## [1.1.56](https://github.com/Avansai/resolve-accept-language/compare/v1.1.55...v1.1.56) (2023-05-09)
 
 ### Bug Fixes

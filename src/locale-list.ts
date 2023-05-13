@@ -1,6 +1,6 @@
 import Locale from './locale'
 
-export default class LocaleList {
+export default class LocaleList<TLocales extends readonly string[]> {
   /** A set of ISO 3166-1 alpha-2 country codes. */
   public readonly countries: Set<string> = new Set()
   /** A set of ISO 639-1 alpha-2 language codes. */
@@ -17,7 +17,7 @@ export default class LocaleList {
    *
    * @throws Will throw an error if one of the locale's format is invalid.
    */
-  constructor(locales: string[]) {
+  constructor(locales: TLocales extends string[] ? TLocales[number][] : TLocales) {
     locales.forEach((locale) => {
       const localeObject = new Locale(locale)
       if (!this.locales.has(localeObject.identifier)) {

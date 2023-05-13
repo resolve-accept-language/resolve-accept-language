@@ -6,7 +6,7 @@
 ![Dependencies](https://img.shields.io/badge/dependencies-0-green)
 [![Known Vulnerabilities](https://snyk.io/test/github/Avansai/resolve-accept-language/badge.svg?targetFile=package.json)](https://snyk.io/test/github/Avansai/resolve-accept-language?targetFile=package.json)
 
-Resolve the preferred locale based on the value of an `Accept-Language` HTTP header.
+Resolve the best locale based on the value of an `Accept-Language` HTTP header.
 
 ## Usage
 
@@ -21,8 +21,20 @@ Code example:
 ```ts
 import resolveAcceptLanguage from 'resolve-accept-language'
 
+/**
+ * The API is well documented from within your IDE using TSDoc. The arguments are as follows:
+ *
+ * 1) The HTTP accept-language header.
+ * 2) The available locales (they must contain the default locale).
+ * 3) The default locale.
+ */
 console.log(
-  resolveAcceptLanguage('fr-CA;q=0.01,en-CA;q=0.1,en-US;q=0.001', ['en-US', 'fr-CA'], 'en-US')
+  resolveAcceptLanguage(
+    'fr-CA;q=0.01,en-CA;q=0.1,en-US;q=0.001',
+    // The `as const` is optional for TypeScript but gives better typing.
+    ['en-US', 'fr-CA'] as const,
+    'en-US'
+  )
 )
 ```
 
@@ -37,33 +49,24 @@ fr-CA
 You may want to control exactly the behavior depending on the type of match. For example, you could want to display a language picker on your home page if the match is not satisfactory. In those cases, you will need to use the `ResolveAcceptLanguage` class instead. It offers more visibility into the selection process while matching a locale:
 
 ```ts
-import { ResolveAcceptLanguage } from 'resolve-accept-language'
+import { MATCH_TYPES, ResolveAcceptLanguage } from 'resolve-accept-language'
 
-/**
- * If you are planning to have a "default locale", make sure to add it first in the provided locale list.
- * By doing this, your match result will be identical to `resolveAcceptLanguage` as it always checks the
- * default locale first.
- */
-const resolveAcceptLanguage = new ResolveAcceptLanguage('fr-CA;q=0.01,en-CA;q=0.1,en-US;q=0.001', [
-  'en-US',
-  'fr-CA',
-])
+const resolveAcceptLanguage = new ResolveAcceptLanguage(
+  'fr-CA;q=0.01,en-CA;q=0.1,en-US;q=0.001' as const,
+  ['en-US', 'fr-CA'],
+  'fr-CA'
+)
 
-if (resolveAcceptLanguage.hasMatch()) {
-  const locale = resolveAcceptLanguage.getBestMatch() as string
-  console.log(`A locale was matched: ${locale}`)
+console.log(`A locale was matched: ${resolveAcceptLanguage.getMatch()}`)
 
-  if (resolveAcceptLanguage.bestMatchIsLocaleBased()) {
-    console.log('The match is locale-based')
-  } else if (resolveAcceptLanguage.bestMatchIsLanguageBased()) {
-    console.log('The match is language-based')
-  } else if (resolveAcceptLanguage.bestMatchIsRelatedLocaleBased()) {
-    console.log('The match is related-locale-based')
-  }
-}
-
-if (resolveAcceptLanguage.hasNoMatch()) {
-  console.log('No match found :(')
+if (resolveAcceptLanguage.getMatchType() !== MATCH_TYPES.localeBased) {
+  console.log('The match is locale-based')
+} else if (resolveAcceptLanguage.getMatchType() !== MATCH_TYPES.languageBased) {
+  console.log('The match is language-based')
+} else if (resolveAcceptLanguage.getMatchType() !== MATCH_TYPES.relatedLocaleBased) {
+  console.log('The match is related-locale-based')
+} else if (resolveAcceptLanguage.getMatchType() !== MATCH_TYPES.defaultLocale) {
+  console.log('The match is the default locale')
 }
 ```
 

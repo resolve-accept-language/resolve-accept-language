@@ -1,9 +1,11 @@
+import { NormalizeLocale } from './resolve-accept-language'
+
 /** Class to manage a locale identifier using the BCP 47 `language`-`country` format. */
-export default class Locale {
+export default class Locale<TLocale extends string = string> {
   /** The ISO 3166-1 alpha-2 country code. */
   public readonly countryCode: string
   /** The locale identifier using the BCP 47 `language`-`country` case-normalized format. */
-  public readonly identifier: string
+  public readonly identifier: NormalizeLocale<TLocale>
   /** The ISO 639-1 alpha-2 language code. */
   public readonly languageCode: string
 
@@ -23,7 +25,7 @@ export default class Locale {
 
     this.languageCode = languageCode.toLowerCase()
     this.countryCode = countryCode.toUpperCase()
-    this.identifier = `${this.languageCode}-${this.countryCode}`
+    this.identifier = `${this.languageCode}-${this.countryCode}` as NormalizeLocale<TLocale>
   }
 
   /**

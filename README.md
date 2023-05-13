@@ -59,13 +59,13 @@ const resolveAcceptLanguage = new ResolveAcceptLanguage(
 
 console.log(`A locale was matched: ${resolveAcceptLanguage.getMatch()}`)
 
-if (resolveAcceptLanguage.getMatchType() !== MATCH_TYPES.localeBased) {
+if (resolveAcceptLanguage.getMatchType() === MATCH_TYPES.localeBased) {
   console.log('The match is locale-based')
-} else if (resolveAcceptLanguage.getMatchType() !== MATCH_TYPES.languageBased) {
+} else if (resolveAcceptLanguage.getMatchType() === MATCH_TYPES.languageBased) {
   console.log('The match is language-based')
-} else if (resolveAcceptLanguage.getMatchType() !== MATCH_TYPES.relatedLocaleBased) {
+} else if (resolveAcceptLanguage.getMatchType() === MATCH_TYPES.relatedLocaleBased) {
   console.log('The match is related-locale-based')
-} else if (resolveAcceptLanguage.getMatchType() !== MATCH_TYPES.defaultLocale) {
+} else if (resolveAcceptLanguage.getMatchType() === MATCH_TYPES.defaultLocale) {
   console.log('The match is the default locale')
 }
 ```

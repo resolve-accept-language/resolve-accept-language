@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/npm/l/make-coverage-badge.svg?color=brightgreen)](https://opensource.org/licenses/MIT)
 [![npm download](https://img.shields.io/npm/dw/resolve-accept-language.svg?color=brightgreen)](https://www.npmjs.com/package/resolve-accept-language)
-![Coverage](https://img.shields.io/badge/Coverage-100%-brightgreen.svg)
+![Coverage](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg)
 ![Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)
 [![Known Vulnerabilities](https://snyk.io/test/github/Avansai/resolve-accept-language/badge.svg?targetFile=package.json)](https://snyk.io/test/github/Avansai/resolve-accept-language?targetFile=package.json)
 

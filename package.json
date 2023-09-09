@@ -37,12 +37,12 @@
     "test": "jest --coverage"
   },
   "devDependencies": {
-    "@release-it/conventional-changelog": "7.0.0",
+    "@release-it/conventional-changelog": "7.0.1",
     "@types/jest": "29.5.4",
-    "@typescript-eslint/eslint-plugin": "6.5.0",
-    "@typescript-eslint/parser": "6.5.0",
+    "@typescript-eslint/eslint-plugin": "6.6.0",
+    "@typescript-eslint/parser": "6.6.0",
     "dotenv-cli": "7.3.0",
-    "eslint": "8.48.0",
+    "eslint": "8.49.0",
     "eslint-config-prettier": "9.0.0",
     "eslint-import-resolver-node": "0.3.9",
     "eslint-import-resolver-typescript": "3.6.0",

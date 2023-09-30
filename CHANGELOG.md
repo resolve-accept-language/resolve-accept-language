@@ -1,3 +1,9 @@
+# [2.1.0](https://github.com/Avansai/resolve-accept-language/compare/v2.0.19...v2.1.0) (2023-09-30)
+
+### Features
+
+- add support for es-419 when used in the HTTP header ([c4491aa](https://github.com/Avansai/resolve-accept-language/commit/c4491aaa2d1a34ebaa27306f89b64693df94793b))
+
 ## [2.0.19](https://github.com/Avansai/resolve-accept-language/compare/v2.0.18...v2.0.19) (2023-09-23)
 
 ## [2.0.18](https://github.com/Avansai/resolve-accept-language/compare/v2.0.17...v2.0.18) (2023-09-16)

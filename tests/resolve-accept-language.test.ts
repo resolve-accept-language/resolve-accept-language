@@ -325,4 +325,21 @@ describe("`resolveAcceptLanguage`'s lookup mechanism", () => {
       )
     ).toEqual('fr-CA')
   })
+
+  it('returns the correct matches for `es-419`', () => {
+    // Invalid "419" locales should be ignored.
+    expect(
+      resolveAcceptLanguage('fr-419;q=0.9,fr;q=0.8', ['en-US', 'es-ES', 'de-DE'], 'en-US')
+    ).toEqual('en-US')
+
+    // Default to European Spanish.
+    expect(
+      resolveAcceptLanguage('es-419;q=0.9,fr;q=0.8', ['en-US', 'es-ES', 'de-DE'], 'en-US')
+    ).toEqual('es-ES')
+
+    // Match to a Latin American Spanish variant (Spanish Mexico) over European Spanish.
+    expect(
+      resolveAcceptLanguage('es-419;q=0.9,fr;q=0.8', ['en-US', 'es-MX', 'es-ES', 'de-DE'], 'en-US')
+    ).toEqual('es-MX')
+  })
 })

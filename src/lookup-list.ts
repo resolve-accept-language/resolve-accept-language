@@ -56,6 +56,37 @@ export default class LookupList<TLocales extends readonly string[]> {
       .map((directiveString) => this.getDirective(directiveString.trim()))
       .filter((directive) => directive !== undefined) as Directive[]
 
+    // Check if 'es-419' exists in the directives
+    const es419DirectiveIndex = directives.findIndex((directive) => directive.locale === 'es-419')
+
+    if (es419DirectiveIndex >= 0) {
+      // Remove 'es-419' from the directive.
+      const es419Directive = directives[es419DirectiveIndex]
+      directives.splice(es419DirectiveIndex, 1)
+
+      // Replace `es-419` by the common Latin American spanish variants supported by browsers.
+      const latinAmericanLocales = [
+        'es-AR', // Spanish Argentina
+        'es-CL', // Spanish Chile
+        'es-CO', // Spanish Colombia
+        'es-CR', // Spanish Costa Rica
+        'es-HN', // Spanish Honduras
+        'es-MX', // Spanish Mexico
+        'es-PE', // Spanish Peru
+        'es-US', // Spanish United States
+        'es-UY', // Spanish Uruguay
+        'es-VE', // Spanish Venezuela
+      ]
+
+      latinAmericanLocales.forEach((locale) => {
+        directives.push({
+          languageCode: 'es',
+          locale: locale,
+          quality: es419Directive.quality,
+        })
+      })
+    }
+
     for (const directive of directives) {
       const { locale, languageCode, quality } = directive
 
@@ -173,9 +204,10 @@ export default class LookupList<TLocales extends readonly string[]> {
      * - The wildcard character "*", as per RFC 2616 (section 14.4), should match any unmatched language tag.
      * - Language tags that starts with a wildcard (e.g., "*-CA") should match the first supported locale of a country.
      * - A quality value equivalent to "0", as per RFC 2616 (section 3.9), should be considered as "not acceptable".
+     * - We hardcode the support for the `419` UN M49 code (as country code) representing Latin America to support `es-419`.
      */
     const directiveMatch = directiveString.match(
-      /^((?<matchedLanguageCode>([a-z]{2}))(-(?<matchedCountryCode>[a-z]{2}))?)(;q=(?<matchedQuality>(1(\.0{0,3})?)|(0(\.\d{0,3})?)))?$/i
+      /^((?<matchedLanguageCode>([a-z]{2}))(-(?<matchedCountryCode>[a-z]{2}|419))?)(;q=(?<matchedQuality>(1(\.0{0,3})?)|(0(\.\d{0,3})?)))?$/i
     )
 
     if (!directiveMatch?.groups) {
@@ -183,8 +215,15 @@ export default class LookupList<TLocales extends readonly string[]> {
     }
 
     const { matchedLanguageCode, matchedCountryCode, matchedQuality } = directiveMatch.groups
+
     const languageCode = matchedLanguageCode.toLowerCase()
     const countryCode = matchedCountryCode ? matchedCountryCode.toUpperCase() : undefined
+
+    // Only `es-419` is supported in browsers - if any other languages are using `419` we filter them out.
+    if (countryCode === '419' && languageCode !== 'es') {
+      return undefined
+    }
+
     const quality =
       matchedQuality === undefined ? '1' : Number.parseFloat(matchedQuality).toString() // Remove trailing zeros.
     const locale = countryCode ? `${languageCode}-${countryCode}` : undefined

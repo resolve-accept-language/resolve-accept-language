@@ -39,10 +39,10 @@
   "devDependencies": {
     "@release-it/conventional-changelog": "7.0.2",
     "@types/jest": "29.5.5",
-    "@typescript-eslint/eslint-plugin": "6.7.3",
-    "@typescript-eslint/parser": "6.7.3",
+    "@typescript-eslint/eslint-plugin": "6.7.5",
+    "@typescript-eslint/parser": "6.7.5",
     "dotenv-cli": "7.3.0",
-    "eslint": "8.50.0",
+    "eslint": "8.51.0",
     "eslint-config-prettier": "9.0.0",
     "eslint-import-resolver-node": "0.3.9",
     "eslint-import-resolver-typescript": "3.6.1",

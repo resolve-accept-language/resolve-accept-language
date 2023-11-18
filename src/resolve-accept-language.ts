@@ -94,10 +94,10 @@ export class ResolveAcceptLanguage<TLocales extends readonly string[] = string[]
     return this.localeBasedMatch
       ? MATCH_TYPES.localeBased
       : this.languageBasedMatch
-      ? MATCH_TYPES.languageBased
-      : this.relatedLocaleBasedMatch
-      ? MATCH_TYPES.relatedLocaleBased
-      : MATCH_TYPES.defaultLocale
+        ? MATCH_TYPES.languageBased
+        : this.relatedLocaleBasedMatch
+          ? MATCH_TYPES.relatedLocaleBased
+          : MATCH_TYPES.defaultLocale
   }
 
   /**

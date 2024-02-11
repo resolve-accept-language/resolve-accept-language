@@ -1,3 +1,5 @@
+## [2.1.17](https://github.com/Avansai/resolve-accept-language/compare/v2.1.16...v2.1.17) (2024-02-11)
+
 ## [2.1.16](https://github.com/Avansai/resolve-accept-language/compare/v2.1.15...v2.1.16) (2024-01-28)
 
 ## [2.1.15](https://github.com/Avansai/resolve-accept-language/compare/v2.1.14...v2.1.15) (2024-01-16)

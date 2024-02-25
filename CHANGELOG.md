@@ -1,26 +1,8 @@
-## [2.1.22](https://github.com/Avansai/resolve-accept-language/compare/v2.1.21...v2.1.22) (2024-02-25)
+## [2.1.19 to 2.1.22](https://github.com/Avansai/resolve-accept-language/compare/v2.1.19...v2.1.22) (2022-04-24)
 
 ### Bug Fixes
 
-- resolve dual CJS/ESM package compatibility ([5d857f8](https://github.com/Avansai/resolve-accept-language/commit/5d857f8fb6ae34872066027e630dccbd99715962))
-
-## [2.1.21](https://github.com/Avansai/resolve-accept-language/compare/v2.1.20...v2.1.21) (2024-02-25)
-
-### Bug Fixes
-
-- resolve dual CJS/ESM package compatibility ([71b22f3](https://github.com/Avansai/resolve-accept-language/commit/71b22f3b921146fce620e3a6f189b9b519d5c848))
-
-## [2.1.20](https://github.com/Avansai/resolve-accept-language/compare/v2.1.19...v2.1.20) (2024-02-25)
-
-### Bug Fixes
-
-- resolve dual CJS/ESM package compatibility ([51f3983](https://github.com/Avansai/resolve-accept-language/commit/51f3983438ce904e7b824373ff48b2da45b2d3ef))
-
-## [2.1.19](https://github.com/Avansai/resolve-accept-language/compare/v2.1.18...v2.1.19) (2024-02-25)
-
-### Bug Fixes
-
-- resolve dual CJS/ESM package compatibility ([310da9f](https://github.com/Avansai/resolve-accept-language/commit/310da9f9b0134a0d04267aa5dc53d06adcb97bc5))
+- resolve dual CJS/ESM package compatibility that broke at version 2.1.18 ([5d857f8](https://github.com/Avansai/resolve-accept-language/commit/5d857f8fb6ae34872066027e630dccbd99715962))
 
 ## [2.1.18](https://github.com/Avansai/resolve-accept-language/compare/v2.1.17...v2.1.18) (2024-02-25)
 

@@ -23,14 +23,14 @@
   "license": "MIT",
   "author": "Avansai (https://avansai.com)",
   "type": "module",
-  "main": "lib/cjs/resolve-accept-language.js",
+  "main": "lib/cjs/resolve-accept-language.cjs",
   "module": "lib/esm/resolve-accept-language.js",
   "types": "lib/esm/resolve-accept-language.d.ts",
   "files": [
     "lib"
   ],
   "scripts": {
-    "build": "npm run prettier && npm run lint-fix && rm -Rf ./lib && tsc -p tsconfig.cjs.json && tsc -p tsconfig.esm.json && npm run test",
+    "build": "npm run prettier && npm run lint-fix && rm -Rf ./lib && tsc -p tsconfig.cjs.json && tsc -p tsconfig.esm.json && echo '{ \"type\": \"commonjs\" }' > lib/cjs/package.json && npm run test",
     "lint-check": "eslint --ext .js --ext .jsx --ext .ts --ext .tsx --ext .json .",
     "lint-fix": "eslint --fix .",
     "lint-print-config": "eslint --print-config ./eslintrc.yaml",

@@ -213,8 +213,10 @@ export default [
       ],
     },
   },
-  // Files to ignore (replaces `.eslintignore`)
+  // Files to ignore (replaces `.eslintignore`).
   {
+    // ESLint ignores `node_modules` and dot-files by default.
+    // @see https://eslint.org/docs/latest/user-guide/configuring/ignoring-code
     ignores: ['coverage/*', 'lib/*'],
   },
 ]

@@ -23,7 +23,7 @@
   "license": "MIT",
   "author": "Avansai (https://avansai.com)",
   "type": "module",
-  "main": "lib/cjs/resolve-accept-language.cjs",
+  "main": "lib/cjs/resolve-accept-language.js",
   "module": "lib/esm/resolve-accept-language.js",
   "types": "lib/esm/resolve-accept-language.d.ts",
   "files": [

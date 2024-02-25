@@ -1,4 +1,4 @@
-## [2.1.19 to 2.1.22](https://github.com/Avansai/resolve-accept-language/compare/v2.1.19...v2.1.22) (2022-02-24)
+## [2.1.19 to 2.1.22](https://github.com/Avansai/resolve-accept-language/compare/v2.1.19...v2.1.22) (2022-02-25)
 
 ### Bug Fixes
 

@@ -1,6 +1,6 @@
 {
   "name": "resolve-accept-language",
-  "version": "2.1.19",
+  "version": "2.1.20",
   "description": "Resolve the preferred locale based on the value of an `Accept-Language` HTTP header.",
   "keywords": [
     "accept-language",

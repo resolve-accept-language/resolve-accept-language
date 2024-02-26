@@ -1,3 +1,9 @@
+## [2.1.23](https://github.com/Avansai/resolve-accept-language/compare/v2.1.22...v2.1.23) (2024-02-26)
+
+### Bug Fixes
+
+- **eslint:** resolve import issue for JS files ([c6153ff](https://github.com/Avansai/resolve-accept-language/commit/c6153ff7c8c8c38d5d65efbca75a96f83159bab6))
+
 ## [2.1.19 to 2.1.22](https://github.com/Avansai/resolve-accept-language/compare/v2.1.19...v2.1.22) (2022-02-25)
 
 ### Bug Fixes

@@ -25,12 +25,18 @@ const JAVASCRIPT_FILES = ['**/*.js', '**/*.jsx', '**/*.mjs', '**/*.cjs']
 const TYPESCRIPT_FILES = ['**/*.ts', '**/*.mts', '**/*.cts', '**/*.tsx']
 
 export default [
-  // Enable Node.js specific globals.
-  // @see https://eslint.org/docs/latest/use/configure/migration-guide
+  // Base configuration.
   {
     languageOptions: {
+      // Enable Node.js specific globals.
+      // @see https://eslint.org/docs/latest/use/configure/migration-guide
       globals: {
         ...globals.node,
+      },
+      parserOptions: {
+        // Use the latest ECMAScript features.
+        ecmaVersion: 'latest',
+        sourceType: 'module',
       },
     },
   },
@@ -106,6 +112,13 @@ export default [
     files: JAVASCRIPT_FILES,
     plugins: {
       jsdoc: jsdocPlugin,
+      plugins: { import: importPlugin },
+    },
+    settings: {
+      // Fixes https://github.com/import-js/eslint-plugin-import/issues/2556
+      'import/parsers': {
+        espree: JAVASCRIPT_FILES.map((pattern) => pattern.replace('**/*', '')),
+      },
     },
     rules: {
       ...jsPlugin.configs.recommended.rules,

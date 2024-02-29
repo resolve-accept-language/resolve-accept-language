@@ -43,9 +43,7 @@
   ],
   "scripts": {
     "build": "npm run prettier && npm run lint-fix && rm -Rf ./lib && tsc -p tsconfig.cjs.json && tsc -p tsconfig.esm.json && echo '{ \"type\": \"commonjs\" }' > lib/cjs/package.json && npm run test",
-    "lint-check": "eslint --ext .js --ext .jsx --ext .ts --ext .tsx --ext .json .",
     "lint-fix": "eslint --fix .",
-    "lint-print-config": "eslint --print-config ./eslintrc.yaml",
     "prettier": "prettier --write .",
     "release": "dotenv -- release-it --only-version",
     "test": "jest --coverage"

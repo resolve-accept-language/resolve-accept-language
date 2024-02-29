@@ -50,8 +50,8 @@ export default [
   {
     files: [...TYPESCRIPT_FILES, ...JAVASCRIPT_FILES],
     plugins: {
-      'prefer-arrow-functions': preferArrowFunctionsPlugin,
       import: importPlugin,
+      'prefer-arrow-functions': preferArrowFunctionsPlugin,
     },
     settings: {
       // Fixes https://github.com/import-js/eslint-plugin-import/issues/2556
@@ -68,6 +68,17 @@ export default [
     },
     rules: {
       ...importPlugin.configs.recommended.rules,
+      'prefer-arrow-functions/prefer-arrow-functions': [
+        // There is no recommended configuration to extend so we have to set it here to enforce arrow functions.
+        // @see https://github.com/JamieMason/eslint-plugin-prefer-arrow-functions
+        'warn',
+        {
+          classPropertiesAllowed: false,
+          disallowPrototype: false,
+          returnStyle: 'unchanged',
+          singleReturnOnly: false,
+        },
+      ],
       // Make sure there is always a space before comments.
       // @see https://eslint.org/docs/latest/rules/spaced-comment
       'spaced-comment': ['error'],
@@ -109,17 +120,6 @@ export default [
         // Add little value and would require polyfills for engines older than ES2022.
         'off',
       ],
-      'prefer-arrow-functions/prefer-arrow-functions': [
-        // There is no recommended configuration to extend so we have to set it here to enforce arrow functions.
-        // @see https://github.com/JamieMason/eslint-plugin-prefer-arrow-functions
-        'warn',
-        {
-          classPropertiesAllowed: false,
-          disallowPrototype: false,
-          returnStyle: 'unchanged',
-          singleReturnOnly: false,
-        },
-      ],
     },
   },
   // JavaScript files.
@@ -129,8 +129,10 @@ export default [
       jsdoc: jsdocPlugin,
     },
     rules: {
-      ...jsPlugin.configs.recommended.rules,
       ...jsdocPlugin.configs.recommended.rules,
+      // ESLint recommended rules (no plugins config required).
+      // @see https://www.npmjs.com/package/@eslint/js
+      ...jsPlugin.configs.recommended.rules,
       // Increase the level to 'error' for unused variables (the default is set to 'warning').
       // @see https://eslint.org/docs/latest/rules/no-unused-vars
       'no-unused-vars': ['error', { args: 'all' }],
@@ -140,9 +142,9 @@ export default [
   {
     files: TYPESCRIPT_FILES,
     plugins: {
+      import: importPlugin,
       tsdoc: tsdocPlugin,
       '@typescript-eslint': tsPlugin,
-      import: importPlugin,
     },
     languageOptions: {
       parser: tsParser,
@@ -152,11 +154,11 @@ export default [
     },
     rules: {
       ...importPlugin.configs.typescript.rules,
-      ...tsPlugin.configs.recommended.rules,
-      ...tsPlugin.configs['recommended-requiring-type-checking'].rules,
       // Validates that TypeScript doc comments conform to the TSDoc specification.
       // @see https://tsdoc.org/pages/packages/eslint-plugin-tsdoc/
       'tsdoc/syntax': 'warn',
+      ...tsPlugin.configs.recommended.rules,
+      ...tsPlugin.configs['recommended-requiring-type-checking'].rules,
       // Enforces explicit return types on functions and class methods to avoid unintentionally breaking contracts.
       // @see https://typescript-eslint.io/rules/explicit-module-boundary-types/
       '@typescript-eslint/explicit-function-return-type': 'error',
@@ -202,17 +204,14 @@ export default [
   // Jest.
   {
     files: ['tests/**/*.test.ts'],
-    plugins: {
-      jest: jestPlugin,
-    },
+    plugins: jestPlugin.configs['flat/recommended'].plugins,
     languageOptions: {
+      ...jestPlugin.configs['flat/recommended'].languageOptions,
       parserOptions: {
         project: ['tests/jest.json'],
       },
     },
-    rules: {
-      ...jestPlugin.configs.recommended.rules,
-    },
+    rules: jestPlugin.configs['flat/recommended'].rules,
   },
   // Rules applying to all files.
   {

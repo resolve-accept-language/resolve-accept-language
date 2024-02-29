@@ -54,13 +54,16 @@ export default [
       import: importPlugin,
     },
     settings: {
+      // Fixes https://github.com/import-js/eslint-plugin-import/issues/2556
+      'import/parsers': {
+        espree: [
+          ...JAVASCRIPT_FILES.map((pattern) => pattern.replace('**/*', '')),
+          TYPESCRIPT_FILES.map((pattern) => pattern.replace('**/*', '')),
+        ],
+      },
       'import/resolver': {
+        typescript: true,
         node: true,
-        typescript: {
-          // Uses `eslint-import-resolver-typescript` to support the `exports` syntax in `package.json`.
-          // @see https://github.com/import-js/eslint-import-resolver-typescript
-          alwaysTryTypes: true,
-        },
       },
     },
     rules: {
@@ -94,6 +97,18 @@ export default [
         // @see https://github.com/sindresorhus/eslint-plugin-unicorn/issues/2285
         'off',
       ],
+      'unicorn/prefer-string-replace-all': [
+        // Add little value and would require polyfills for engines older than ES2021.
+        'off',
+      ],
+      'unicorn/prefer-at': [
+        // Add little value and would require polyfills for engines older than ES2022.
+        'off',
+      ],
+      'unicorn/prefer-top-level-await': [
+        // Add little value and would require polyfills for engines older than ES2022.
+        'off',
+      ],
       'prefer-arrow-functions/prefer-arrow-functions': [
         // There is no recommended configuration to extend so we have to set it here to enforce arrow functions.
         // @see https://github.com/JamieMason/eslint-plugin-prefer-arrow-functions
@@ -112,13 +127,6 @@ export default [
     files: JAVASCRIPT_FILES,
     plugins: {
       jsdoc: jsdocPlugin,
-      plugins: { import: importPlugin },
-    },
-    settings: {
-      // Fixes https://github.com/import-js/eslint-plugin-import/issues/2556
-      'import/parsers': {
-        espree: JAVASCRIPT_FILES.map((pattern) => pattern.replace('**/*', '')),
-      },
     },
     rules: {
       ...jsPlugin.configs.recommended.rules,
@@ -162,12 +170,6 @@ export default [
           },
         },
       ],
-    },
-    settings: {
-      'import/resolver': {
-        typescript: true,
-        node: true,
-      },
     },
   },
   // JSON files.

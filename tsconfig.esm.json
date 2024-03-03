@@ -4,5 +4,6 @@
     "module": "ESNext",
     "outDir": "lib/esm",
     "moduleResolution": "node"
-  }
+  },
+  "exclude": ["src/build-scripts"]
 }

@@ -86,6 +86,10 @@ export default [
       // @see https://eslint.org/docs/latest/rules/curly
       curly: ['error'],
       // The Unicorn plugin comes with opinionated checks, including some that we prefer disabling.
+      'unicorn/no-array-reduce': [
+        // 'reduce' is a powerful method for functional programming patterns, use it when appropriate.
+        'off',
+      ],
       'unicorn/no-array-for-each': [
         // Performance is no longer an issue - we prefer `forEach` for readability.
         'off',

@@ -42,17 +42,21 @@
     "lib"
   ],
   "scripts": {
-    "build": "npm run prettier && npm run lint-fix && rm -Rf ./lib && tsc -p tsconfig.cjs.json && tsc -p tsconfig.esm.json && echo '{ \"type\": \"commonjs\" }' > lib/cjs/package.json && npm run test",
+    "build": "npm run prettier && npm run lint-fix && rm -Rf ./lib && tsc -p tsconfig.cjs.json && tsc -p tsconfig.esm.json && echo '{ \"type\": \"commonjs\" }' > lib/cjs/package.json && tsc -p tsconfig.build-scripts.json && node lib/build-scripts/build.js && npm run test",
+    "depcheck": "depcheck",
     "lint-fix": "eslint --fix .",
     "prettier": "prettier --write .",
     "release": "dotenv -- release-it --only-version",
     "test": "jest --coverage"
   },
   "devDependencies": {
+    "@eslint/js": "^8.57.0",
     "@release-it/conventional-changelog": "8.0.1",
     "@types/jest": "29.5.12",
+    "@types/node": "^20.11.24",
     "@typescript-eslint/eslint-plugin": "7.1.0",
     "@typescript-eslint/parser": "7.1.0",
+    "depcheck": "^1.4.7",
     "dotenv-cli": "7.3.0",
     "eslint": "8.57.0",
     "eslint-config-prettier": "9.1.0",
@@ -73,8 +77,8 @@
     "prettier-plugin-organize-imports": "3.2.4",
     "prettier-plugin-sh": "0.14.0",
     "release-it": "17.1.1",
+    "terser": "^5.28.1",
     "ts-jest": "29.1.2",
-    "ts-node": "10.9.2",
     "typescript": "5.3.3"
   },
   "engines": {

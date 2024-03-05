@@ -1,3 +1,19 @@
+# [3.0.0](https://github.com/Avansai/resolve-accept-language/compare/v2.2.0...v3.0.0) (2024-03-05)
+
+### Features
+
+- major update for improved extensibility and simplicity ([38011b3](https://github.com/Avansai/resolve-accept-language/commit/38011b33aacbd11e0043a42a54e262d033535f66))
+
+### BREAKING CHANGES
+
+- This commit introduces several breaking changes to improve the library's extensibility and simplicity:
+
+* `resolveAcceptLanguage` is now a named import for better dual (CommonJS/ESM) compatibility.
+* `resolveAcceptLanguage` now accepts an `options` argument.
+* The `ResolveAcceptLanguage` class has been replaced with `resolveAcceptLanguage` used with the `{ returnMatchType: true }` option.
+* Introduced a new match type, `languageSpecificLocale`, for more intelligent matches. See the README for more details.
+* Renamed match types for consistency: `localeBased` to `locale`, `languageBased` to `language`, and `relatedLocaleBased` to `relatedLocale`.
+
 # [2.2.0](https://github.com/Avansai/resolve-accept-language/compare/v2.1.23...v2.2.0) (2024-03-03)
 
 ### Bug Fixes

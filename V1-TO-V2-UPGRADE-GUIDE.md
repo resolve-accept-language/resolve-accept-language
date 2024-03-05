@@ -12,7 +12,7 @@ To improve typing and simplify the APIs, we have made the following changes:
 2. The `getBestMatch` API has been renamed to `getMatch`.
 3. All other methods (e.g., `hasMatch`, `bestMatchIsLocaleBased`) were replaced by `getMatchType` which returns a `MATCH_TYPES` enum.
 
-Here is a before/after comparison that will explain the changes:
+Here is a before/after comparison that will illustrate the changes:
 
 ### Before
 

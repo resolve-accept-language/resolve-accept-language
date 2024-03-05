@@ -1,9 +1,5 @@
-import Locale from '../src/locale'
-import LookupList from '../src/lookup-list'
-import resolveAcceptLanguage, {
-  MATCH_TYPES,
-  ResolveAcceptLanguage,
-} from '../src/resolve-accept-language'
+import { MATCH_TYPES, resolveAcceptLanguage } from '../src'
+import { Locale, isLocale } from '../src/locales'
 
 describe('The `Locale` class', () => {
   it('throws an error when an invalid locale is used', () => {
@@ -13,126 +9,55 @@ describe('The `Locale` class', () => {
   })
 
   it('correctly validates locale identifiers using `isLocale`', () => {
-    expect(Locale.isLocale('not a locale')).toBe(false)
-    expect(Locale.isLocale('en')).toBe(false)
-    expect(Locale.isLocale('US')).toBe(false)
-    expect(Locale.isLocale('en-us')).toBe(false)
-    expect(Locale.isLocale('en-us', false)).toBe(true)
-    expect(Locale.isLocale('en-US')).toBe(true)
-  })
-
-  it('correctly validates ISO 639-1 alpha-2 language codes using `isLanguageCode`', () => {
-    expect(Locale.isLanguageCode('not a language code')).toBe(false)
-    expect(Locale.isLanguageCode('1')).toBe(false)
-    expect(Locale.isLanguageCode('EN')).toBe(false)
-    expect(Locale.isLanguageCode('EN', false)).toBe(true)
-    expect(Locale.isLanguageCode('en')).toBe(true)
-  })
-
-  it('correctly validates ISO 3166-1 alpha-2 country codes using `isCountryCode`', () => {
-    expect(Locale.isCountryCode('not a country code')).toBe(false)
-    expect(Locale.isCountryCode('1')).toBe(false)
-    expect(Locale.isCountryCode('us')).toBe(false)
-    expect(Locale.isCountryCode('us', false)).toBe(true)
-    expect(Locale.isCountryCode('US')).toBe(true)
-  })
-})
-
-describe('The `LookupList` class', () => {
-  it('throws an error when is called with an invalid locale', () => {
-    expect(() => {
-      new LookupList('en-GB;q=0.8', ['invalid', 'en-CA'], 'invalid')
-    }).toThrow('invalid locale')
-  })
-
-  it('returns the correct values using `getLocaleBasedMatch`', () => {
-    expect(
-      new LookupList(
-        'fr-CA;q=0.01,en-CA;q=0.1,en-US;q=0.001',
-        ['fr-CA', 'en-CA'],
-        'fr-CA'
-      ).getLocaleBasedMatch()
-    ).toStrictEqual('en-CA')
-  })
-
-  it('returns the correct values using `getLanguageBasedMatch`', () => {
-    expect(
-      new LookupList(
-        'fr;q=0.01,es-MX;q=0.1',
-        ['en-CA', 'fr-BE', 'fr-CA'],
-        'fr-CA'
-      ).getLanguageBasedMatch()
-    ).toStrictEqual('fr-CA')
-
-    expect(
-      new LookupList(
-        'fr-FR;q=0.01,es-MX;q=0.1',
-        ['en-CA', 'fr-BE', 'fr-CA'],
-        'fr-CA'
-      ).getLanguageBasedMatch()
-    ).toBeUndefined()
-  })
-
-  it('returns the correct values using `getRelatedLocaleBasedMatch`', () => {
-    expect(
-      new LookupList(
-        'fr-FR;q=0.01,en-US;q=0.001',
-        ['fr-CA', 'en-CA'],
-        'fr-CA'
-      ).getRelatedLocaleBasedMatch()
-    ).toStrictEqual('fr-CA')
-
-    expect(
-      new LookupList(
-        'fr-FR;q=0.001,en-US',
-        ['fr-CA', 'en-CA'],
-        'fr-CA'
-      ).getRelatedLocaleBasedMatch()
-    ).toStrictEqual('en-CA')
-
-    expect(
-      new LookupList('es-ES;q=0.01', ['fr-CA', 'en-CA'], 'fr-CA').getRelatedLocaleBasedMatch()
-    ).toBeUndefined()
-
-    expect(new LookupList('', ['fr-CA'], 'fr-CA').getRelatedLocaleBasedMatch()).toBeUndefined()
+    expect(isLocale('not a locale')).toBe(false)
+    expect(isLocale('en')).toBe(false)
+    expect(isLocale('US')).toBe(false)
+    expect(isLocale('en-us')).toBe(false)
+    expect(isLocale('en-us', false)).toBe(true)
+    expect(isLocale('en-US')).toBe(true)
   })
 })
 
 describe('The `ResolveAcceptLanguage` class', () => {
-  let resolveAcceptLanguage: ResolveAcceptLanguage
+  let resolvedLocale: ReturnType<typeof resolveAcceptLanguage>
   it('returns the correct values using `getMatchType` and `getMatch`', () => {
     // Locale-based match.
-    resolveAcceptLanguage = new ResolveAcceptLanguage(
+    resolvedLocale = resolveAcceptLanguage(
       'fr-CA;q=0.01,en-CA;q=0.1,en-US;q=0.001',
       ['en-US', 'fr-CA'],
-      'en-US'
+      'en-US',
+      { returnMatchType: true }
     )
 
-    expect(resolveAcceptLanguage.getMatchType()).toStrictEqual(MATCH_TYPES.localeBased)
-    expect(resolveAcceptLanguage.getMatch()).toStrictEqual('fr-CA')
+    expect(resolvedLocale.matchType).toStrictEqual(MATCH_TYPES.locale)
+    expect(resolvedLocale.match).toStrictEqual('fr-CA')
 
     // Language-based match.
-    resolveAcceptLanguage = new ResolveAcceptLanguage(
+    resolvedLocale = resolveAcceptLanguage(
       'fr;q=0.01,en-CA;q=0.1,en-US;q=0.001',
       ['en-US', 'fr-CA'],
-      'en-US'
+      'en-US',
+      { returnMatchType: true }
     )
-    expect(resolveAcceptLanguage.getMatchType()).toStrictEqual(MATCH_TYPES.languageBased)
-    expect(resolveAcceptLanguage.getMatch()).toStrictEqual('fr-CA')
+    expect(resolvedLocale.matchType).toStrictEqual(MATCH_TYPES.language)
+    expect(resolvedLocale.match).toStrictEqual('fr-CA')
 
     // Related-locale-based match.
-    resolveAcceptLanguage = new ResolveAcceptLanguage(
-      'fr-FR;q=0.01,en-CA;q=0.1',
+    resolvedLocale = resolveAcceptLanguage(
+      'es,fr-FR;q=0.01,en-CA;q=0.1',
       ['en-US', 'fr-CA'],
-      'en-US'
+      'en-US',
+      { returnMatchType: true }
     )
-    expect(resolveAcceptLanguage.getMatchType()).toStrictEqual(MATCH_TYPES.relatedLocaleBased)
-    expect(resolveAcceptLanguage.getMatch()).toStrictEqual('en-US')
+    expect(resolvedLocale.matchType).toStrictEqual(MATCH_TYPES.relatedLocale)
+    expect(resolvedLocale.match).toStrictEqual('en-US')
 
     // Default locale match.
-    resolveAcceptLanguage = new ResolveAcceptLanguage('fr-CA;q=0.01', ['en-US'], 'en-US')
-    expect(resolveAcceptLanguage.getMatchType()).toStrictEqual(MATCH_TYPES.defaultLocale)
-    expect(resolveAcceptLanguage.getMatch()).toStrictEqual('en-US')
+    resolvedLocale = resolveAcceptLanguage('fr-CA;q=0.01', ['en-US'], 'en-US', {
+      returnMatchType: true,
+    })
+    expect(resolvedLocale.matchType).toStrictEqual(MATCH_TYPES.defaultLocale)
+    expect(resolvedLocale.match).toStrictEqual('en-US')
   })
 })
 
@@ -140,45 +65,48 @@ describe("`resolveAcceptLanguage`'s exception handler", () => {
   const invalidLanguages = ['e', 'eng', 'e1']
   const invalidCountries = ['G', 'GBR', 'G1']
   it('throws an error when an invalid locale is used in the supported locales', () => {
+    const invalidLocaleErrorMessage = 'Invalid locale identifier'
     expect(() => {
       resolveAcceptLanguage('en-GB;q=0.8', ['invalidLocale'], 'en-GB')
-    }).toThrow('invalid locale')
+    }).toThrow(invalidLocaleErrorMessage)
 
     for (const invalidLanguage of invalidLanguages) {
       expect(() => {
         resolveAcceptLanguage('en-GB;q=0.8', [`${invalidLanguage}-GB`], 'en-GB')
-      }).toThrow('invalid locale')
+      }).toThrow(invalidLocaleErrorMessage)
     }
 
     for (const invalidCountry of invalidCountries) {
       expect(() => {
         resolveAcceptLanguage('en-GB;q=0.8', [`en-${invalidCountry}`], 'en-GB')
-      }).toThrow('invalid locale')
+      }).toThrow(invalidLocaleErrorMessage)
     }
   })
 
   it('throws an error when an invalid locale is used in the default locale', () => {
+    const invalidDefaultLocaleErrorMessage = 'Invalid default locale identifier'
+
     expect(() => {
       resolveAcceptLanguage('en-GB;q=0.8', ['en-GB'], 'invalidLocale')
-    }).toThrow('invalid default locale')
+    }).toThrow(invalidDefaultLocaleErrorMessage)
 
     for (const invalidLanguage of invalidLanguages) {
       expect(() => {
         resolveAcceptLanguage('en-GB;q=0.8', ['en-GB'], `${invalidLanguage}-GB`)
-      }).toThrow('invalid default locale')
+      }).toThrow(invalidDefaultLocaleErrorMessage)
     }
 
     for (const invalidCountry of invalidCountries) {
       expect(() => {
         resolveAcceptLanguage('en-GB;q=0.8', ['en-GB'], `en-${invalidCountry}`)
-      }).toThrow('invalid default locale')
+      }).toThrow(invalidDefaultLocaleErrorMessage)
     }
   })
 
   it('throws an error when the default locale is not included in the supported locales', () => {
     expect(() => {
       resolveAcceptLanguage('en-GB;q=0.8', ['en-GB'], 'en-US')
-    }).toThrow('default locale must')
+    }).toThrow('The default locale')
   })
 
   it('ignores duplicate supported locales', () => {
@@ -250,7 +178,7 @@ describe("`resolveAcceptLanguage`'s lookup mechanism", () => {
       resolveAcceptLanguage('fr-CA;q=0,en-CA;q=0.0,it-IT;q=0.00', ['it-IT'] as const, 'it-IT')
     ).toEqual('it-IT')
 
-    const locales = ['fr-CA', 'en-CA', 'it-IT', 'pl-PL'] as const
+    const locales = ['fr-CA', 'en-CA', 'it-IT', 'pl-PL']
 
     expect(resolveAcceptLanguage('fr-CA,en-CA,it-IT', locales, locales[0])).toEqual(locales[0])
 
@@ -303,6 +231,17 @@ describe("`resolveAcceptLanguage`'s lookup mechanism", () => {
     expect(
       resolveAcceptLanguage('it-IT,fr;q=0.31,pl-PL;q=0.6,en;q=0.3', ['en-US', 'fr-CA'], 'en-US')
     ).toEqual('fr-CA')
+  })
+
+  it('returns the correct locale if the highest quality is a language that also has locale', () => {
+    const resolvedLocale = resolveAcceptLanguage(
+      'de,de-DE;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
+      ['de-AT', 'de-DE', 'xx-YY'],
+      'xx-YY',
+      { returnMatchType: true }
+    )
+    expect(resolvedLocale.match).toEqual('de-DE')
+    expect(resolvedLocale.matchType).toEqual(MATCH_TYPES.languageSpecificLocale)
   })
 
   it('returns the correct locale based on unsupported locale languages quality', () => {

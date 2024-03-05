@@ -9,6 +9,8 @@ Resolve the best locale based on the value of an `Accept-Language` HTTP header.
 
 ## Usage
 
+> ⚠ In March 2024, version 3 of this package was released, which includes breaking changes. Please refer to the [upgrade guide](./V2-TO-V3-UPGRADE-GUIDE.md) before upgrading.
+
 Add the package as a dependency:
 
 ```
@@ -18,7 +20,7 @@ npm install resolve-accept-language
 Code example:
 
 ```ts
-import resolveAcceptLanguage from 'resolve-accept-language'
+import { resolveAcceptLanguage } from 'resolve-accept-language'
 
 /**
  * The API is well documented from within your IDE using TSDoc. The arguments are as follows:
@@ -45,26 +47,29 @@ fr-CA
 
 ## Advanced use cases
 
-You may want to control exactly the behavior depending on the type of match. For example, you could want to display a language picker on your home page if the match is not satisfactory. In those cases, you will need to use the `ResolveAcceptLanguage` class instead. It offers more visibility into the selection process while matching a locale:
+You may want to control exactly the behavior depending on the type of match. For example, you might want to display a language picker on your home page if the match is not satisfactory. In those cases, you will need to use the `{ returnMatchType: true }` option. It offers more visibility into the selection process while matching a locale:
 
 ```ts
-import { MATCH_TYPES, ResolveAcceptLanguage } from 'resolve-accept-language'
+import { MATCH_TYPES, resolveAcceptLanguage } from 'resolve-accept-language'
 
-const resolveAcceptLanguage = new ResolveAcceptLanguage(
+const { match, matchType } = resolveAcceptLanguage(
   'fr-CA;q=0.01,en-CA;q=0.1,en-US;q=0.001' as const,
   ['en-US', 'fr-CA'],
-  'fr-CA'
+  'fr-CA',
+  { returnMatchType: true }
 )
 
-console.log(`A locale was matched: ${resolveAcceptLanguage.getMatch()}`)
+console.log(`A locale was matched: ${match}`)
 
-if (resolveAcceptLanguage.getMatchType() === MATCH_TYPES.localeBased) {
+if (matchType === MATCH_TYPES.locale) {
   console.log('The match is locale-based')
-} else if (resolveAcceptLanguage.getMatchType() === MATCH_TYPES.languageBased) {
+} else if (matchType === MATCH_TYPES.languageSpecificLocale) {
+  console.log('The match is language specific locale-based')
+} else if (matchType === MATCH_TYPES.language) {
   console.log('The match is language-based')
-} else if (resolveAcceptLanguage.getMatchType() === MATCH_TYPES.relatedLocaleBased) {
+} else if (matchType === MATCH_TYPES.relatedLocale) {
   console.log('The match is related-locale-based')
-} else if (resolveAcceptLanguage.getMatchType() === MATCH_TYPES.defaultLocale) {
+} else if (matchType === MATCH_TYPES.defaultLocale) {
   console.log('The match is the default locale')
 }
 ```
@@ -75,14 +80,19 @@ As per RFC 4647, this package uses the "lookup" matching scheme. This means that
 
 The matching strategy will use the following logic:
 
-1. The default locale (when provided) will always be put as the first locale being evaluated since it is considered the highest quality content available. Otherwise, the locales will be evaluated in the order provided, where the first is the highest quality and the last the lowest.
-2. All locales and languages are extracted from the HTTP header and sorted by quality factor. Locales and languages that are in the HTTP header but not in scope are discarded.
-3. Three different matching patterns (based on the HTTP header's quality factor and order of the provided locales):
-   1. If there were any matches, get the highest-ranked (quality factor) locale or language code:
-      1. **Locale-based match**: Is the highest-ranked a locale? If yes, this is the best match.
-      2. **Language-based match**: Otherwise, find the first locale that matches the highest-ranked language.
-   2. **Related-locale-based match**: If there is no match, find the first locale with a language that matches the highest-ranked language of locales that were not in scope. This is a bit of a "fuzzy match", but the presumption is that it's better to show content in a language that can be understood even if the country is wrong.
-4. When using `resolveAcceptLanguage` return the default locale as a last resort option.
+1. The default locale will always be placed as the first locale being evaluated since it is considered the highest quality content available. Otherwise, the locales will be evaluated in the order provided.
+2. All locales and languages are extracted from the HTTP header and sorted by quality factor and position in the header.
+3. The following matching logic will be performed:
+   1. Perform a first loop on the directives
+      1. If the directive is a locale, then try to find an exact locale match (**locale match**)
+      2. If the directive is a language, then
+         1. Create a new list of directives that have locales matching the language
+         2. Loop through this new list, and try to find an exact locale match (**language-specific locale match**)
+         3. If no match is found, then try to find a locale that matches the language (**language match**)
+   2. Perform a second loop on the directives
+      1. Create a new list of languages from the locales
+      2. Loop through this new list, then try to find a locale that matches the language (**related-locale match**)
+   3. If everything fails, then the fallback is the default locale (**default locale match**)
 
 ## Why another `Accept-Language` package?
 

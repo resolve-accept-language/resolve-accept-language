@@ -26,18 +26,18 @@
   "exports": {
     ".": {
       "import": {
-        "types": "./lib/esm/resolve-accept-language.d.ts",
-        "default": "./lib/esm/resolve-accept-language.js"
+        "types": "./lib/esm/index.d.ts",
+        "default": "./lib/esm/index.js"
       },
       "require": {
-        "types": "./lib/cjs/resolve-accept-language.d.ts",
-        "default": "./lib/cjs/resolve-accept-language.js"
+        "types": "./lib/cjs/index.d.ts",
+        "default": "./lib/cjs/index.js"
       }
     }
   },
-  "main": "lib/cjs/resolve-accept-language.js",
-  "module": "lib/esm/resolve-accept-language.js",
-  "types": "lib/esm/resolve-accept-language.d.ts",
+  "main": "lib/cjs/index.js",
+  "module": "lib/esm/index.js",
+  "types": "lib/esm/index.d.ts",
   "files": [
     "lib"
   ],
@@ -54,8 +54,8 @@
     "@release-it/conventional-changelog": "8.0.1",
     "@types/jest": "29.5.12",
     "@types/node": "^20.11.24",
-    "@typescript-eslint/eslint-plugin": "7.1.0",
-    "@typescript-eslint/parser": "7.1.0",
+    "@typescript-eslint/eslint-plugin": "7.1.1",
+    "@typescript-eslint/parser": "7.1.1",
     "depcheck": "^1.4.7",
     "dotenv-cli": "7.3.0",
     "eslint": "8.57.0",

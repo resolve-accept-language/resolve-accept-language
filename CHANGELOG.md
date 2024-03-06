@@ -1,3 +1,9 @@
+# [3.1.0](https://github.com/Avansai/resolve-accept-language/compare/v3.0.0...v3.1.0) (2024-03-06)
+
+### Features
+
+- add "languageCountry" and optional "country" match types ([1aae7fd](https://github.com/Avansai/resolve-accept-language/commit/1aae7fdb8a4487ada55d298d2a723944df1508cd))
+
 # [3.0.0](https://github.com/Avansai/resolve-accept-language/compare/v2.2.0...v3.0.0) (2024-03-05)
 
 ### Features

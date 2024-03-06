@@ -1,11 +1,11 @@
 /** Class to manage a locale identifier using the BCP 47 `language`-`country` format. */
 export class Locale {
+  /** The ISO 639-1 alpha-2 language code. */
+  public readonly languageCode: string
   /** The ISO 3166-1 alpha-2 country code. */
   public readonly countryCode: string
   /** The locale identifier using the BCP 47 `language`-`country` case-normalized format. */
   public readonly identifier: string
-  /** The ISO 639-1 alpha-2 language code. */
-  public readonly languageCode: string
 
   /**
    * Create a new `Locale` object.
@@ -28,10 +28,10 @@ export class Locale {
 }
 
 export class LocaleList {
-  /** A set of ISO 3166-1 alpha-2 country codes. */
-  public readonly countries: Set<string> = new Set()
   /** A set of ISO 639-1 alpha-2 language codes. */
   public readonly languages: Set<string> = new Set()
+  /** A set of ISO 3166-1 alpha-2 country codes. */
+  public readonly countries: Set<string> = new Set()
   /** A set of locale identifiers using the BCP 47 `language`-`country` case-normalized format. */
   public readonly locales: Set<string> = new Set()
   /** A list of locale objects. */

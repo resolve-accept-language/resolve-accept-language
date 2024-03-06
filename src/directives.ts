@@ -2,6 +2,8 @@
 type Directive = {
   /** The ISO 639-1 alpha-2 language code. */
   languageCode: string
+  /** The ISO 3166-1 alpha-2 country code. */
+  countryCode?: string
   /** The locale identifier using the BCP 47 `language`-`country` in case-normalized format. */
   locale?: string
   /** The quality factor (default is 1; values can range from 0 to 1 with up to 3 decimals). */
@@ -57,7 +59,7 @@ const getDirective = (directiveString: string): Directive | undefined => {
   const quality = matchedQuality === undefined ? 1 : Number.parseFloat(matchedQuality) // Remove trailing zeros.
   const locale = countryCode ? `${languageCode}-${countryCode}` : undefined
 
-  return { languageCode, locale, quality }
+  return { languageCode, countryCode, locale, quality }
 }
 
 /**

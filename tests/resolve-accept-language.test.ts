@@ -244,6 +244,23 @@ describe("`resolveAcceptLanguage`'s lookup mechanism", () => {
     expect(resolvedLocale.matchType).toEqual(MATCH_TYPES.languageSpecificLocale)
   })
 
+  it(`returns the correct locale when a directive from a different country matches the default locale's language`, () => {
+    const resolvedLocale = resolveAcceptLanguage('af-ZA', ['en-US', 'en-ZA'], 'en-US', {
+      returnMatchType: true,
+    })
+    expect(resolvedLocale.match).toEqual('en-ZA')
+    expect(resolvedLocale.matchType).toEqual(MATCH_TYPES.languageCountry)
+  })
+
+  it('returns the correct locale when none of the locales and languages are matching and country matches are enabled', () => {
+    const resolvedLocale = resolveAcceptLanguage('af-ZA', ['en-US', 'zu-ZA'], 'en-US', {
+      returnMatchType: true,
+      matchCountry: true,
+    })
+    expect(resolvedLocale.match).toEqual('zu-ZA')
+    expect(resolvedLocale.matchType).toEqual(MATCH_TYPES.country)
+  })
+
   it('returns the correct locale based on unsupported locale languages quality', () => {
     expect(resolveAcceptLanguage('en-GB,it-IT', ['en-US', 'fr-CA'], 'fr-CA')).toEqual('en-US')
     expect(resolveAcceptLanguage('fr,en,en-GB,it-IT', ['en-US', 'fr-CA'], 'fr-CA')).toEqual('fr-CA')

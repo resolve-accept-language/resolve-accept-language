@@ -7,6 +7,8 @@ export type MatchType =
   | 'languageSpecificLocale'
   | 'language'
   | 'relatedLocale'
+  | 'languageCountry'
+  | 'country'
   | 'defaultLocale'
 
 /** The type of matches enumeration. */
@@ -17,6 +19,8 @@ export const MATCH_TYPES: {
   languageSpecificLocale: 'languageSpecificLocale',
   language: 'language',
   relatedLocale: 'relatedLocale',
+  languageCountry: 'languageCountry',
+  country: 'country',
   defaultLocale: 'defaultLocale',
 } as const
 
@@ -30,6 +34,8 @@ export type NormalizeLocale<Remainder extends string> =
 type Options<WithMatchType extends boolean | undefined> = {
   /** Should the match type be returned? */
   returnMatchType?: WithMatchType
+  /** Should the country of the locale be used for matching? */
+  matchCountry?: boolean
 }
 
 type Result<
@@ -99,26 +105,24 @@ export const resolveAcceptLanguage = <
   }
 
   // Normalize all locales.
-  const normalizedDefaultLocale = new Locale(defaultLocale).identifier
+  const defaultLocaleObject = new Locale(defaultLocale)
 
   // Put the default locale first so that it will be more likely to be matched.
   const normalizedLocales = new Set([
-    normalizedDefaultLocale,
+    defaultLocaleObject.identifier,
     ...locales.map((locale) => new Locale(locale).identifier),
   ])
 
   const match = ((): { match: string; matchType: MatchType } => {
     const localeList = new LocaleList(normalizedLocales)
-    const directiveList = getDirectives(acceptLanguageHeader)
+    const directives = getDirectives(acceptLanguageHeader)
+    const supportedLanguageDirectives = directives.filter((directive) =>
+      localeList.languages.has(directive.languageCode)
+    )
 
     // Do a first loop on the directives for locale, language-specific locale and language matches.
-    for (const directive of directiveList) {
+    for (const directive of supportedLanguageDirectives) {
       const { locale, languageCode } = directive
-
-      // Continue to the next directive if the language is not supported.
-      if (!localeList.languages.has(languageCode)) {
-        continue
-      }
 
       // Try to do a locale match.
       if (locale !== undefined) {
@@ -131,16 +135,16 @@ export const resolveAcceptLanguage = <
       }
 
       // Try to do a language specific locale match.
-      const matchingLanguageLocale = directiveList.find(
+      const languageSpecificLocaleMatch = directives.find(
         (directive): directive is IndexedDirectiveWithLocale =>
           directive.languageCode === languageCode &&
           directive.locale !== undefined &&
           localeList.locales.has(directive.locale)
       )
 
-      if (matchingLanguageLocale) {
+      if (languageSpecificLocaleMatch) {
         return {
-          match: matchingLanguageLocale.locale,
+          match: languageSpecificLocaleMatch.locale,
           matchType: MATCH_TYPES.languageSpecificLocale,
         }
       }
@@ -157,27 +161,62 @@ export const resolveAcceptLanguage = <
       }
     }
 
-    // Do a second loop on the directive for related locale matches.
-    for (const directive of directiveList) {
-      // Continue to the next directive if the language is not supported.
-      if (!localeList.languages.has(directive.languageCode)) {
-        continue
-      }
-
-      const relatedLocale = localeList.objects.find(
+    // Do a second loop on the directive to try to do a related locale match.
+    for (const directive of supportedLanguageDirectives) {
+      const relatedLocaleMatch = localeList.objects.find(
         (locale) => locale.languageCode === directive.languageCode
       )
 
-      if (relatedLocale) {
+      if (relatedLocaleMatch) {
         return {
-          match: relatedLocale.identifier,
+          match: relatedLocaleMatch.identifier,
           matchType: MATCH_TYPES.relatedLocale,
         }
       }
     }
 
+    // Do a third loop on the directive to try to do a language country match.
+    const alternativeDefaultCountries = localeList.objects
+      .filter(
+        (locale) =>
+          locale.languageCode === defaultLocaleObject.languageCode &&
+          locale.identifier !== defaultLocaleObject.identifier
+      )
+      .map((locale) => locale.countryCode)
+
+    if (alternativeDefaultCountries.length > 0) {
+      for (const directive of directives) {
+        if (
+          directive.locale !== undefined &&
+          directive.countryCode !== undefined &&
+          alternativeDefaultCountries.includes(directive.countryCode)
+        ) {
+          return {
+            match: `${defaultLocaleObject.languageCode}-${directive.countryCode}`,
+            matchType: MATCH_TYPES.languageCountry,
+          }
+        }
+      }
+    }
+
+    // Optionally do a fourth loop on the directive to try to do a country match.
+    if (options?.matchCountry) {
+      for (const directive of directives) {
+        const countryMatch = localeList.objects.find(
+          (locale) => locale.countryCode === directive.countryCode
+        )
+
+        if (countryMatch) {
+          return {
+            match: countryMatch.identifier,
+            matchType: MATCH_TYPES.country,
+          }
+        }
+      }
+    }
+
     return {
-      match: normalizedDefaultLocale,
+      match: defaultLocaleObject.identifier,
       matchType: MATCH_TYPES.defaultLocale,
     }
   })()

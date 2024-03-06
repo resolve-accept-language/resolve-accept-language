@@ -47,6 +47,8 @@ fr-CA
 
 ## Advanced use cases
 
+### Match types
+
 You may want to control exactly the behavior depending on the type of match. For example, you might want to display a language picker on your home page if the match is not satisfactory. In those cases, you will need to use the `{ returnMatchType: true }` option. It offers more visibility into the selection process while matching a locale:
 
 ```ts
@@ -69,30 +71,54 @@ if (matchType === MATCH_TYPES.locale) {
   console.log('The match is language-based')
 } else if (matchType === MATCH_TYPES.relatedLocale) {
   console.log('The match is related-locale-based')
+} else if (matchType === MATCH_TYPES.languageCountry) {
+  console.log('The match is language country-based')
 } else if (matchType === MATCH_TYPES.defaultLocale) {
   console.log('The match is the default locale')
 }
 ```
 
+### Country match
+
+There may be cases where it is preferred to perform a "country match" before falling back to the default locale match. For example:
+
+```ts
+console.log(
+  resolveAcceptLanguage('af-ZA', ['en-US', 'zu-ZA'] as const, 'en-US', {
+    returnMatchType: true,
+    matchCountry: true,
+  })
+)
+```
+
+Output:
+
+```json
+{ "match": "zu-ZA", "matchType": "country" }
+```
+
+In this case, the header prefers `af-ZA`, which shares the same country as `zu-ZA`. Instead of falling back to the default `en-US`, `zu-ZA` is matched.
+
+This behavior is not set by default because, in most cases, the quality of the default locale is better than the translations. Performing a country match could potentially lower the quality of the selection. However, there may be cases where this is not true, which is why the `matchCountry` option exists.
+
 ## How does the resolver work?
 
 As per RFC 4647, this package uses the "lookup" matching scheme. This means that it will always produce exactly one match for a given request.
 
-The matching strategy will use the following logic:
+The matching strategy follows these steps, in order:
 
-1. The default locale will always be placed as the first locale being evaluated since it is considered the highest quality content available. Otherwise, the locales will be evaluated in the order provided.
-2. All locales and languages are extracted from the HTTP header and sorted by quality factor and position in the header.
-3. The following matching logic will be performed:
-   1. Perform a first loop on the directives
-      1. If the directive is a locale, then try to find an exact locale match (**locale match**)
-      2. If the directive is a language, then
-         1. Create a new list of directives that have locales matching the language
-         2. Loop through this new list, and try to find an exact locale match (**language-specific locale match**)
-         3. If no match is found, then try to find a locale that matches the language (**language match**)
-   2. Perform a second loop on the directives
-      1. Create a new list of languages from the locales
-      2. Loop through this new list, then try to find a locale that matches the language (**related-locale match**)
-   3. If everything fails, then the fallback is the default locale (**default locale match**)
+1. Start with the default locale, as it's considered the highest quality content available.
+2. Extract all locales and languages from the HTTP header, sorted by quality factor and position in the header. Each of these elements is referred to as a "directive".
+3. Perform matching in several stages:
+   1. **Locale Match**: Look for an exact locale match in the directives.
+   2. **Language-Specific Locale Match**: If no locale match is found, look for a locale that matches the language of the directive.
+   3. **Language Match**: If no language-specific locale match is found, look for a locale that matches the language.
+   4. **Related-Locale Match**: If no language match is found, look for a locale that matches the language in the next round of directives.
+   5. **Language Country Match**: If no related-locale match is found, look for a locale that matches the default locale's language but in a country from a locale specified in a directive.
+   6. **Country Match**: If the option is enabled and no language country match is found, look for a locale that matches the country in the next round of directives.
+   7. **Default Locale Match**: If all else fails, fall back to the default locale.
+
+Each stage only happens if the previous stage didn't find a match. This ensures the best possible match is found according to the given criteria.
 
 ## Why another `Accept-Language` package?
 

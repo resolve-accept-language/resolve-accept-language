@@ -18,9 +18,9 @@ describe('The `Locale` class', () => {
   })
 })
 
-describe('The `ResolveAcceptLanguage` class', () => {
+describe("`resolveAcceptLanguage`'s `returnMatchType` option", () => {
   let resolvedLocale: ReturnType<typeof resolveAcceptLanguage>
-  it('returns the correct values using `getMatchType` and `getMatch`', () => {
+  it('returns the correct match types`', () => {
     // Locale-based match.
     resolvedLocale = resolveAcceptLanguage(
       'fr-CA;q=0.01,en-CA;q=0.1,en-US;q=0.001',

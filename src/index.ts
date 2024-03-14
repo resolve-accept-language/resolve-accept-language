@@ -39,7 +39,7 @@ type Options<WithMatchType extends boolean | undefined> = {
 }
 
 type Result<
-  Locales extends string[],
+  Locales extends readonly string[],
   WithMatchType extends boolean | undefined,
 > = WithMatchType extends true
   ? {
@@ -73,7 +73,7 @@ type Result<
  * )
  */
 export const resolveAcceptLanguage = <
-  Locales extends string[],
+  Locales extends readonly string[],
   WithMatchType extends boolean | undefined = undefined,
 >(
   acceptLanguageHeader: string,

@@ -1,3 +1,9 @@
+## [3.1.2](https://github.com/Avansai/resolve-accept-language/compare/v3.1.1...v3.1.2) (2024-03-14)
+
+### Bug Fixes
+
+- allow readonly locale variables as arguments and update packages ([994249c](https://github.com/Avansai/resolve-accept-language/commit/994249c01fa725157c78d9bc26292a79adecbde1))
+
 ## [3.1.1](https://github.com/Avansai/resolve-accept-language/compare/v3.1.0...v3.1.1) (2024-03-10)
 
 # [3.1.0](https://github.com/Avansai/resolve-accept-language/compare/v3.0.0...v3.1.0) (2024-03-06)

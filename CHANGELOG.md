@@ -1,3 +1,5 @@
+## [3.1.3](https://github.com/Avansai/resolve-accept-language/compare/v3.1.2...v3.1.3) (2024-03-23)
+
 ## [3.1.2](https://github.com/Avansai/resolve-accept-language/compare/v3.1.1...v3.1.2) (2024-03-14)
 
 ### Bug Fixes

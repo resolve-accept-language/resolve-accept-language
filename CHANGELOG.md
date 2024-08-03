@@ -1,5 +1,8 @@
 ## [3.1.5](https://github.com/Avansai/resolve-accept-language/compare/v3.1.4...v3.1.5) (2024-08-03)
 
+- ESLint 9 cannot be upgraded yet because some dependencies are still incompatible.
+- TypeScript has been upgraded to the latest version, and non-ES5 compatible code has been identified and corrected.
+
 ## [3.1.4](https://github.com/Avansai/resolve-accept-language/compare/v3.1.3...v3.1.4) (2024-04-01)
 
 ## [3.1.3](https://github.com/Avansai/resolve-accept-language/compare/v3.1.2...v3.1.3) (2024-03-23)

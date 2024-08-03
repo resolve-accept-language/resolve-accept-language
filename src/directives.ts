@@ -39,14 +39,16 @@ const getDirective = (directiveString: string): Directive | undefined => {
    * - We hardcode the support for the `419` UN M49 code (as country code) representing Latin America to support `es-419`.
    */
   const directiveMatch = directiveString.match(
-    /^((?<matchedLanguageCode>([a-z]{2}))(-(?<matchedCountryCode>[a-z]{2}|419))?)(;q=(?<matchedQuality>(1(\.0{0,3})?)|(0(\.\d{0,3})?)))?$/i
+    /^(([a-z]{2})(-([a-z]{2}|419))?)(;q=((1(\.0{0,3})?)|(0(\.\d{0,3})?)))?$/i
   )
 
-  if (!directiveMatch?.groups) {
+  if (!directiveMatch) {
     return undefined // No regular expression match.
   }
 
-  const { matchedLanguageCode, matchedCountryCode, matchedQuality } = directiveMatch.groups
+  const matchedLanguageCode = directiveMatch[2]
+  const matchedCountryCode = directiveMatch[4]
+  const matchedQuality = directiveMatch[6]
 
   const languageCode = matchedLanguageCode.toLowerCase()
   const countryCode = matchedCountryCode ? matchedCountryCode.toUpperCase() : undefined

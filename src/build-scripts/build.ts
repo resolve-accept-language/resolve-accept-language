@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs'
 import { EOL } from 'node:os'
-import { dirname, join, relative, resolve } from 'node:path'
+import path from 'node:path'
 import { minify_sync as minify } from 'terser'
 
 /**
@@ -10,7 +10,7 @@ import { minify_sync as minify } from 'terser'
  */
 
 const esmFileExtensionRegExp =
-  /(?<from>from\s*)(?<quote>["'])(?<path>(?!.*\.js)(\.|\.?\.\/.*?)\.?)(\k<quote>)/gm
+  /(?<from>from\s*)(?<quote>["'])(?<modulePath>(?!.*\.js)(\.|\.?\.\/.*?)\.?)(\k<quote>)/gm
 
 /**
  * Get all ESM file paths (`.js` and `.d.ts`) from a directory.
@@ -21,8 +21,8 @@ const esmFileExtensionRegExp =
  */
 const getEsmFilePaths = (esmBuildDirectoryPath: string): string[] =>
   readdirSync(esmBuildDirectoryPath, { withFileTypes: true }).reduce<string[]>((files, entry) => {
-    const absoluteEntryPath = resolve(esmBuildDirectoryPath, entry.name)
-    const relativeEntryPath = relative(process.cwd(), absoluteEntryPath)
+    const absoluteEntryPath = path.resolve(esmBuildDirectoryPath, entry.name)
+    const relativeEntryPath = path.relative(process.cwd(), absoluteEntryPath)
     if (entry.isDirectory()) {
       return [...files, ...getEsmFilePaths(absoluteEntryPath)]
     } else if (entry.isFile() && /\.(d\.ts|js)$/.test(absoluteEntryPath)) {
@@ -37,8 +37,8 @@ getEsmFilePaths('lib/esm').forEach((filePath) => {
   const fileContent = readFileSync(filePath).toString()
   const newFileContent = fileContent.replace(
     esmFileExtensionRegExp,
-    (_match, from: string, quote: string, path: string) => {
-      const fromPath = resolve(join(dirname(filePath), path))
+    (_match, from: string, quote: string, modulePath: string) => {
+      const fromPath = path.resolve(path.join(path.dirname(filePath), modulePath))
 
       // If the path exists without any extensions then it should be a directory.
       const fromPathIsDirectory = existsSync(fromPath)
@@ -58,8 +58,8 @@ getEsmFilePaths('lib/esm').forEach((filePath) => {
         throw new Error(`🚨 Expected ${fromPathIsDirectory} to be a file`)
       }
 
-      const newPath = `${path}${fromPathIsDirectory ? '/index' : ''}.js`
-      console.log(`   ➕ ${filePath}: replacing "${path}" by "${newPath}"`)
+      const newPath = `${modulePath}${fromPathIsDirectory ? '/index' : ''}.js`
+      console.log(`   ➕ ${filePath}: replacing "${modulePath}" by "${newPath}"`)
       return `${from}${quote}${newPath}${quote}`
     }
   )
@@ -82,8 +82,8 @@ getEsmFilePaths('lib/esm').forEach((filePath) => {
  */
 const getJsFilePaths = (buildDirectoryPath: string): string[] =>
   readdirSync(buildDirectoryPath, { withFileTypes: true }).reduce<string[]>((files, entry) => {
-    const absoluteEntryPath = resolve(buildDirectoryPath, entry.name)
-    const relativeEntryPath = relative(process.cwd(), absoluteEntryPath)
+    const absoluteEntryPath = path.resolve(buildDirectoryPath, entry.name)
+    const relativeEntryPath = path.relative(process.cwd(), absoluteEntryPath)
     if (entry.isDirectory()) {
       return [...files, ...getJsFilePaths(absoluteEntryPath)]
     } else if (entry.isFile() && /\.js$/.test(absoluteEntryPath)) {

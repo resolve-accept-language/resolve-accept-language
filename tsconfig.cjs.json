@@ -3,6 +3,5 @@
   "compilerOptions": {
     "module": "CommonJS",
     "outDir": "lib/cjs"
-  },
-  "exclude": ["src/build-scripts"]
+  }
 }

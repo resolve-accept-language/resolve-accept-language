@@ -10,7 +10,7 @@
 import jsPlugin from '@eslint/js'
 import tsPlugin from '@typescript-eslint/eslint-plugin'
 import tsParser from '@typescript-eslint/parser'
-import importPlugin from 'eslint-plugin-import'
+import importXPlugin from 'eslint-plugin-import-x'
 import jestPlugin from 'eslint-plugin-jest'
 import jsdocPlugin from 'eslint-plugin-jsdoc'
 import jsonFilesPlugin from 'eslint-plugin-json-files'
@@ -50,24 +50,24 @@ export default [
   {
     files: [...TYPESCRIPT_FILES, ...JAVASCRIPT_FILES],
     plugins: {
-      import: importPlugin,
+      'import-x': importXPlugin,
       'prefer-arrow-functions': preferArrowFunctionsPlugin,
     },
     settings: {
       // Fixes https://github.com/import-js/eslint-plugin-import/issues/2556
-      'import/parsers': {
+      'import-x/parsers': {
         espree: [
           ...JAVASCRIPT_FILES.map((pattern) => pattern.replace('**/*', '')),
           TYPESCRIPT_FILES.map((pattern) => pattern.replace('**/*', '')),
         ],
       },
-      'import/resolver': {
+      'import-x/resolver': {
         typescript: true,
         node: true,
       },
     },
     rules: {
-      ...importPlugin.configs.recommended.rules,
+      ...importXPlugin.configs.recommended.rules,
       'prefer-arrow-functions/prefer-arrow-functions': [
         // There is no recommended configuration to extend so we have to set it here to enforce arrow functions.
         // @see https://github.com/JamieMason/eslint-plugin-prefer-arrow-functions
@@ -146,18 +146,18 @@ export default [
   {
     files: TYPESCRIPT_FILES,
     plugins: {
-      import: importPlugin,
+      'import-x': importXPlugin,
       tsdoc: tsdocPlugin,
       '@typescript-eslint': tsPlugin,
     },
     languageOptions: {
       parser: tsParser,
       parserOptions: {
-        project: ['tsconfig.json'],
+        project: ['tsconfig.esm.json'],
       },
     },
     rules: {
-      ...importPlugin.configs.typescript.rules,
+      ...importXPlugin.configs.typescript.rules,
       // Validates that TypeScript doc comments conform to the TSDoc specification.
       // @see https://tsdoc.org/pages/packages/eslint-plugin-tsdoc/
       'tsdoc/syntax': 'warn',
@@ -176,6 +176,15 @@ export default [
           },
         },
       ],
+    },
+  },
+  // Build script TypeScript files.
+  {
+    files: TYPESCRIPT_FILES.map((pattern) => `src/build-scripts/${pattern}`),
+    languageOptions: {
+      parserOptions: {
+        project: ['tsconfig.build-scripts.json'],
+      },
     },
   },
   // JSON files.

@@ -1,9 +1,10 @@
 {
-  "extends": "./tsconfig.json",
   "compilerOptions": {
     "types": ["node"],
     "target": "ESNext",
     "module": "ESNext",
+    "esModuleInterop": true,
+    "strict": true,
     "outDir": "lib/build-scripts",
     "moduleResolution": "node"
   },

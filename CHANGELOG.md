@@ -1,3 +1,5 @@
+## [3.1.6](https://github.com/resolve-accept-language/resolve-accept-language/compare/v3.1.5...v3.1.6) (2024-09-01)
+
 ## [3.1.5](https://github.com/Avansai/resolve-accept-language/compare/v3.1.4...v3.1.5) (2024-08-03)
 
 - ESLint 9 cannot be upgraded yet because some dependencies are still incompatible.

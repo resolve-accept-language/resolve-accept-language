@@ -25,6 +25,17 @@ const JAVASCRIPT_FILES = ['**/*.js', '**/*.jsx', '**/*.mjs', '**/*.cjs']
 const TYPESCRIPT_FILES = ['**/*.ts', '**/*.mts', '**/*.cts', '**/*.tsx']
 
 export default [
+  // Files to ignore (replaces `.eslintignore`).
+  {
+    // ESLint ignores `node_modules` and dot-files by default.
+    // @see https://eslint.org/docs/latest/user-guide/configuring/ignoring-code
+    ignores: [
+      // Compiled project.
+      'lib/',
+      // Jest files.
+      'coverage/',
+    ],
+  },
   // Base configuration.
   {
     languageOptions: {
@@ -239,11 +250,5 @@ export default [
         },
       ],
     },
-  },
-  // Files to ignore (replaces `.eslintignore`).
-  {
-    // ESLint ignores `node_modules` and dot-files by default.
-    // @see https://eslint.org/docs/latest/user-guide/configuring/ignoring-code
-    ignores: ['coverage/*', 'lib/*'],
   },
 ]

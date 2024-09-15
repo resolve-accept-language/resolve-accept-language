@@ -10,8 +10,7 @@ import { minify_sync as minify } from 'terser'
  */
 
 const esmFileExtensionRegExp =
-  /(?<from>from\s*)(?<quote>["'])(?<modulePath>(?!.*\.js)(\.|\.?\.\/.*?)\.?)(\k<quote>)/gm
-
+  /(?<importClause>from\s*|import\s*)(?<quote>["'])(?<modulePath>(?!.*\.(js|ts))(\.|\.?\.\/.*?)\.?)(\k<quote>)/gm
 /**
  * Get all ESM file paths (`.js` and `.d.ts`) from a directory.
  *
@@ -37,30 +36,30 @@ getEsmFilePaths('lib/esm').forEach((filePath) => {
   const fileContent = readFileSync(filePath).toString()
   const newFileContent = fileContent.replace(
     esmFileExtensionRegExp,
-    (_match, from: string, quote: string, modulePath: string) => {
-      const fromPath = path.resolve(path.join(path.dirname(filePath), modulePath))
+    (_match, importClause: string, quote: string, modulePath: string) => {
+      const importPath = path.resolve(path.join(path.dirname(filePath), modulePath))
 
       // If the path exists without any extensions then it should be a directory.
-      const fromPathIsDirectory = existsSync(fromPath)
+      const importPathIsDirectory = existsSync(importPath)
 
-      if (fromPathIsDirectory && !statSync(fromPath).isDirectory()) {
-        throw new Error(`🚨 Expected ${fromPathIsDirectory} to be a directory`)
+      if (importPathIsDirectory && !statSync(importPath).isDirectory()) {
+        throw new Error(`🚨 Expected ${importPathIsDirectory} to be a directory`)
       }
 
       // Add the missing extension or `/index` to the path to make it ESM compatible.
-      const esmPath = fromPathIsDirectory ? `${fromPath}/index.js` : `${fromPath}.js`
+      const esmPath = importPathIsDirectory ? `${importPath}/index.js` : `${importPath}.js`
 
       if (!existsSync(esmPath)) {
         throw new Error(`🚨 File not found: ${esmPath}`)
       }
 
       if (!statSync(esmPath).isFile()) {
-        throw new Error(`🚨 Expected ${fromPathIsDirectory} to be a file`)
+        throw new Error(`🚨 Expected ${importPathIsDirectory} to be a file`)
       }
 
-      const newPath = `${modulePath}${fromPathIsDirectory ? '/index' : ''}.js`
+      const newPath = `${modulePath}${importPathIsDirectory ? '/index' : ''}.js`
       console.log(`   ➕ ${filePath}: replacing "${modulePath}" by "${newPath}"`)
-      return `${from}${quote}${newPath}${quote}`
+      return `${importClause}${quote}${newPath}${quote}`
     }
   )
 

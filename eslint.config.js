@@ -10,6 +10,7 @@
 import jsPlugin from '@eslint/js'
 import tsPlugin from '@typescript-eslint/eslint-plugin'
 import tsParser from '@typescript-eslint/parser'
+import compat from 'eslint-plugin-compat'
 import importXPlugin from 'eslint-plugin-import-x'
 import jestPlugin from 'eslint-plugin-jest'
 import jsdocPlugin from 'eslint-plugin-jsdoc'
@@ -51,6 +52,9 @@ export default [
       },
     },
   },
+  // Detect incompatible code usage that would require Polyfills.
+  // @see https://github.com/amilajack/eslint-plugin-compat
+  compat.configs['flat/recommended'],
   // Unicorn recommended configs.
   // @see https://github.com/sindresorhus/eslint-plugin-unicorn
   unicornPlugin.configs['flat/recommended'],
@@ -194,7 +198,7 @@ export default [
     files: TYPESCRIPT_FILES.map((pattern) => `src/build-scripts/${pattern}`),
     languageOptions: {
       parserOptions: {
-        project: ['tsconfig.build-scripts.json'],
+        project: ['src/build-scripts/tsconfig.json'],
       },
     },
   },

@@ -9,8 +9,6 @@ import { minify_sync as minify } from 'terser'
  * +-----------------------------------------------------------------+
  */
 
-const esmFileExtensionRegExp =
-  /(?<importClause>from\s*|import\s*)(?<quote>["'])(?<modulePath>(?!.*\.(js|ts))(\.|\.?\.\/.*?)\.?)(\k<quote>)/gm
 /**
  * Get all ESM file paths (`.js` and `.d.ts`) from a directory.
  *
@@ -34,8 +32,8 @@ console.log(`${EOL}🏃 Running build step: add ESM file extensions.${EOL}`)
 
 getEsmFilePaths('lib/esm').forEach((filePath) => {
   const fileContent = readFileSync(filePath).toString()
-  const newFileContent = fileContent.replace(
-    esmFileExtensionRegExp,
+  const newFileContent = fileContent.replaceAll(
+    /(?<importClause>from\s*|import\s*)(?<quote>["'])(?<modulePath>(?!.*\.(js|ts))(\.|\.?\.\/.*?)\.?)(\k<quote>)/gm,
     (_match, importClause: string, quote: string, modulePath: string) => {
       const importPath = path.resolve(path.join(path.dirname(filePath), modulePath))
 

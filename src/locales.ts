@@ -62,4 +62,4 @@ export class LocaleList {
  * @param caseNormalized - Should we verify if the identifier is using the case-normalized format?
  */
 export const isLocale = (identifier: string, caseNormalized = true): boolean =>
-  new RegExp(/^[a-z]{2}-[A-Z]{2}$/, caseNormalized ? undefined : 'i').test(identifier)
+  new RegExp('^[a-z]{2}-[A-Z]{2}$', caseNormalized ? '' : 'i').test(identifier)

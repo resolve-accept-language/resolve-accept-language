@@ -58,7 +58,7 @@ const getDirective = (directiveString: string): Directive | undefined => {
     return undefined
   }
 
-  const quality = matchedQuality === undefined ? 1 : Number.parseFloat(matchedQuality) // Remove trailing zeros.
+  const quality = matchedQuality === undefined ? 1 : Number(matchedQuality) // Remove trailing zeros.
   const locale = countryCode ? `${languageCode}-${countryCode}` : undefined
 
   return { languageCode, countryCode, locale, quality }
@@ -96,7 +96,7 @@ export const getDirectives = (acceptLanguageHeader: string): IndexedDirective[] 
   // Post-processing to replace `es-419` by proper locales.
   const es419DirectiveIndex = directives.findIndex((directive) => directive.locale === 'es-419')
 
-  if (es419DirectiveIndex >= 0) {
+  if (es419DirectiveIndex !== -1) {
     // Remove 'es-419' from the directive.
     const es419Directive = directives[es419DirectiveIndex]
 

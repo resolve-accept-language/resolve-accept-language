@@ -8,6 +8,9 @@
 # Dependency directories
 node_modules
 
+# npm debug log
+npm-debug.log
+
 # Jest coverage report
 /coverage
 

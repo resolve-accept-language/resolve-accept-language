@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
+    "rootDir": ".",
     "types": ["node"],
     "target": "ESNext",
-    "module": "ESNext",
     "esModuleInterop": true,
     "strict": true,
-    "outDir": "lib/build-scripts",
+    "outDir": "../../lib/build-scripts",
     "moduleResolution": "node"
   },
-  "include": ["src/build-scripts/**/*.ts"]
+  "include": ["**/*.ts"]
 }

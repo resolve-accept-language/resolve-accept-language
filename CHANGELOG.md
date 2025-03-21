@@ -1,3 +1,7 @@
+# Changelog
+
+## [3.1.11](https://github.com/resolve-accept-language/resolve-accept-language/compare/v3.1.10...v3.1.11) (2025-03-21)
+
 ## [3.1.10](https://github.com/resolve-accept-language/resolve-accept-language/compare/v3.1.9...v3.1.10) (2024-12-16)
 
 ## [3.1.9](https://github.com/resolve-accept-language/resolve-accept-language/compare/v3.1.8...v3.1.9) (2024-11-23)

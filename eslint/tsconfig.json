@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "rootDir": ".",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "strict": true,
+    "typeRoots": ["../node_modules/@types", "./"]
+  },
+  "include": ["../eslint.config.ts", "./**/*.ts"]
+}

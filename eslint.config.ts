@@ -1,31 +1,17 @@
-/**
- * This is the "new" ESLint flat configuration.
- * @see https://eslint.org/docs/latest/use/configure/configuration-files-new
- *
- * To make this works in VSCode (until this becomes the default), make sure to add this to your
- * workspace settings:
- *
- * "eslint.experimental.useFlatConfig": true
- */
-import jsPlugin from '@eslint/js'
-import tsPlugin from '@typescript-eslint/eslint-plugin'
-import tsParser from '@typescript-eslint/parser'
 import compat from 'eslint-plugin-compat'
-import importXPlugin from 'eslint-plugin-import-x'
+import * as importPlugin from 'eslint-plugin-import'
 import jestPlugin from 'eslint-plugin-jest'
-import jsdocPlugin from 'eslint-plugin-jsdoc'
 import jsonFilesPlugin from 'eslint-plugin-json-files'
 import preferArrowFunctionsPlugin from 'eslint-plugin-prefer-arrow-functions'
 import prettierRecommendedConfig from 'eslint-plugin-prettier/recommended'
 import tsdocPlugin from 'eslint-plugin-tsdoc'
 import unicornPlugin from 'eslint-plugin-unicorn'
-import globals from 'globals'
 import * as jsoncParser from 'jsonc-eslint-parser'
+import tsEslint, { configs as tsEslintConfigs } from 'typescript-eslint'
 
-const JAVASCRIPT_FILES = ['**/*.js', '**/*.jsx', '**/*.mjs', '**/*.cjs']
-const TYPESCRIPT_FILES = ['**/*.ts', '**/*.mts', '**/*.cts', '**/*.tsx']
+const TYPESCRIPT_FILES = ['**/*.ts', '**/*.mts', '**/*.cts']
 
-export default [
+export default tsEslint.config(
   // Files to ignore (replaces `.eslintignore`).
   {
     // ESLint ignores `node_modules` and dot-files by default.
@@ -37,63 +23,46 @@ export default [
       'coverage/',
     ],
   },
-  // Base configuration.
-  {
-    languageOptions: {
-      // Enable Node.js specific globals.
-      // @see https://eslint.org/docs/latest/use/configure/migration-guide
-      globals: {
-        ...globals.node,
-      },
-      parserOptions: {
-        // Use the latest ECMAScript features.
-        ecmaVersion: 'latest',
-        sourceType: 'module',
-      },
-    },
-  },
-  // Detect incompatible code usage that would require Polyfills.
-  // @see https://github.com/amilajack/eslint-plugin-compat
-  compat.configs['flat/recommended'],
-  // Unicorn recommended configs.
-  // @see https://github.com/sindresorhus/eslint-plugin-unicorn
-  unicornPlugin.configs['flat/recommended'],
   // Prettier recommended configs.
   // @see https://github.com/prettier/eslint-plugin-prettier
   prettierRecommendedConfig,
-  // TypeScript and JavaScript files.
+  // Unicorn recommended configs.
+  // @see https://github.com/sindresorhus/eslint-plugin-unicorn
+  unicornPlugin.configs['recommended'],
+  // TypeScript configuration.
   {
-    files: [...TYPESCRIPT_FILES, ...JAVASCRIPT_FILES],
+    files: [...TYPESCRIPT_FILES],
+    extends: [
+      // TypeScript ESLint recommended configs.
+      // @see https://typescript-eslint.io/getting-started/
+      tsEslintConfigs.recommended,
+      tsEslintConfigs.recommendedTypeChecked,
+      // Make sure that imports are valid.
+      // @see https://github.com/import-js/eslint-plugin-import
+      importPlugin.flatConfigs.recommended,
+      importPlugin.flatConfigs.typescript,
+      // Detect incompatible code usage that would require Polyfills.
+      // @see https://github.com/amilajack/eslint-plugin-compat
+      compat.configs['flat/recommended'],
+    ],
     plugins: {
-      'import-x': importXPlugin,
       'prefer-arrow-functions': preferArrowFunctionsPlugin,
+      tsdoc: tsdocPlugin,
     },
-    settings: {
-      // Fixes https://github.com/import-js/eslint-plugin-import/issues/2556
-      'import-x/parsers': {
-        espree: [
-          ...JAVASCRIPT_FILES.map((pattern) => pattern.replace('**/*', '')),
-          TYPESCRIPT_FILES.map((pattern) => pattern.replace('**/*', '')),
-        ],
+    languageOptions: {
+      parserOptions: {
+        project: ['tsconfig.esm.json'],
       },
-      'import-x/resolver': {
+    },
+    /**
+     * @see https://github.com/import-js/eslint-plugin-import/issues/3170
+     */
+    settings: {
+      'import/resolver': {
         typescript: true,
-        node: true,
       },
     },
     rules: {
-      ...importXPlugin.configs.recommended.rules,
-      'prefer-arrow-functions/prefer-arrow-functions': [
-        // There is no recommended configuration to extend so we have to set it here to enforce arrow functions.
-        // @see https://github.com/JamieMason/eslint-plugin-prefer-arrow-functions
-        'warn',
-        {
-          classPropertiesAllowed: false,
-          disallowPrototype: false,
-          returnStyle: 'unchanged',
-          singleReturnOnly: false,
-        },
-      ],
       // Make sure there is always a space before comments.
       // @see https://eslint.org/docs/latest/rules/spaced-comment
       'spaced-comment': ['error'],
@@ -104,6 +73,33 @@ export default [
       'unicorn/no-array-reduce': [
         // 'reduce' is a powerful method for functional programming patterns, use it when appropriate.
         'off',
+      ],
+      // Validates that TypeScript doc comments conform to the TSDoc specification.
+      // @see https://tsdoc.org/pages/packages/eslint-plugin-tsdoc/
+      'tsdoc/syntax': 'warn',
+      // Enforces explicit return types on functions and class methods to avoid unintentionally breaking contracts.
+      // @see https://typescript-eslint.io/rules/explicit-module-boundary-types/
+      '@typescript-eslint/explicit-function-return-type': 'error',
+      // Checks members (classes, interfaces, types) and applies consistent ordering.
+      // @see https://typescript-eslint.io/rules/member-ordering/
+      '@typescript-eslint/member-ordering': [
+        'error',
+        {
+          default: {
+            memberTypes: ['field', 'constructor', 'method'],
+          },
+        },
+      ],
+      'prefer-arrow-functions/prefer-arrow-functions': [
+        // There is no recommended configuration to extend so we have to set it here to enforce arrow functions.
+        // @see https://github.com/JamieMason/eslint-plugin-prefer-arrow-functions
+        'warn',
+        {
+          classPropertiesAllowed: false,
+          disallowPrototype: false,
+          returnStyle: 'unchanged',
+          singleReturnOnly: false,
+        },
       ],
       'unicorn/no-array-for-each': [
         // Performance is no longer an issue - we prefer `forEach` for readability.
@@ -141,56 +137,13 @@ export default [
       ],
     },
   },
-  // JavaScript files.
+  // Special configuration for the ESLint configuration file.
   {
-    files: JAVASCRIPT_FILES,
-    plugins: {
-      jsdoc: jsdocPlugin,
-    },
-    rules: {
-      ...jsdocPlugin.configs.recommended.rules,
-      // ESLint recommended rules (no plugins config required).
-      // @see https://www.npmjs.com/package/@eslint/js
-      ...jsPlugin.configs.recommended.rules,
-      // Increase the level to 'error' for unused variables (the default is set to 'warning').
-      // @see https://eslint.org/docs/latest/rules/no-unused-vars
-      'no-unused-vars': ['error', { args: 'all' }],
-    },
-  },
-  // TypeScript files.
-  {
-    files: TYPESCRIPT_FILES,
-    plugins: {
-      'import-x': importXPlugin,
-      tsdoc: tsdocPlugin,
-      '@typescript-eslint': tsPlugin,
-    },
+    files: ['eslint.config.ts', 'eslint/**/*.ts'],
     languageOptions: {
-      parser: tsParser,
       parserOptions: {
-        project: ['tsconfig.esm.json'],
+        project: ['eslint/tsconfig.json'],
       },
-    },
-    rules: {
-      ...importXPlugin.configs.typescript.rules,
-      // Validates that TypeScript doc comments conform to the TSDoc specification.
-      // @see https://tsdoc.org/pages/packages/eslint-plugin-tsdoc/
-      'tsdoc/syntax': 'warn',
-      ...tsPlugin.configs.recommended.rules,
-      ...tsPlugin.configs['recommended-requiring-type-checking'].rules,
-      // Enforces explicit return types on functions and class methods to avoid unintentionally breaking contracts.
-      // @see https://typescript-eslint.io/rules/explicit-module-boundary-types/
-      '@typescript-eslint/explicit-function-return-type': 'error',
-      // Checks members (classes, interfaces, types) and applies consistent ordering.
-      // @see https://typescript-eslint.io/rules/member-ordering/
-      '@typescript-eslint/member-ordering': [
-        'error',
-        {
-          default: {
-            memberTypes: ['field', 'constructor', 'method'],
-          },
-        },
-      ],
     },
   },
   // Build script TypeScript files.
@@ -216,7 +169,7 @@ export default [
     plugins: {
       'json-files': jsonFilesPlugin,
     },
-    processor: jsonFilesPlugin.processors['.json'],
+    processor: jsonFilesPlugin.processors.json,
     rules: {
       // Requires the `license` field in package.json.
       // @see https://github.com/kellyselden/eslint-plugin-json-files/blob/master/docs/rules/require-license.md
@@ -254,5 +207,5 @@ export default [
         },
       ],
     },
-  },
-]
+  }
+)

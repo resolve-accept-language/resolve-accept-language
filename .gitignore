@@ -14,8 +14,8 @@ npm-debug.log
 # Jest coverage report
 /coverage
 
-# Javascript (compiled) version
-/lib
+# Distribution (compiled code)
+/dist
 
 # Secrets
 .env

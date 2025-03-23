@@ -5,7 +5,7 @@
     "target": "ESNext",
     "esModuleInterop": true,
     "strict": true,
-    "outDir": "../../lib/build-scripts",
+    "outDir": "../../dist/build-scripts",
     "moduleResolution": "node"
   },
   "include": ["**/*.ts"]

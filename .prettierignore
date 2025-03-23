@@ -1,8 +1,8 @@
-# @see https://prettier.io/docs/en/ignore.html
-# Pretttier ignores `node_modules` and dot-files by default.
+# @see https://prettier.io/docs/ignore
+# Prettier ignores `node_modules` and dot-files by default.
 
-# Compiled roject
-/lib/*
+# Distribution (compiled code)
+/dist
 
 # Jest
 /coverage

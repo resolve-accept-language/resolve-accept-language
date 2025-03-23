@@ -26,23 +26,23 @@
   "exports": {
     ".": {
       "import": {
-        "types": "./lib/esm/index.d.ts",
-        "default": "./lib/esm/index.js"
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
       },
       "require": {
-        "types": "./lib/cjs/index.d.ts",
-        "default": "./lib/cjs/index.js"
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
       }
     }
   },
-  "main": "lib/cjs/index.js",
-  "module": "lib/esm/index.js",
-  "types": "lib/esm/index.d.ts",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
   "files": [
-    "lib"
+    "dist"
   ],
   "scripts": {
-    "build": "npm run check-nvm-node-version && npm run prettier-write && npm run eslint-fix && rm -Rf ./lib && tsc -p tsconfig.cjs.json && tsc -p tsconfig.esm.json && echo '{ \"type\": \"commonjs\" }' > lib/cjs/package.json && tsc -p src/build-scripts/tsconfig.json && node lib/build-scripts/build.js && npm run test",
+    "build": "npm run check-nvm-node-version && npm run prettier-write && npm run eslint-fix && rm -Rf ./dist && tsc -p tsconfig.cjs.json && tsc -p tsconfig.esm.json && echo '{ \"type\": \"commonjs\" }' > dist/cjs/package.json && tsc -p src/build-scripts/tsconfig.json && node dist/build-scripts/build.js && npm run test",
     "check-nvm-node-version": "check-node-version --node $(node -p \"'>=' + require('fs').readFileSync('.nvmrc', 'utf-8').trim()\")",
     "depcheck": "depcheck",
     "eslint-fix": "eslint --fix",
@@ -50,7 +50,7 @@
     "prettier-write": "prettier --write .",
     "release": "dotenv -- release-it --only-version",
     "test": "jest --coverage",
-    "test-node-version": "node -e \"var resolveAcceptLanguage = require('./lib/cjs/index.js').resolveAcceptLanguage; var result = resolveAcceptLanguage('fr-CA;q=0.01,en-CA;q=0.1,en-US;q=0.001', ['en-US', 'fr-CA'], 'en-US'); console.log(result === 'fr-CA' ? 'success' : 'failure');\""
+    "test-node-version": "node -e \"var resolveAcceptLanguage = require('./dist/cjs/index.js').resolveAcceptLanguage; var result = resolveAcceptLanguage('fr-CA;q=0.01,en-CA;q=0.1,en-US;q=0.001', ['en-US', 'fr-CA'], 'en-US'); console.log(result === 'fr-CA' ? 'success' : 'failure');\""
   },
   "devDependencies": {
     "@release-it/conventional-changelog": "10.0.0",

@@ -45,23 +45,12 @@ export default tsEslint.config(
       // @see https://github.com/amilajack/eslint-plugin-compat
       compat.configs['flat/recommended'],
     ],
-    plugins: {
-      'prefer-arrow-functions': preferArrowFunctionsPlugin,
-      tsdoc: tsdocPlugin,
-    },
-    languageOptions: {
-      parserOptions: {
-        project: ['tsconfig.esm.json'],
-      },
-    },
+    plugins: { 'prefer-arrow-functions': preferArrowFunctionsPlugin, tsdoc: tsdocPlugin },
+    languageOptions: { parserOptions: { project: ['tsconfig.esm.json'] } },
     /**
      * @see https://github.com/import-js/eslint-plugin-import/issues/3170
      */
-    settings: {
-      'import/resolver': {
-        typescript: true,
-      },
-    },
+    settings: { 'import/resolver': { typescript: true } },
     rules: {
       // Make sure there is always a space before comments.
       // @see https://eslint.org/docs/latest/rules/spaced-comment
@@ -84,11 +73,7 @@ export default tsEslint.config(
       // @see https://typescript-eslint.io/rules/member-ordering/
       '@typescript-eslint/member-ordering': [
         'error',
-        {
-          default: {
-            memberTypes: ['field', 'constructor', 'method'],
-          },
-        },
+        { default: { memberTypes: ['field', 'constructor', 'method'] } },
       ],
       'prefer-arrow-functions/prefer-arrow-functions': [
         // There is no recommended configuration to extend so we have to set it here to enforce arrow functions.
@@ -101,74 +86,59 @@ export default tsEslint.config(
           singleReturnOnly: false,
         },
       ],
-      'unicorn/no-array-for-each': [
+      /**
+       * Unicorn-specific configuration.
+       */
+      // eslint-disable-next-line unicorn/no-useless-spread
+      ...{
+        /**
+         * Avoids circular conflict between `unicorn/no-nested-ternary` and `prettier`.
+         *
+         * @see https://github.com/sindresorhus/eslint-plugin-unicorn/issues/2604
+         */
+        'unicorn/no-nested-ternary': 'off',
         // Performance is no longer an issue - we prefer `forEach` for readability.
-        'off',
-      ],
-      'unicorn/numeric-separators-style': [
+        'unicorn/no-array-for-each': 'off',
         // Doesn't add a lot of value and makes numbers look odd.
-        'off',
-      ],
-      'unicorn/prefer-type-error': [
+        'unicorn/numeric-separators-style': 'off',
         // Not really applicable when using TypeScript (mostly triggers false positives).
-        'off',
-      ],
-      'unicorn/no-null': [
-        // `undefined` and `null` have distinct semantics (i.e. `undefined` means absent, while
-        // `null` means explicitly set to empty). We prefer to keep both in our codebase.
-        'off',
-      ],
-      'unicorn/number-literal-case': [
-        // This rule conflicts with `prettier/prettier` and there is no way to disabled the prettier rule.
-        // @see https://github.com/sindresorhus/eslint-plugin-unicorn/issues/2285
-        'off',
-      ],
-      'unicorn/prefer-string-replace-all': [
+        'unicorn/prefer-type-error': 'off',
+        /**
+         * `undefined` and `null` have distinct semantics (i.e. `undefined` means absent, while
+         * `null` means explicitly set to empty). We prefer to keep both in our codebase.
+         */
+        'unicorn/no-null': 'off',
+        /**
+         * This rule conflicts with `prettier/prettier` and there is no way to disabled the Prettier rule.
+         *
+         * @see https://github.com/sindresorhus/eslint-plugin-unicorn/issues/2285
+         */
+        'unicorn/number-literal-case': 'off',
         // Add little value and would require polyfills for engines older than ES2021.
-        'off',
-      ],
-      'unicorn/prefer-at': [
+        'unicorn/prefer-string-replace-all': 'off',
         // Add little value and would require polyfills for engines older than ES2022.
-        'off',
-      ],
-      'unicorn/prefer-top-level-await': [
+        'unicorn/prefer-at': 'off',
         // Add little value and would require polyfills for engines older than ES2022.
-        'off',
-      ],
+        'unicorn/prefer-top-level-await': 'off',
+      },
     },
   },
   // Special configuration for the ESLint configuration file.
   {
     files: ['eslint.config.ts', 'eslint/**/*.ts'],
-    languageOptions: {
-      parserOptions: {
-        project: ['eslint/tsconfig.json'],
-      },
-    },
+    languageOptions: { parserOptions: { project: ['eslint/tsconfig.json'] } },
   },
   // Build script TypeScript files.
   {
     files: TYPESCRIPT_FILES.map((pattern) => `src/build-scripts/${pattern}`),
-    languageOptions: {
-      parserOptions: {
-        project: ['src/build-scripts/tsconfig.json'],
-      },
-    },
+    languageOptions: { parserOptions: { project: ['src/build-scripts/tsconfig.json'] } },
   },
   // JSON files.
-  {
-    files: ['*.json'],
-    ignores: ['**/package.json'],
-    languageOptions: {
-      parser: jsoncParser,
-    },
-  },
+  { files: ['*.json'], ignores: ['**/package.json'], languageOptions: { parser: jsoncParser } },
   // package.json files.
   {
     files: ['**/package.json'],
-    plugins: {
-      'json-files': jsonFilesPlugin,
-    },
+    plugins: { 'json-files': jsonFilesPlugin },
     processor: jsonFilesPlugin.processors.json,
     rules: {
       // Requires the `license` field in package.json.
@@ -188,9 +158,7 @@ export default tsEslint.config(
     plugins: jestPlugin.configs['flat/recommended'].plugins,
     languageOptions: {
       ...jestPlugin.configs['flat/recommended'].languageOptions,
-      parserOptions: {
-        project: ['tests/jest.json'],
-      },
+      parserOptions: { project: ['tests/jest.json'] },
     },
     rules: jestPlugin.configs['flat/recommended'].rules,
   },

@@ -1,5 +1,7 @@
+import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescript'
+// eslint-disable-next-line import-x/no-unresolved -- https://github.com/amilajack/eslint-plugin-compat/pull/646
 import compat from 'eslint-plugin-compat'
-import * as importPlugin from 'eslint-plugin-import'
+import importXPlugin from 'eslint-plugin-import-x'
 import jestPlugin from 'eslint-plugin-jest'
 import jsonFilesPlugin from 'eslint-plugin-json-files'
 import preferArrowFunctionsPlugin from 'eslint-plugin-prefer-arrow-functions'
@@ -39,18 +41,17 @@ export default tsEslint.config(
       tsEslintConfigs.recommendedTypeChecked,
       // Make sure that imports are valid.
       // @see https://github.com/import-js/eslint-plugin-import
-      importPlugin.flatConfigs.recommended,
-      importPlugin.flatConfigs.typescript,
+      importXPlugin.flatConfigs.recommended,
+      importXPlugin.flatConfigs.typescript,
       // Detect incompatible code usage that would require Polyfills.
       // @see https://github.com/amilajack/eslint-plugin-compat
       compat.configs['flat/recommended'],
     ],
     plugins: { 'prefer-arrow-functions': preferArrowFunctionsPlugin, tsdoc: tsdocPlugin },
     languageOptions: { parserOptions: { project: ['tsconfig.esm.json'] } },
-    /**
-     * @see https://github.com/import-js/eslint-plugin-import/issues/3170
-     */
-    settings: { 'import/resolver': { typescript: true } },
+    settings: {
+      'import-x/resolver-next': [createTypeScriptImportResolver()],
+    },
     rules: {
       // Make sure there is always a space before comments.
       // @see https://eslint.org/docs/latest/rules/spaced-comment

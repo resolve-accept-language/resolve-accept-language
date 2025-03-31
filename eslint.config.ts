@@ -40,7 +40,7 @@ export default tsEslint.config(
       tsEslintConfigs.recommended,
       tsEslintConfigs.recommendedTypeChecked,
       // Make sure that imports are valid.
-      // @see https://github.com/import-js/eslint-plugin-import
+      // @see https://github.com/un-ts/eslint-plugin-import-x
       importXPlugin.flatConfigs.recommended,
       importXPlugin.flatConfigs.typescript,
       // Detect incompatible code usage that would require Polyfills.

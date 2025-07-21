@@ -150,27 +150,24 @@ export const resolveAcceptLanguage = <
       }
 
       // Try to do a language match.
-      const languageMatch = localeList.objects.find(
-        (locale) => locale.languageCode === languageCode
-      )
-      if (languageMatch) {
-        return {
-          match: languageMatch.identifier,
-          matchType: MATCH_TYPES.language,
+      for (const locale of localeList.objects) {
+        if (locale.languageCode === languageCode) {
+          return {
+            match: locale.identifier,
+            matchType: MATCH_TYPES.language,
+          }
         }
       }
     }
 
     // Do a second loop on the directive to try to do a related locale match.
     for (const directive of supportedLanguageDirectives) {
-      const relatedLocaleMatch = localeList.objects.find(
-        (locale) => locale.languageCode === directive.languageCode
-      )
-
-      if (relatedLocaleMatch) {
-        return {
-          match: relatedLocaleMatch.identifier,
-          matchType: MATCH_TYPES.relatedLocale,
+      for (const locale of localeList.objects) {
+        if (locale.languageCode === directive.languageCode) {
+          return {
+            match: locale.identifier,
+            matchType: MATCH_TYPES.relatedLocale,
+          }
         }
       }
     }
@@ -202,14 +199,12 @@ export const resolveAcceptLanguage = <
     // Optionally do a fourth loop on the directive to try to do a country match.
     if (options?.matchCountry) {
       for (const directive of directives) {
-        const countryMatch = localeList.objects.find(
-          (locale) => locale.countryCode === directive.countryCode
-        )
-
-        if (countryMatch) {
-          return {
-            match: countryMatch.identifier,
-            matchType: MATCH_TYPES.country,
+        for (const locale of localeList.objects) {
+          if (locale.countryCode === directive.countryCode) {
+            return {
+              match: locale.identifier,
+              matchType: MATCH_TYPES.country,
+            }
           }
         }
       }

@@ -112,12 +112,18 @@ describe("`resolveAcceptLanguage`'s exception handler", () => {
   it('ignores duplicate supported locales', () => {
     expect(resolveAcceptLanguage('en-GB;q=0.8', ['en-GB', 'en-GB'], 'en-GB')).toEqual('en-GB')
   })
+
+  it('ignores duplicate locales in the header locales', () => {
+    expect(resolveAcceptLanguage('en-GB;q=0.8,en-GB;q=0.8', ['en-GB', 'en-GB'], 'en-GB')).toEqual(
+      'en-GB'
+    )
+  })
 })
 
 describe("`resolveAcceptLanguage`'s lookup mechanism", () => {
   it('returns the default locale when the header does not contain any supported locale', () => {
+    expect(resolveAcceptLanguage('fr-FR', ['en-US', 'en-GB'], 'en-US')).toEqual('en-US')
     expect(resolveAcceptLanguage('fr-CA,en-CA', ['it-IT'], 'it-IT')).toEqual('it-IT')
-
     expect(resolveAcceptLanguage('fr-CA,en-CA', ['it-IT', 'pl-PL'], 'it-IT')).toEqual('it-IT')
   })
 

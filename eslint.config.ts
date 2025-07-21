@@ -1,7 +1,7 @@
 import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescript'
 // eslint-disable-next-line import-x/no-unresolved -- https://github.com/amilajack/eslint-plugin-compat/pull/646
 import compat from 'eslint-plugin-compat'
-import importXPlugin from 'eslint-plugin-import-x'
+import { flatConfigs as importXPluginFlatConfigs } from 'eslint-plugin-import-x'
 import jestPlugin from 'eslint-plugin-jest'
 import jsonFilesPlugin from 'eslint-plugin-json-files'
 import preferArrowFunctionsPlugin from 'eslint-plugin-prefer-arrow-functions'
@@ -41,8 +41,8 @@ export default tsEslint.config(
       tsEslintConfigs.recommendedTypeChecked,
       // Make sure that imports are valid.
       // @see https://github.com/un-ts/eslint-plugin-import-x
-      importXPlugin.flatConfigs.recommended,
-      importXPlugin.flatConfigs.typescript,
+      importXPluginFlatConfigs.recommended,
+      importXPluginFlatConfigs.typescript,
       // Detect incompatible code usage that would require Polyfills.
       // @see https://github.com/amilajack/eslint-plugin-compat
       compat.configs['flat/recommended'],
@@ -59,11 +59,6 @@ export default tsEslint.config(
       // Prevent omission of curly brace (e.g. same-line if/return).
       // @see https://eslint.org/docs/latest/rules/curly
       curly: ['error'],
-      // The Unicorn plugin comes with opinionated checks, including some that we prefer disabling.
-      'unicorn/no-array-reduce': [
-        // 'reduce' is a powerful method for functional programming patterns, use it when appropriate.
-        'off',
-      ],
       // Validates that TypeScript doc comments conform to the TSDoc specification.
       // @see https://tsdoc.org/pages/packages/eslint-plugin-tsdoc/
       'tsdoc/syntax': 'warn',
@@ -92,6 +87,11 @@ export default tsEslint.config(
        */
       // eslint-disable-next-line unicorn/no-useless-spread
       ...{
+        // The Unicorn plugin comes with opinionated checks, including some that we prefer disabling.
+        'unicorn/no-array-reduce': [
+          // 'reduce' is a powerful method for functional programming patterns, use it when appropriate.
+          'off',
+        ],
         /**
          * Avoids circular conflict between `unicorn/no-nested-ternary` and `prettier`.
          *
@@ -121,6 +121,8 @@ export default tsEslint.config(
         'unicorn/prefer-at': 'off',
         // Add little value and would require polyfills for engines older than ES2022.
         'unicorn/prefer-top-level-await': 'off',
+        // Add little value and only became globally available in all browsers since July 2023.
+        'unicorn/no-array-reverse': 'off',
       },
     },
   },

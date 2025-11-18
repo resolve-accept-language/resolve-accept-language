@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/npm/l/make-coverage-badge.svg?color=brightgreen)](https://opensource.org/licenses/MIT)
 [![npm download](https://img.shields.io/npm/dw/resolve-accept-language.svg?color=brightgreen)](https://www.npmjs.com/package/resolve-accept-language)
 ![Coverage](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg)
-![package size](https://deno.bundlejs.com/badge?q=resolve-accept-language@latest)
+![package size](https://deno.bundlejs.com/badge?q=resolve-accept-language@latest&treeshake=[*])
 ![Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)
 
 Resolve the best locale based on the value of an `Accept-Language` HTTP header.

@@ -22,6 +22,7 @@
   },
   "license": "MIT",
   "author": "resolve-accept-language",
+  "sideEffects": false,
   "type": "module",
   "exports": {
     ".": {
@@ -55,7 +56,7 @@
     "test-node-version": "node -e \"var resolveAcceptLanguage = require('./dist/cjs/index.js').resolveAcceptLanguage; var result = resolveAcceptLanguage('fr-CA;q=0.01,en-CA;q=0.1,en-US;q=0.001', ['en-US', 'fr-CA'], 'en-US'); console.log(result === 'fr-CA' ? 'success' : 'failure');\""
   },
   "devDependencies": {
-    "@release-it/conventional-changelog": "10.0.1",
+    "@release-it/conventional-changelog": "10.0.2",
     "@types/jest": "30.0.0",
     "@types/node": "24.10.1",
     "check-node-version": "4.2.1",
@@ -83,7 +84,7 @@
     "terser": "5.44.1",
     "ts-jest": "29.4.5",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.46.4"
+    "typescript-eslint": "8.47.0"
   },
   "engines": {
     "node": ">=4.0.0"

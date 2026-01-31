@@ -1,5 +1,7 @@
 # Changelog
 
+## [3.1.16](https://github.com/Avansai/resolve-accept-language/compare/v3.1.15...v3.1.16) (2026-01-31)
+
 ## [3.1.15](/compare/v3.1.14...v3.1.15) (2025-11-18)
 
 ## [3.1.14](https://github.com/resolve-accept-language/resolve-accept-language/compare/v3.1.13...v3.1.14) (2025-11-15)

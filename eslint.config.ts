@@ -1,5 +1,4 @@
 import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescript'
-// eslint-disable-next-line import-x/no-unresolved -- https://github.com/amilajack/eslint-plugin-compat/pull/646
 import compat from 'eslint-plugin-compat'
 import { flatConfigs as importXPluginFlatConfigs } from 'eslint-plugin-import-x'
 import jestPlugin from 'eslint-plugin-jest'

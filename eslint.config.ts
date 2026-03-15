@@ -1,8 +1,8 @@
 import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescript'
-import compat from 'eslint-plugin-compat'
+import compatPlugin from 'eslint-plugin-compat'
 import { flatConfigs as importXPluginFlatConfigs } from 'eslint-plugin-import-x'
 import jestPlugin from 'eslint-plugin-jest'
-import jsonFilesPlugin from 'eslint-plugin-json-files'
+import { configs as packageJsonConfigs } from 'eslint-plugin-package-json'
 import preferArrowFunctionsPlugin from 'eslint-plugin-prefer-arrow-functions'
 import prettierRecommendedConfig from 'eslint-plugin-prettier/recommended'
 import tsdocPlugin from 'eslint-plugin-tsdoc'
@@ -44,7 +44,7 @@ export default tsEslint.config(
       importXPluginFlatConfigs.typescript,
       // Detect incompatible code usage that would require Polyfills.
       // @see https://github.com/amilajack/eslint-plugin-compat
-      compat.configs['flat/recommended'],
+      compatPlugin.configs['flat/recommended'],
     ],
     plugins: { 'prefer-arrow-functions': preferArrowFunctionsPlugin, tsdoc: tsdocPlugin },
     languageOptions: { parserOptions: { project: ['tsconfig.esm.json'] } },
@@ -138,20 +138,14 @@ export default tsEslint.config(
   // JSON files.
   { files: ['*.json'], ignores: ['**/package.json'], languageOptions: { parser: jsoncParser } },
   // package.json files.
+  // @see https://github.com/JoshuaKGoldberg/eslint-plugin-package-json
   {
-    files: ['**/package.json'],
-    plugins: { 'json-files': jsonFilesPlugin },
-    processor: jsonFilesPlugin.processors.json,
+    ...packageJsonConfigs.recommended,
     rules: {
-      // Requires the `license` field in package.json.
-      // @see https://github.com/kellyselden/eslint-plugin-json-files/blob/master/docs/rules/require-license.md
-      'json-files/require-license': ['error', 'allow-unlicensed'],
-      // Prevents dependency collisions between `dependencies` and `devDependencies` in package.json.
-      // @see https://github.com/kellyselden/eslint-plugin-json-files/blob/master/docs/rules/require-unique-dependency-names.md
-      'json-files/require-unique-dependency-names': ['error'],
-      // Use sort-package-json to keep your keys in a predictable order.
-      // @see https://github.com/kellyselden/eslint-plugin-json-files/blob/master/docs/rules/sort-package-json.md
-      'json-files/sort-package-json': ['error'],
+      ...packageJsonConfigs.recommended.rules,
+      // Keep package.json keys in a predictable order.
+      // @see https://github.com/JoshuaKGoldberg/eslint-plugin-package-json/blob/main/docs/rules/order-properties.md
+      'package-json/order-properties': ['error'],
     },
   },
   // Jest.

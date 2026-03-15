@@ -6,5 +6,6 @@
     "strict": true
   },
   "exclude": ["src/build-scripts"],
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts"],
+  "references": [{ "path": "./eslint" }]
 }

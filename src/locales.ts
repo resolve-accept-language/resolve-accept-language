@@ -28,32 +28,41 @@ export class Locale {
 }
 
 export class LocaleList {
-  /** A set of ISO 639-1 alpha-2 language codes. */
-  public readonly languages: Set<string> = new Set()
-  /** A set of ISO 3166-1 alpha-2 country codes. */
-  public readonly countries: Set<string> = new Set()
-  /** A set of locale identifiers using the BCP 47 `language`-`country` case-normalized format. */
-  public readonly locales: Set<string> = new Set()
+  /** A lookup of ISO 639-1 alpha-2 language codes. */
+  public readonly languages: Record<string, boolean> = {}
+  /** A lookup of ISO 3166-1 alpha-2 country codes. */
+  public readonly countries: Record<string, boolean> = {}
+  /** A lookup of locale identifiers using the BCP 47 `language`-`country` case-normalized format. */
+  public readonly locales: Record<string, boolean> = {}
   /** A list of locale objects. */
   public readonly objects: Locale[] = []
 
   /**
    * Create a list of locale identifiers.
    *
-   * @param locales - An set of unique locale identifiers using the BCP 47 `language`-`country` format (case insensitive).
+   * @param locales - A list of locale identifiers using the BCP 47 `language`-`country` format (case insensitive).
    *
    * @throws Will throw an error if one of the locale's format is invalid.
    */
-  constructor(locales: Set<string>) {
-    locales.forEach((locale) => {
+  constructor(locales: string[]) {
+    for (const locale of locales) {
       const localeObject = new Locale(locale)
+      if (localeObject.identifier in this.locales) {
+        continue // Skip duplicates.
+      }
       this.objects.push(localeObject)
-      this.locales.add(localeObject.identifier)
-      this.languages.add(localeObject.languageCode)
-      this.countries.add(localeObject.countryCode)
-    })
+      this.locales[localeObject.identifier] = true
+      this.languages[localeObject.languageCode] = true
+      this.countries[localeObject.countryCode] = true
+    }
   }
 }
+
+/** Matches a locale identifier in case-normalized format (lowercase language, uppercase country). */
+const REGEX_LOCALE_CASE_NORMALIZED = /^[a-z]{2}-[A-Z]{2}$/
+
+/** Matches a locale identifier in any case format. */
+const REGEX_LOCALE_CASE_INSENSITIVE = /^[a-z]{2}-[A-Z]{2}$/i
 
 /**
  * Is a given string a locale identifier following the BCP 47 `language`-`country` format.
@@ -62,4 +71,4 @@ export class LocaleList {
  * @param caseNormalized - Should we verify if the identifier is using the case-normalized format?
  */
 export const isLocale = (identifier: string, caseNormalized = true): boolean =>
-  new RegExp('^[a-z]{2}-[A-Z]{2}$', caseNormalized ? '' : 'i').test(identifier)
+  (caseNormalized ? REGEX_LOCALE_CASE_NORMALIZED : REGEX_LOCALE_CASE_INSENSITIVE).test(identifier)

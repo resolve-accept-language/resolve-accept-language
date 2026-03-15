@@ -1,3 +1,12 @@
+/**
+ * Matches an `Accept-Language` directive string.
+ *
+ * Captures: [1] full tag, [2] language code, [4] country code (or 419), [6] quality value.
+ *
+ * Excludes wildcards, zero-quality values, and non-es `419` codes.
+ */
+const REGEX_DIRECTIVE = /^(([a-z]{2})(-([a-z]{2}|419))?)(;q=((1(\.0{0,3})?)|(0(\.\d{0,3})?)))?$/i
+
 /** An object representing an HTTP `Accept-Language` header directive. */
 type Directive = {
   /** The ISO 639-1 alpha-2 language code. */
@@ -38,9 +47,7 @@ const getDirective = (directiveString: string): Directive | undefined => {
    * - A quality value equivalent to "0", as per RFC 2616 (section 3.9), should be considered as "not acceptable".
    * - We hardcode the support for the `419` UN M49 code (as country code) representing Latin America to support `es-419`.
    */
-  const directiveMatch = directiveString.match(
-    /^(([a-z]{2})(-([a-z]{2}|419))?)(;q=((1(\.0{0,3})?)|(0(\.\d{0,3})?)))?$/i
-  )
+  const directiveMatch = directiveString.match(REGEX_DIRECTIVE)
 
   if (!directiveMatch) {
     return undefined // No regular expression match.
@@ -94,7 +101,7 @@ export const getDirectives = (acceptLanguageHeader: string): IndexedDirective[] 
   })
 
   // Post-processing to replace `es-419` by proper locales.
-  const es419DirectiveIndex = directives.findIndex((directive) => directive.locale === 'es-419')
+  const es419DirectiveIndex = directives.map((directive) => directive.locale).indexOf('es-419')
 
   if (es419DirectiveIndex !== -1) {
     // Remove 'es-419' from the directive.

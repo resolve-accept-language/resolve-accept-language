@@ -1,4 +1,4 @@
-import { IndexedDirectiveWithLocale, getDirectives } from './directives'
+import { getDirectives } from './directives'
 import { Locale, LocaleList, isLocale } from './locales'
 
 /** The type of matches. */
@@ -108,16 +108,16 @@ export const resolveAcceptLanguage = <
   const defaultLocaleObject = new Locale(defaultLocale)
 
   // Put the default locale first so that it will be more likely to be matched.
-  const normalizedLocales = new Set([
+  const normalizedLocales = [
     defaultLocaleObject.identifier,
     ...locales.map((locale) => new Locale(locale).identifier),
-  ])
+  ]
 
   const match = ((): { match: string; matchType: MatchType } => {
     const localeList = new LocaleList(normalizedLocales)
     const directives = getDirectives(acceptLanguageHeader)
-    const supportedLanguageDirectives = directives.filter((directive) =>
-      localeList.languages.has(directive.languageCode)
+    const supportedLanguageDirectives = directives.filter(
+      (directive) => directive.languageCode in localeList.languages
     )
 
     // Do a first loop on the directives for locale, language-specific locale and language matches.
@@ -126,7 +126,7 @@ export const resolveAcceptLanguage = <
 
       // Try to do a locale match.
       if (locale !== undefined) {
-        if (localeList.locales.has(locale)) {
+        if (locale in localeList.locales) {
           return { match: locale, matchType: MATCH_TYPES.locale }
         }
 
@@ -135,17 +135,16 @@ export const resolveAcceptLanguage = <
       }
 
       // Try to do a language specific locale match.
-      const languageSpecificLocaleMatch = directives.find(
-        (directive): directive is IndexedDirectiveWithLocale =>
-          directive.languageCode === languageCode &&
-          directive.locale !== undefined &&
-          localeList.locales.has(directive.locale)
-      )
-
-      if (languageSpecificLocaleMatch) {
-        return {
-          match: languageSpecificLocaleMatch.locale,
-          matchType: MATCH_TYPES.languageSpecificLocale,
+      for (const candidate of directives) {
+        if (
+          candidate.languageCode === languageCode &&
+          candidate.locale !== undefined &&
+          candidate.locale in localeList.locales
+        ) {
+          return {
+            match: candidate.locale,
+            matchType: MATCH_TYPES.languageSpecificLocale,
+          }
         }
       }
 
@@ -186,7 +185,7 @@ export const resolveAcceptLanguage = <
         if (
           directive.locale !== undefined &&
           directive.countryCode !== undefined &&
-          alternativeDefaultCountries.includes(directive.countryCode)
+          alternativeDefaultCountries.indexOf(directive.countryCode) !== -1
         ) {
           return {
             match: `${defaultLocaleObject.languageCode}-${directive.countryCode}`,

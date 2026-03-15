@@ -172,6 +172,8 @@ export default tsEslint.config(
     },
   },
   // Special configuration for the ESLint configuration file.
+  // Note: eslint/tsconfig.json uses `skipLibCheck` due to type errors in @package-json/types.
+  // This can be removed once https://github.com/un-ts/eslint-plugin-import-x/pull/476 is merged.
   {
     files: ['eslint.config.ts', 'eslint/**/*.ts'],
     languageOptions: { parserOptions: { project: ['eslint/tsconfig.json'] } },

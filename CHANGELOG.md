@@ -1,5 +1,11 @@
 # Changelog
 
+# [3.2.0](https://github.com/resolve-accept-language/resolve-accept-language/compare/v3.1.16...v3.2.0) (2026-03-15)
+
+### Features
+
+- enforce ES5 runtime API compatibility and improve parsing performance ([012d0ba](https://github.com/resolve-accept-language/resolve-accept-language/commit/012d0bad3e61d4ae4ff00a3e9fb59d0ddf2a75f5))
+
 ## [3.1.16](https://github.com/Avansai/resolve-accept-language/compare/v3.1.15...v3.1.16) (2026-01-31)
 
 ## [3.1.15](/compare/v3.1.14...v3.1.15) (2025-11-18)

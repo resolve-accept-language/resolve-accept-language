@@ -1,5 +1,5 @@
 import { getDirectives } from './directives'
-import { Locale, LocaleList, isLocale } from './locales'
+import { isLocale, Locale, LocaleList } from './locales'
 
 /** The type of matches. */
 export type MatchType =

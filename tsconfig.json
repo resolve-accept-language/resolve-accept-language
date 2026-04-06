@@ -1,11 +1,15 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ES2015",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "declaration": true,
-    "downlevelIteration": true,
-    "strict": true
+    "esModuleInterop": true,
+    "strict": true,
+    "rootDir": "./src",
+    "outDir": "dist/esm",
+    "types": ["node"]
   },
   "exclude": ["src/build-scripts"],
-  "include": ["src/**/*.ts"],
-  "references": [{ "path": "./eslint" }]
+  "include": ["src/**/*.ts"]
 }

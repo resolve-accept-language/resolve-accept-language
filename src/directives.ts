@@ -132,7 +132,6 @@ export const getDirectives = (acceptLanguageHeader: string): IndexedDirective[] 
   }
 
   // Return the sorted directives by quality and header position.
-  // eslint-disable-next-line unicorn/no-array-sort
   return directives.sort((a, b) => {
     // Compare quality values first.
     const qualityComparison = b.quality - a.quality

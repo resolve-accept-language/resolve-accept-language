@@ -1,6 +1,17 @@
-import { existsSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs'
+import {
+  cpSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs'
 import { EOL } from 'node:os'
 import path from 'node:path'
+
+import { transformSync } from '@swc/core'
 import { minify_sync as minify } from 'terser'
 
 /** Matches ESM/CJS build files (`.js` and `.d.ts`). */
@@ -75,6 +86,48 @@ for (const filePath of getFilePaths('dist/esm', REGEX_ESM_BUILD_FILES)) {
 
   writeFileSync(filePath, newFileContent)
 }
+
+/**
+ * +------------------------------------------------------------------+
+ * |                   Downlevel ES2015 to ES5 (SWC)                  |
+ * +------------------------------------------------------------------+
+ */
+
+console.log(`${EOL}🏃 Running build step: downlevel ESM ES2015 → ES5 via SWC.${EOL}`)
+
+for (const filePath of getFilePaths('dist/esm', REGEX_JS_FILES)) {
+  const result = transformSync(readFileSync(filePath, 'utf8'), {
+    jsc: { target: 'es5', parser: { syntax: 'ecmascript' } },
+    module: { type: 'es6' },
+  })
+  console.log(`   ⬇️  Downleveling: ${filePath}`)
+  writeFileSync(filePath, result.code)
+}
+
+/**
+ * +------------------------------------------------------------------+
+ * |                  Generate CJS build from ESM (SWC)               |
+ * +------------------------------------------------------------------+
+ */
+
+console.log(`${EOL}🏃 Running build step: generate CJS from ESM via SWC.${EOL}`)
+
+// Copy the entire ESM output (JS + declarations) to dist/cjs.
+mkdirSync('dist/cjs', { recursive: true })
+cpSync('dist/esm', 'dist/cjs', { recursive: true })
+
+// Convert ESM JavaScript to CommonJS via SWC.
+for (const filePath of getFilePaths('dist/cjs', REGEX_JS_FILES)) {
+  const result = transformSync(readFileSync(filePath, 'utf8'), {
+    jsc: { parser: { syntax: 'ecmascript' } },
+    module: { type: 'commonjs' },
+  })
+  console.log(`   🔄 Converting to CJS: ${filePath}`)
+  writeFileSync(filePath, result.code)
+}
+
+// Mark the CJS directory so Node.js treats .js files as CommonJS.
+writeFileSync('dist/cjs/package.json', '{ "type": "commonjs" }')
 
 /**
  * +----------------------------------------------------------------+

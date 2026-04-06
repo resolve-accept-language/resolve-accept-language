@@ -1,4 +1,6 @@
-# IDE settings directories
+# AI and editor settings
+.claude
+.cursor
 .idea
 .vscode
 

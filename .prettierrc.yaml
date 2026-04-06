@@ -17,6 +17,3 @@ endOfLine: auto
 semi: false
 trailingComma: es5
 singleQuote: true
-
-plugins:
-  - prettier-plugin-organize-imports

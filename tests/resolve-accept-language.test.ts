@@ -1,5 +1,5 @@
 import { MATCH_TYPES, resolveAcceptLanguage } from '../src'
-import { Locale, isLocale } from '../src/locales'
+import { isLocale, Locale } from '../src/locales'
 
 describe('The `Locale` class', () => {
   it('throws an error when an invalid locale is used', () => {

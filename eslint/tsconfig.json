@@ -1,15 +1,10 @@
 {
   "compilerOptions": {
-    "rootDir": ".",
+    "rootDir": "..",
     "target": "ESNext",
+    "types": ["node"],
     "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "esModuleInterop": true,
-    "strict": true,
-    "skipLibCheck": true,
-    "composite": true,
-    "tsBuildInfoFile": "/dev/null",
-    "typeRoots": ["../node_modules/@types", "./"]
+    "strict": true
   },
-  "include": ["../eslint.config.ts", "./**/*.ts"]
+  "include": ["./**/*.ts", "../eslint.config.ts"]
 }

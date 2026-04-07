@@ -10,6 +10,7 @@ import {
 } from 'node:fs'
 import { EOL } from 'node:os'
 import path from 'node:path'
+import { gzipSync } from 'node:zlib'
 
 import { transformSync } from '@swc/core'
 import { minify_sync as minify } from 'terser'
@@ -148,6 +149,37 @@ for (const buildDirectoryPath of minifyBuildDirectoryPaths) {
     console.log(`   📦 Minifying file: ${filePath}`)
     writeFileSync(filePath, result.code)
   }
+}
+
+/**
+ * +------------------------------------------------------------------+
+ * |                   Measure and update package size                 |
+ * +------------------------------------------------------------------+
+ */
+
+console.log(`${EOL}🏃 Running build step: measure package size.${EOL}`)
+
+// Concatenate all minified ESM JS files and gzip to measure realistic bundled size.
+const esmJsContents = getFilePaths('dist/esm', REGEX_JS_FILES)
+  .map((filePath) => readFileSync(filePath, 'utf8'))
+  .join('')
+const gzippedSize = gzipSync(esmJsContents).length
+const formattedSize = `${(gzippedSize / 1000).toFixed(1)} kB`
+console.log(`   📏 Package size (min+gzip): ${formattedSize}`)
+
+// Update the README badge with the measured size.
+const readmePath = 'README.md'
+const readmeContent = readFileSync(readmePath, 'utf8')
+const updatedReadme = readmeContent.replace(
+  /!\[Package Size]\([^)]+\)/,
+  `![Package Size](https://img.shields.io/badge/min%2Bgzip-${encodeURIComponent(formattedSize)}-brightgreen)`
+)
+
+if (updatedReadme === readmeContent) {
+  console.log(`   ℹ️  README.md badge already up to date`)
+} else {
+  writeFileSync(readmePath, updatedReadme)
+  console.log(`   ✅ Updated README.md badge`)
 }
 
 /**

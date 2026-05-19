@@ -3,8 +3,12 @@
     "rootDir": "..",
     "target": "ESNext",
     "types": ["node"],
-    "module": "NodeNext",
-    "strict": true
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "paths": {
+      "@package-json/types": ["./package-json-types.d.ts"]
+    }
   },
   "include": ["./**/*.ts", "../eslint.config.ts"]
 }

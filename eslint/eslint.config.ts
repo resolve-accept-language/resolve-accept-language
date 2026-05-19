@@ -37,17 +37,26 @@ const UNICORN_MODERN_API_RULES = [
 ]
 
 /**
- * Set a list of Unicorn rules to a given severity level.
+ * Set a list of ESLint rules to a given severity level.
  *
- * @param rules - The Unicorn rule names to configure.
+ * @param rules - The rule names to configure.
  * @param level - The severity level to apply ('off' to disable, 'error' to enforce).
  *
  * @returns An object mapping each rule name to the specified severity level.
  */
-const setUnicornRules = (
-  rules: string[],
-  level: 'off' | 'error'
-): Record<string, 'off' | 'error'> => Object.fromEntries(rules.map((rule) => [rule, level]))
+const setRules = (rules: string[], level: 'off' | 'error'): Record<string, 'off' | 'error'> =>
+  Object.fromEntries(rules.map((rule) => [rule, level]))
+
+/**
+ * typescript-eslint rules from `stylisticTypeChecked` that suggest ES2015+ runtime APIs
+ * (not transpilable by TypeScript or SWC). Mirrors {@link UNICORN_MODERN_API_RULES}:
+ * disabled in shipped code to maintain backward compatibility, re-enabled for non-shipped files.
+ */
+const TS_ESLINT_MODERN_API_RULES = [
+  '@typescript-eslint/prefer-includes', // ES2015 - Array/String.prototype.includes
+  '@typescript-eslint/prefer-string-starts-ends-with', // ES2015 - String.prototype.startsWith/endsWith
+  '@typescript-eslint/prefer-find', // ES2015 - Array.prototype.find
+]
 
 /**
  * Syntax-only es-x rules that TypeScript already transpiles to ES5. These must be disabled
@@ -87,7 +96,7 @@ export default defineConfig(
   prettierRecommendedConfig,
   // Unicorn recommended configs.
   // @see https://github.com/sindresorhus/eslint-plugin-unicorn
-  unicornPlugin.configs['recommended'],
+  unicornPlugin.configs.recommended,
   // TypeScript configuration.
   {
     files: [...TYPESCRIPT_FILES],
@@ -95,8 +104,8 @@ export default defineConfig(
     extends: [
       // TypeScript ESLint recommended configs.
       // @see https://typescript-eslint.io/getting-started/
-      tsEslintConfigs.recommended,
-      tsEslintConfigs.recommendedTypeChecked,
+      tsEslintConfigs.strictTypeChecked,
+      tsEslintConfigs.stylisticTypeChecked,
       // Make sure that imports are valid.
       // @see https://github.com/un-ts/eslint-plugin-import-x
       importXPluginFlatConfigs.recommended,
@@ -153,12 +162,28 @@ export default defineConfig(
       // Prevent omission of curly brace (e.g. same-line if/return).
       // @see https://eslint.org/docs/latest/rules/curly
       curly: ['error'],
+      // Forbid `console.log` in shipped code; allow `warn`/`error` for legitimate diagnostics.
+      // Disabled in the "Non-shipped files" block below for build scripts and tests.
+      // @see https://eslint.org/docs/latest/rules/no-console
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
       // Validates that TypeScript doc comments conform to the TSDoc specification.
       // @see https://tsdoc.org/pages/packages/eslint-plugin-tsdoc/
       'tsdoc/syntax': 'warn',
       // Enforces explicit return types on functions and class methods to avoid unintentionally breaking contracts.
       // @see https://typescript-eslint.io/rules/explicit-module-boundary-types/
       '@typescript-eslint/explicit-function-return-type': 'error',
+      // Enforces consistent type imports.
+      // @see https://typescript-eslint.io/rules/consistent-type-imports/
+      '@typescript-eslint/consistent-type-imports': ['error', { prefer: 'type-imports' }],
+      // Prefer `type` over `interface` for object shapes.
+      // @see https://typescript-eslint.io/rules/consistent-type-definitions/
+      '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
+      // Ban `as X` and `<X>foo` casts entirely.
+      // @see https://typescript-eslint.io/rules/consistent-type-assertions/
+      '@typescript-eslint/consistent-type-assertions': ['error', { assertionStyle: 'never' }],
+      // Allow numbers in template literals (predictable coercion); still catches objects/null/undefined.
+      // @see https://typescript-eslint.io/rules/restrict-template-expressions/
+      '@typescript-eslint/restrict-template-expressions': ['error', { allowNumber: true }],
       // Checks members (classes, interfaces, types) and applies consistent ordering.
       // @see https://typescript-eslint.io/rules/member-ordering/
       '@typescript-eslint/member-ordering': [
@@ -192,7 +217,7 @@ export default defineConfig(
          * @see https://github.com/sindresorhus/eslint-plugin-unicorn/issues/2604
          */
         'unicorn/no-nested-ternary': 'off',
-        // Performance is no longer an issue - we prefer `forEach` for readability.
+        // Prefer `forEach` over `for` loops for readability on modern engines.
         'unicorn/no-array-for-each': 'off',
         // Doesn't add a lot of value and makes numbers look odd.
         'unicorn/numeric-separators-style': 'off',
@@ -204,14 +229,17 @@ export default defineConfig(
          */
         'unicorn/no-null': 'off',
         /**
-         * This rule conflicts with `prettier/prettier` and there is no way to disabled the Prettier rule.
+         * This rule conflicts with `prettier/prettier` and there is no way to disable the Prettier rule.
          *
          * @see https://github.com/sindresorhus/eslint-plugin-unicorn/issues/2285
          */
         'unicorn/number-literal-case': 'off',
         // Disable modern API rules for backward compatibility (see UNICORN_MODERN_API_RULES).
-        ...setUnicornRules(UNICORN_MODERN_API_RULES, 'off'),
+        ...setRules(UNICORN_MODERN_API_RULES, 'off'),
       },
+      // Disable typescript-eslint stylistic rules that suggest ES2015+ runtime APIs
+      // (see TS_ESLINT_MODERN_API_RULES). Re-enabled in non-shipped files block below.
+      ...setRules(TS_ESLINT_MODERN_API_RULES, 'off'),
     },
   },
   // Special configuration for the ESLint configuration file.
@@ -234,7 +262,12 @@ export default defineConfig(
         ])
       ),
       // Re-enable modern unicorn rules that are disabled for backward compatibility in shipped code.
-      ...setUnicornRules(UNICORN_MODERN_API_RULES, 'error'),
+      ...setRules(UNICORN_MODERN_API_RULES, 'error'),
+      // Re-enable typescript-eslint stylistic modern-API rules.
+      ...setRules(TS_ESLINT_MODERN_API_RULES, 'error'),
+      // Allow `console.log` for status output and test diagnostics.
+      // @see https://eslint.org/docs/latest/rules/no-console
+      'no-console': 'off',
     },
   },
   // Build script TypeScript files.
@@ -265,7 +298,13 @@ export default defineConfig(
       ...jestPlugin.configs['flat/recommended'].languageOptions,
       parserOptions: { project: ['tests/tsconfig.json'], tsconfigRootDir: ROOT_DIR },
     },
-    rules: jestPlugin.configs['flat/recommended'].rules,
+    rules: {
+      ...jestPlugin.configs['flat/recommended'].rules,
+      // Jest's `it`/`test` callbacks accept `void | Promise<void>`, so the rule's concern about
+      // silently leaking a returned value through an arrow shorthand doesn't apply in tests.
+      // @see https://typescript-eslint.io/rules/no-confusing-void-expression/
+      '@typescript-eslint/no-confusing-void-expression': 'off',
+    },
   },
   // Rules applying to all files.
   {

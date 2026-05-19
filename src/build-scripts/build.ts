@@ -143,7 +143,7 @@ console.log(`${EOL}🏃 Running build script: minify build.${EOL}`)
 for (const buildDirectoryPath of minifyBuildDirectoryPaths) {
   for (const filePath of getFilePaths(buildDirectoryPath, REGEX_JS_FILES)) {
     const result = minify(readFileSync(filePath, 'utf8'))
-    if (result?.code === undefined) {
+    if (result.code === undefined) {
       throw new Error('Minification failed')
     }
     console.log(`   📦 Minifying file: ${filePath}`)

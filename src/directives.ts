@@ -47,7 +47,7 @@ const getDirective = (directiveString: string): Directive | undefined => {
    * - A quality value equivalent to "0", as per RFC 2616 (section 3.9), should be considered as "not acceptable".
    * - We hardcode the support for the `419` UN M49 code (as country code) representing Latin America to support `es-419`.
    */
-  const directiveMatch = directiveString.match(REGEX_DIRECTIVE)
+  const directiveMatch = REGEX_DIRECTIVE.exec(directiveString)
 
   if (!directiveMatch) {
     return undefined // No regular expression match.
@@ -65,7 +65,13 @@ const getDirective = (directiveString: string): Directive | undefined => {
     return undefined
   }
 
-  const quality = matchedQuality === undefined ? 1 : Number(matchedQuality) // Remove trailing zeros.
+  // Optional regex capture groups return `undefined` at runtime when unmatched, but TypeScript
+  // types positional `RegExpExecArray` results as `string`. `Number(undefined)` is `NaN`, so
+  // checking for NaN cleanly distinguishes "no `;q=...` part" from a parsed quality value
+  // without relying on an `=== undefined` check the type system would flag as unnecessary.
+  // The ES1 global `isNaN` is used (not `Number.isNaN`) to remain ES5-compatible.
+  const parsedQuality = Number(matchedQuality)
+  const quality = isNaN(parsedQuality) ? 1 : parsedQuality // Remove trailing zeros.
   const locale = countryCode ? `${languageCode}-${countryCode}` : undefined
 
   return { languageCode, countryCode, locale, quality }

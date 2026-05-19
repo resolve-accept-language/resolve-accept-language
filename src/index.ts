@@ -30,27 +30,6 @@ export type NormalizeLocale<Remainder extends string> =
     ? `${Lowercase<LanguageCode>}-${Uppercase<CountryCode>}`
     : Remainder
 
-/** Additional options to apply. */
-type Options<WithMatchType extends boolean | undefined> = {
-  /** Should the match type be returned? */
-  returnMatchType?: WithMatchType
-  /** Should the country of the locale be used for matching? */
-  matchCountry?: boolean
-}
-
-type Result<
-  Locales extends readonly string[],
-  WithMatchType extends boolean | undefined,
-> = WithMatchType extends true
-  ? {
-      /** The best locale match. */
-      match: NormalizeLocale<Locales[number]>
-      /** The type of match. */
-      matchType: MatchType
-    }
-  : /** The best locale match. */
-    NormalizeLocale<Locales[number]>
-
 /**
  * Resolve the preferred locale from an HTTP `Accept-Language` header.
  *
@@ -72,15 +51,29 @@ type Result<
  *   'en-US'
  * )
  */
-export const resolveAcceptLanguage = <
-  Locales extends readonly string[],
-  WithMatchType extends boolean | undefined = undefined,
->(
+// Function overloads split on `options.returnMatchType` discriminate the return type without
+// a runtime cast (banned by `@typescript-eslint/consistent-type-assertions`). Implementation
+// signature accepts the union and returns the union; overloads narrow it for callers.
+/* eslint-disable prefer-arrow-functions/prefer-arrow-functions */
+export function resolveAcceptLanguage<Locales extends readonly string[]>(
   acceptLanguageHeader: string,
   locales: Locales,
   defaultLocale: Locales[number],
-  options?: Options<WithMatchType>
-): Result<Locales, WithMatchType> => {
+  options?: { returnMatchType?: false; matchCountry?: boolean }
+): NormalizeLocale<Locales[number]>
+export function resolveAcceptLanguage<Locales extends readonly string[]>(
+  acceptLanguageHeader: string,
+  locales: Locales,
+  defaultLocale: Locales[number],
+  options: { returnMatchType: true; matchCountry?: boolean }
+): { match: NormalizeLocale<Locales[number]>; matchType: MatchType }
+export function resolveAcceptLanguage(
+  acceptLanguageHeader: string,
+  locales: readonly string[],
+  defaultLocale: string,
+  options?: { returnMatchType?: boolean; matchCountry?: boolean }
+): string | { match: string; matchType: MatchType } {
+  /* eslint-enable prefer-arrow-functions/prefer-arrow-functions */
   // Check if the locales are valid.
   locales.forEach((locale) => {
     if (!isLocale(locale, false)) {
@@ -215,5 +208,5 @@ export const resolveAcceptLanguage = <
     }
   })()
 
-  return (options?.returnMatchType ? match : match.match) as Result<Locales, WithMatchType>
+  return options?.returnMatchType ? match : match.match
 }

@@ -1,6 +1,8 @@
 {
   "git": {
-    "commitMessage": "🔖 release v${version}"
+    "commitMessage": "🔖 release v${version}",
+    "commitArgs": ["--no-verify"],
+    "requireBranch": "main"
   },
   "github": {
     "release": true
@@ -9,8 +11,7 @@
     "before:init": ["npm run build"],
     "after:@release-it/conventional-changelog:beforeRelease": [
       "npx prettier --write ./CHANGELOG.md"
-    ],
-    "after:release": "curl -fsS 'https://deno.bundlejs.com/badge?q=resolve-accept-language@latest&treeshake=[*])' || true"
+    ]
   },
   "plugins": {
     "@release-it/conventional-changelog": {

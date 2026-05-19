@@ -27,6 +27,7 @@ export class Locale {
   }
 }
 
+/** A collection of locales with lookup maps for languages, countries, and locale identifiers. */
 export class LocaleList {
   /** A lookup of ISO 639-1 alpha-2 language codes. */
   public readonly languages: Record<string, boolean> = {}
@@ -67,8 +68,10 @@ const REGEX_LOCALE_CASE_INSENSITIVE = /^[a-z]{2}-[A-Z]{2}$/i
 /**
  * Is a given string a locale identifier following the BCP 47 `language`-`country` format.
  *
- * @param identifier - A potential locale identify to verify.
+ * @param identifier - A potential locale identifier to verify.
  * @param caseNormalized - Should we verify if the identifier is using the case-normalized format?
+ *
+ * @returns `true` if the identifier is a valid locale, `false` otherwise.
  */
 export const isLocale = (identifier: string, caseNormalized = true): boolean =>
   (caseNormalized ? REGEX_LOCALE_CASE_NORMALIZED : REGEX_LOCALE_CASE_INSENSITIVE).test(identifier)
